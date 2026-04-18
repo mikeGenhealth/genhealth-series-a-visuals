@@ -1,0 +1,125 @@
+/* GenHealth Series A — shared tokens */
+:root {
+  --bg: #0f1419;
+  --bg-elev: #141a21;
+  --panel: #171e26;
+  --rule: #242b35;
+  --rule-soft: #1c232c;
+
+  --text: #eef1f6;
+  --text-dim: #8a939f;
+  --text-faint: #505a66;
+
+  --green: #00c37a;
+  --green-soft: rgba(0, 195, 122, 0.12);
+  --green-mid: rgba(0, 195, 122, 0.32);
+  --green-glow: rgba(0, 195, 122, 0.45);
+
+  --amber: #ffd666;     /* Point AI */
+  --slate: #94a3b8;     /* Legacy */
+  --ember: #ff4f1f;     /* BPO/MSO */
+  --dead:  #505a66;     /* Absorbed */
+  --warn:  #d97b3b;
+
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --sans: "Switzer", "Inter", system-ui, sans-serif;
+
+  --eyebrow-ls: 0.22em;
+}
+
+/* Light variants override a handful */
+.light {
+  --bg: #f4f4f0;
+  --bg-elev: #ffffff;
+  --panel: #ffffff;
+  --rule: #d8d8d0;
+  --rule-soft: #e7e7df;
+  --text: #0f1419;
+  --text-dim: #5a6570;
+  --text-faint: #a6adb5;
+  --green: #00955d;
+  --green-soft: rgba(0, 149, 93, 0.10);
+  --green-mid: rgba(0, 149, 93, 0.26);
+  --green-glow: rgba(0, 149, 93, 0.28);
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #0b0f13; color: var(--text); font-family: var(--sans); }
+
+.mono { font-family: var(--mono); letter-spacing: var(--eyebrow-ls); text-transform: uppercase; }
+.eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: var(--eyebrow-ls); text-transform: uppercase; color: var(--text-dim); }
+.hair { height: 1px; background: var(--rule); width: 100%; }
+
+/* Viz frame — each card is a 1400×800 canvas */
+.viz {
+  position: relative;
+  width: 1400px;
+  height: 800px;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  font-family: var(--sans);
+}
+.viz.light { background: var(--bg-elev); }
+
+/* Folio chrome */
+.folio-tl, .folio-tr {
+  position: absolute; top: 28px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: var(--eyebrow-ls);
+  text-transform: uppercase; color: var(--text-dim);
+  display: flex; align-items: center; gap: 10px;
+}
+.folio-tl { left: 40px; }
+.folio-tr { right: 40px; }
+.folio-tl .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 10px var(--green-glow); }
+
+.folio-br {
+  position: absolute; right: 40px; bottom: 28px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: var(--eyebrow-ls);
+  color: var(--text-faint); text-transform: uppercase;
+}
+.folio-bl {
+  position: absolute; left: 40px; bottom: 28px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: var(--eyebrow-ls);
+  color: var(--text-faint); text-transform: uppercase;
+}
+
+/* Title/subtitle helpers */
+.viz h1 {
+  font-family: var(--sans); font-weight: 700; letter-spacing: -0.03em;
+  margin: 0; line-height: 1.02;
+}
+.viz h2, .viz h3 { font-family: var(--sans); font-weight: 600; letter-spacing: -0.02em; margin: 0; }
+.viz p { margin: 0; }
+
+/* Utility stamp */
+.stamp {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 10px; border: 1px solid var(--green); color: var(--green);
+  font-family: var(--mono); font-size: 11px; letter-spacing: var(--eyebrow-ls);
+  text-transform: uppercase; background: var(--green-soft);
+}
+.stamp .d { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green-glow); }
+
+/* Draw-in */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes drawGrow { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes drawGrowX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes dashDraw { from { stroke-dashoffset: 800; } to { stroke-dashoffset: 0; } }
+@keyframes pulseRing {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(2.6); opacity: 0; }
+}
+
+.in-view .fade-in { animation: fadeIn 0.7s both; }
+.in-view .fade-in.d1 { animation-delay: 0.1s; }
+.in-view .fade-in.d2 { animation-delay: 0.25s; }
+.in-view .fade-in.d3 { animation-delay: 0.4s; }
+.in-view .fade-in.d4 { animation-delay: 0.55s; }
+.in-view .fade-in.d5 { animation-delay: 0.7s; }
+
+/* Hatching patterns used across vizzes */
+.bg-hatch-green { background-image: repeating-linear-gradient(45deg, var(--green-soft) 0 2px, transparent 2px 10px); }
+.bg-hatch-ember { background-image: repeating-linear-gradient(45deg, rgba(255, 79, 31, 0.10) 0 2px, transparent 2px 10px); }
+.bg-hatch-slate { background-image: repeating-linear-gradient(45deg, rgba(148, 163, 184, 0.08) 0 2px, transparent 2px 10px); }

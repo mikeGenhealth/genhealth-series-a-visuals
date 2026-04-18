@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>GenHealth Series A — Visualization Set</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700,800&display=swap">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/gallery.css">
+</head>
+<body>
+
+<header class="gallery-top">
+  <div class="eyebrow"><span class="dot"></span>GenHealth · Series A · Visualization Set · 2026-04</div>
+  <h1>Same agents. Same tech. <span style="color:#00c37a">300× the wallet.</span></h1>
+  <p>Fifteen visual variants across the three load-bearing stories: TAM expansion, competitive landscape, and category positioning. Designed for Series A investor audiences — Aledade / Oscar / Privia restraint, one accent at a time, data-forward.</p>
+  <div class="legend">
+    <span><span class="sw" style="background:#00c37a"></span>GenHealth</span>
+    <span><span class="sw" style="background:#ffd666"></span>Point AI</span>
+    <span><span class="sw" style="background:#94a3b8"></span>Legacy software</span>
+    <span><span class="sw" style="background:#ff4f1f"></span>BPO / MSO</span>
+    <span><span class="sw" style="background:#505a66"></span>Absorbed / dead</span>
+  </div>
+</header>
+
+<!-- TAM =================================================================== -->
+<div class="section-header">
+  <div>
+    <div class="l">Section 01</div>
+    <div class="t">TAM expansion — SaaS → MAP → MAO</div>
+  </div>
+  <div class="c">5 variants · $5B → $300B → $1.5T</div>
+</div>
+<div class="viz-wrap" id="tam-section"></div>
+
+<!-- COMPETITORS =========================================================== -->
+<div class="section-header">
+  <div>
+    <div class="l">Section 02</div>
+    <div class="t">Competitive landscape</div>
+  </div>
+  <div class="c">5 variants · 13 competitors + GenHealth</div>
+</div>
+<div class="viz-wrap" id="comp-section"></div>
+
+<!-- POSITIONING =========================================================== -->
+<div class="section-header">
+  <div>
+    <div class="l">Section 03</div>
+    <div class="t">Positioning & category thesis</div>
+  </div>
+  <div class="c">5 variants · Only operator-native AI</div>
+</div>
+<div class="viz-wrap" id="pos-section"></div>
+
+<footer class="footer">
+  End of set · 15 variants · Designed for GenHealth Inc. · Series A · confidential
+</footer>
+
+<!-- Viz modules, in order -->
+<script src="vizzes/01-tam-nested-squares.js"></script>
+<script src="vizzes/02-tam-escalating-bars.js"></script>
+<script src="vizzes/03-tam-concentric-circles.js"></script>
+<script src="vizzes/04-tam-staircase.js"></script>
+<script src="vizzes/05-tam-editorial.js"></script>
+
+<script src="vizzes/06-comp-scatter.js"></script>
+<script src="vizzes/07-comp-swimlanes.js"></script>
+<script src="vizzes/08-comp-trajectory.js"></script>
+<script src="vizzes/09-comp-funding-rails.js"></script>
+<script src="vizzes/10-comp-capabilities-matrix.js"></script>
+
+<script src="vizzes/11-pos-3x3.js"></script>
+<script src="vizzes/12-pos-flow.js"></script>
+<script src="vizzes/13-pos-margin-table.js"></script>
+<script src="vizzes/14-pos-diagonal.js"></script>
+<script src="vizzes/15-pos-quadrant-manifesto.js"></script>
+
+<script>
+// Wire each viz into the gallery
+(function(){
+  const tam = document.getElementById('tam-section');
+  const comp = document.getElementById('comp-section');
+  const pos = document.getElementById('pos-section');
+
+  function mount(target, index, name, desc, html){
+    const card = document.createElement('div');
+    card.className = 'viz-card';
+    card.innerHTML = `
+      <div class="viz-meta">
+        <div><span class="ix">V${String(index).padStart(2,'0')}</span> &nbsp; <span class="name">${name}</span></div>
+        <div class="desc">${desc}</div>
+      </div>
+      <div class="viz-scale"><div class="viz-scale-inner">${html}</div></div>
+    `;
+    target.appendChild(card);
+  }
+
+  // Call each viz module to get {name, desc, html}
+  window.__VIZZES.forEach((v, i) => {
+    const target = i < 5 ? tam : i < 10 ? comp : pos;
+    mount(target, i + 1, v.name, v.desc, v.html);
+  });
+
+  // Scale the 1400px-wide vizzes to fit the viewport width
+  function scale(){
+    const containerW = document.querySelector('.viz-wrap').clientWidth;
+    const s = Math.min(1, containerW / 1400);
+    document.querySelectorAll('.viz-scale').forEach(wrap => {
+      const inner = wrap.firstElementChild;
+      inner.style.transformOrigin = 'top left';
+      inner.style.transform = `scale(${s})`;
+      // lock height after transform to avoid gap
+      wrap.style.height = (800 * s) + 'px';
+      inner.style.width = '1400px';
+    });
+  }
+  scale();
+  window.addEventListener('resize', scale);
+
+  // Fire animations when each viz enters view
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.viz').forEach(el => io.observe(el));
+})();
+</script>
+
+</body>
+</html>

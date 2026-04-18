@@ -1,0 +1,107 @@
+/* Gallery shell */
+body {
+  background: #0b0f13;
+  color: #eef1f6;
+  font-family: "Switzer", "Inter", system-ui, sans-serif;
+}
+
+.gallery-top {
+  padding: 64px 72px 40px;
+  border-bottom: 1px solid #1c232c;
+}
+
+.gallery-top .eyebrow {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #8a939f;
+}
+.gallery-top .eyebrow .dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  background: #00c37a; margin-right: 10px;
+  box-shadow: 0 0 10px rgba(0,195,122,0.5);
+  vertical-align: middle;
+}
+
+.gallery-top h1 {
+  font-weight: 700; letter-spacing: -0.035em; font-size: 56px;
+  margin: 14px 0 14px; line-height: 1.0; max-width: 1000px;
+}
+.gallery-top p {
+  color: #8a939f; font-size: 16px; line-height: 1.55; max-width: 760px; margin: 0;
+}
+
+.gallery-top .legend {
+  display: flex; gap: 28px; margin-top: 28px; flex-wrap: wrap;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #8a939f;
+}
+.gallery-top .legend .sw { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: middle; }
+
+.section-header {
+  padding: 64px 72px 20px;
+  display: flex; align-items: baseline; justify-content: space-between;
+  border-bottom: 1px solid #1c232c;
+  margin-bottom: 40px;
+}
+.section-header .l {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: #8a939f;
+}
+.section-header .t {
+  font-weight: 600; letter-spacing: -0.02em; font-size: 28px;
+}
+.section-header .c {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; letter-spacing: 0.22em; color: #505a66;
+  text-transform: uppercase;
+}
+
+.viz-wrap {
+  padding: 0 72px 72px;
+  display: flex; flex-direction: column; gap: 48px;
+}
+.viz-meta {
+  display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px;
+  gap: 16px;
+  min-height: 30px;
+  flex-wrap: nowrap;
+}
+.viz-meta > div:first-child {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; align-items: baseline; gap: 14px;
+  white-space: nowrap; overflow: hidden;
+}
+.viz-meta .ix {
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; letter-spacing: 0.22em; color: #00c37a; text-transform: uppercase;
+  white-space: nowrap; flex: 0 0 auto;
+}
+.viz-meta .name {
+  font-weight: 600; letter-spacing: -0.02em; font-size: 17px; color: #eef1f6;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  flex: 1 1 auto; min-width: 0;
+}
+.viz-meta .desc {
+  color: #8a939f; font-size: 12px;
+  white-space: nowrap; flex: 0 0 auto;
+  overflow: hidden; text-overflow: ellipsis; max-width: 42%;
+}
+
+.viz-card {
+  display: flex; flex-direction: column;
+}
+.viz-scale {
+  width: 100%; overflow: hidden; border-radius: 2px;
+}
+.viz-scale .viz {
+  transform-origin: top left;
+}
+
+.footer {
+  padding: 40px 72px 80px; color: #505a66;
+  font-family: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+  border-top: 1px solid #1c232c;
+}
