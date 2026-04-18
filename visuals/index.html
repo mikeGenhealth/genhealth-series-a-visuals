@@ -27,6 +27,105 @@
   </div>
 </header>
 
+<!-- =====================================================================
+     GLOSSARY — what MAP and MAO mean
+     The whole thesis in one view: we're converting the two incumbent
+     healthcare service categories (MSP and MSO) into their AI-native
+     equivalents (MAP and MAO). Read this before the vizzes.
+     ===================================================================== -->
+<section style="padding:56px 72px 24px;border-bottom:1px solid #1c232c">
+  <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:28px;flex-wrap:wrap;gap:12px">
+    <div>
+      <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:#8a939f">Glossary</div>
+      <div style="font-weight:600;letter-spacing:-.02em;font-size:28px;margin-top:8px;color:#eef1f6">What MAP and MAO mean.</div>
+    </div>
+    <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.22em;color:#505a66;text-transform:uppercase">read before the vizzes</div>
+  </div>
+
+  <p style="color:#8a939f;font-size:16px;line-height:1.6;max-width:860px;margin:0 0 36px">
+    Every viz below references <b style="color:#eef1f6">MAP</b> and <b style="color:#eef1f6">MAO</b> as our Stage 2 and Stage 3 business models. They're deliberate parallels to the two healthcare service categories that already exist today — just rebuilt with agents instead of people. <b style="color:#eef1f6">Same revenue lines on the P&amp;L. Radically different cost structure underneath.</b>
+  </p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+
+    <!-- MSP → MAP -->
+    <div style="background:#141a21;border:1px solid #242b35;border-radius:10px;padding:28px 32px">
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;margin-bottom:22px">
+        <div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.22em;color:#505a66;text-transform:uppercase;margin-bottom:6px">Today · incumbent</div>
+          <div style="font-weight:700;font-size:42px;letter-spacing:-.03em;line-height:1;color:#8a939f">MSP</div>
+          <div style="font-size:13px;color:#8a939f;margin-top:6px;line-height:1.4">Managed Service <b>Provider</b></div>
+        </div>
+        <div style="color:#00c37a;font-size:26px;line-height:1">→</div>
+        <div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.22em;color:#00c37a;text-transform:uppercase;margin-bottom:6px">GenHealth · Stage 2</div>
+          <div style="font-weight:700;font-size:42px;letter-spacing:-.03em;line-height:1;color:#00c37a">MAP</div>
+          <div style="font-size:13px;color:#eef1f6;margin-top:6px;line-height:1.4">Managed <b style="color:#00c37a">Agent</b> <b>Provider</b></div>
+        </div>
+      </div>
+
+      <div style="height:1px;background:#242b35;margin:0 -32px 18px"></div>
+
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:10px 18px;font-size:13.5px;line-height:1.5">
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#8a939f;text-transform:uppercase;padding-top:2px">What it does</div>
+        <div style="color:#eef1f6">Operates admin workflows on behalf of the customer — intake, billing, PA, denials — so they buy outcomes instead of tools.</div>
+
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#8a939f;text-transform:uppercase;padding-top:2px">MSP today</div>
+        <div style="color:#8a939f">Offshore human teams · 15–30% margins · Cognizant, Prochant, Access HC</div>
+
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#00c37a;text-transform:uppercase;padding-top:2px">MAP (us)</div>
+        <div style="color:#eef1f6">AI agents + small ops team · <b style="color:#00c37a">60–70% margins</b> · same revenue lines</div>
+
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#8a939f;text-transform:uppercase;padding-top:2px">Wallet</div>
+        <div style="color:#eef1f6"><b style="color:#00c37a">$300B+</b> · healthcare BPO + internal admin labor</div>
+      </div>
+    </div>
+
+    <!-- MSO → MAO -->
+    <div style="background:#141a21;border:1px solid rgba(0,195,122,.4);border-radius:10px;padding:28px 32px;position:relative;box-shadow:0 0 0 1px rgba(0,195,122,.2) inset">
+      <div style="position:absolute;top:14px;right:18px;font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:9.5px;letter-spacing:.24em;color:#00c37a;text-transform:uppercase;border:1px solid #00c37a;padding:3px 8px;border-radius:3px;background:rgba(0,195,122,.06)">The endgame</div>
+
+      <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;margin-bottom:22px">
+        <div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.22em;color:#505a66;text-transform:uppercase;margin-bottom:6px">Today · incumbent</div>
+          <div style="font-weight:700;font-size:42px;letter-spacing:-.03em;line-height:1;color:#8a939f">MSO</div>
+          <div style="font-size:13px;color:#8a939f;margin-top:6px;line-height:1.4">Managed Service <b>Organization</b></div>
+        </div>
+        <div style="color:#00c37a;font-size:26px;line-height:1">→</div>
+        <div>
+          <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10px;letter-spacing:.22em;color:#00c37a;text-transform:uppercase;margin-bottom:6px">GenHealth · Stage 3</div>
+          <div style="font-weight:700;font-size:42px;letter-spacing:-.03em;line-height:1;color:#00c37a">MAO</div>
+          <div style="font-size:13px;color:#eef1f6;margin-top:6px;line-height:1.4">Managed <b style="color:#00c37a">Agent</b> <b>Organization</b></div>
+        </div>
+      </div>
+
+      <div style="height:1px;background:#242b35;margin:0 -32px 18px"></div>
+
+      <div style="display:grid;grid-template-columns:120px 1fr;gap:10px 18px;font-size:13.5px;line-height:1.5">
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#8a939f;text-transform:uppercase;padding-top:2px">What it does</div>
+        <div style="color:#eef1f6">Contracts directly with health plans for specific admin functions — PA, claims, eligibility, medical-necessity review — priced as % of collections or at-risk.</div>
+
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#8a939f;text-transform:uppercase;padding-top:2px">MSO today</div>
+        <div style="color:#8a939f">Billers, coders, coordinators · 15–30% margins · 10–25% mgmt fee on practice revenue</div>
+
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#00c37a;text-transform:uppercase;padding-top:2px">MAO (us)</div>
+        <div style="color:#eef1f6">AI agents + supervisory ops + actuarial · <b style="color:#00c37a">50–70% margins</b> · we own the payer relationship</div>
+
+        <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.18em;color:#8a939f;text-transform:uppercase;padding-top:2px">Wallet</div>
+        <div style="color:#eef1f6"><b style="color:#00c37a">$1.5T</b> · premium + admin capitation + at-risk</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="margin-top:28px;padding:18px 22px;background:rgba(0,195,122,.06);border:1px solid rgba(0,195,122,.28);border-radius:6px;display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center">
+    <div style="font-family:'JetBrains Mono',ui-monospace,Menlo,monospace;font-size:10.5px;letter-spacing:.25em;color:#00c37a;text-transform:uppercase;padding:4px 10px;border:1px solid #00c37a;border-radius:3px;white-space:nowrap">The one-liner</div>
+    <div style="color:#eef1f6;font-size:15px;line-height:1.55">
+      Same revenue lines on the P&amp;L as an MSP or MSO. Radically different economics underneath — because our cost of goods sold is <b style="color:#00c37a">compute and a small ops team</b>, not labor.
+    </div>
+  </div>
+</section>
+
 <!-- TAM =================================================================== -->
 <div class="section-header">
   <div>
