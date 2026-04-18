@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GenHealth — Quiet infrastructure for healthcare operations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F3EE;
+    --paper-2:#EFEDE6;
+    --ink:#121418;
+    --ink-2:#2A2E36;
+    --graphite:#545862;
+    --mist:#E1DED6;
+    --mist-2:#D5D2C9;
+    --indigo:#3A4A6B;
+    --indigo-soft:#5C6E92;
+    --indigo-tint:#E3E6ED;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-weight:400;-webkit-font-smoothing:antialiased}
+  body{font-size:17px;line-height:1.55;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .serif{font-family:'Instrument Serif',serif;font-weight:400;font-style:italic}
+  .eyebrow{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--graphite);font-weight:500}
+  .container{max-width:1280px;margin:0 auto;padding:0 40px}
+  @media (max-width:720px){.container{padding:0 24px}}
+
+  /* NAV */
+  nav.top{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:color-mix(in oklab, var(--paper) 78%, transparent);border-bottom:1px solid transparent;transition:border-color .3s}
+  nav.top.scrolled{border-bottom-color:var(--mist)}
+  nav.top .inner{display:flex;align-items:center;justify-content:space-between;height:72px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:500;letter-spacing:-.01em;font-size:17px}
+  .brand .mark{width:22px;height:22px;border-radius:6px;background:var(--indigo);display:grid;place-items:center;color:#fff;font-family:'Instrument Serif',serif;font-style:italic;font-size:15px;line-height:1;padding-bottom:1px}
+  .nav-links{display:flex;gap:36px;font-size:14px;color:var(--ink-2)}
+  .nav-links a{position:relative;padding:4px 0}
+  .nav-links a:hover{color:var(--indigo)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:8px;font-size:14px;font-weight:500;transition:all .2s;border:1px solid transparent;cursor:pointer}
+  .btn-primary{background:var(--indigo);color:#fff}
+  .btn-primary:hover{background:#2E3B57}
+  .btn-ghost{border-color:var(--mist-2);color:var(--ink)}
+  .btn-ghost:hover{border-color:var(--ink);background:var(--paper-2)}
+  .btn svg{width:14px;height:14px}
+
+  /* HERO */
+  section.hero{padding:96px 0 40px;position:relative}
+  .hero .bloom{position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:900px;height:700px;background:radial-gradient(ellipse at center, rgba(58,74,107,.16), rgba(58,74,107,0) 62%);pointer-events:none;filter:blur(20px)}
+  .hero-grid{display:grid;grid-template-columns:7fr 5fr;gap:72px;align-items:end;position:relative}
+  @media (max-width:960px){.hero-grid{grid-template-columns:1fr;gap:48px}}
+  h1.display{font-size:clamp(48px,7.5vw,108px);font-weight:400;line-height:.98;letter-spacing:-.035em;color:var(--ink)}
+  h1.display .serif{font-weight:400;color:var(--indigo)}
+  .hero-sub{max-width:440px;color:var(--ink-2);font-size:18px;line-height:1.55;margin-top:8px}
+  .hero-sub p + p{margin-top:16px}
+  .hero-cta{display:flex;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .trust-row{display:flex;align-items:center;gap:24px;margin-top:40px;padding-top:24px;border-top:1px solid var(--mist);color:var(--graphite);font-size:13px}
+  .trust-row .seal{display:flex;align-items:center;gap:8px}
+  .trust-row .dot{width:6px;height:6px;border-radius:50%;background:var(--indigo)}
+
+  /* Live agent widget */
+  .agent-card{background:#fff;border:1px solid var(--mist);border-radius:14px;box-shadow:0 20px 60px -30px rgba(20,30,55,.25),0 1px 0 rgba(255,255,255,.8) inset;padding:0;overflow:hidden;font-family:'Inter',sans-serif}
+  .agent-card .bar{height:38px;display:flex;align-items:center;gap:10px;padding:0 14px;background:var(--paper-2);border-bottom:1px solid var(--mist)}
+  .agent-card .bar .lights{display:flex;gap:6px}
+  .agent-card .bar .lights i{width:10px;height:10px;border-radius:50%;background:var(--mist-2);display:block}
+  .agent-card .url{font-size:12px;color:var(--graphite);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;flex:1;text-align:center}
+  .agent-body{padding:20px 22px;min-height:320px}
+  .channel-tabs{display:flex;gap:4px;margin-bottom:18px;background:var(--paper-2);padding:4px;border-radius:10px}
+  .channel-tabs button{flex:1;border:0;background:transparent;padding:8px 10px;font-size:12px;border-radius:7px;color:var(--graphite);cursor:pointer;font-weight:500;font-family:inherit;transition:all .2s}
+  .channel-tabs button[aria-selected="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+  .agent-step{display:flex;gap:12px;padding:10px 0;font-size:13px;opacity:0;transform:translateY(6px);transition:opacity .5s ease-out, transform .5s ease-out}
+  .agent-step.shown{opacity:1;transform:translateY(0)}
+  .agent-step .ico{flex:0 0 22px;height:22px;border-radius:6px;background:var(--indigo-tint);color:var(--indigo);display:grid;place-items:center;font-size:11px;font-weight:600}
+  .agent-step.done .ico{background:var(--indigo);color:#fff}
+  .agent-step.done .ico::after{content:"✓"}
+  .agent-step.done .ico > span{display:none}
+  .agent-step .txt{color:var(--ink-2)}
+  .agent-step .txt em{font-style:normal;color:var(--ink);font-weight:500}
+  .agent-foot{margin-top:14px;padding-top:14px;border-top:1px solid var(--mist);display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--graphite)}
+  .agent-foot .running{display:inline-flex;align-items:center;gap:6px;color:var(--indigo);font-weight:500}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--indigo);animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.75)}}
+
+  /* TRINITY — web / fax / phone */
+  section.trinity{padding:80px 0}
+  .trinity-head{max-width:720px;margin-bottom:56px}
+  .trinity-head h2{font-size:clamp(32px,4vw,52px);letter-spacing:-.025em;line-height:1.05;font-weight:400}
+  .trinity-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--mist);border:1px solid var(--mist);border-radius:16px;overflow:hidden}
+  @media (max-width:820px){.trinity-grid{grid-template-columns:1fr}}
+  .trinity-cell{background:var(--paper);padding:36px 32px;min-height:280px;display:flex;flex-direction:column;gap:18px;position:relative;transition:background .3s}
+  .trinity-cell:hover{background:#fff}
+  .trinity-cell .num{font-family:'Instrument Serif',serif;font-style:italic;font-size:28px;color:var(--indigo)}
+  .trinity-cell h3{font-size:22px;font-weight:500;letter-spacing:-.02em}
+  .trinity-cell p{color:var(--graphite);font-size:15px;max-width:280px}
+  .trinity-cell svg.glyph{width:100%;height:110px;margin-top:auto}
+  .glyph path,.glyph rect,.glyph circle,.glyph line{stroke:var(--indigo);fill:none;stroke-width:1.25;stroke-linecap:round}
+
+  /* WORKFLOW TABS */
+  section.workflows{padding:96px 0;background:var(--paper-2)}
+  .work-head{display:grid;grid-template-columns:6fr 6fr;gap:48px;margin-bottom:56px;align-items:end}
+  @media (max-width:820px){.work-head{grid-template-columns:1fr}}
+  .work-head h2{font-size:clamp(32px,4vw,52px);line-height:1.05;letter-spacing:-.025em;font-weight:400}
+  .work-head p{color:var(--graphite);font-size:17px;max-width:480px}
+  .wf-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+  .wf-tabs button{border:1px solid var(--mist-2);background:var(--paper);padding:10px 16px;border-radius:999px;font-size:13px;color:var(--ink-2);cursor:pointer;font-family:inherit;transition:all .2s}
+  .wf-tabs button[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+  .wf-panel{display:grid;grid-template-columns:5fr 7fr;gap:56px;align-items:start;min-height:380px}
+  @media (max-width:820px){.wf-panel{grid-template-columns:1fr}}
+  .wf-panel .left .eyebrow{margin-bottom:12px}
+  .wf-panel h3{font-size:36px;line-height:1.05;letter-spacing:-.02em;font-weight:400;margin-bottom:16px}
+  .wf-panel p.lede{color:var(--graphite);margin-bottom:24px}
+  .wf-panel .right{background:#fff;border:1px solid var(--mist);border-radius:12px;overflow:hidden;min-height:380px;box-shadow:0 20px 40px -30px rgba(20,30,55,.15)}
+  .wf-mock{padding:24px;font-size:13px;color:var(--ink-2)}
+  .wf-mock .row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px dashed var(--mist)}
+  .wf-mock .row:last-child{border-bottom:0}
+  .wf-mock .row b{font-weight:500;color:var(--ink)}
+  .wf-mock .k{color:var(--graphite)}
+  .wf-mock .chip{display:inline-block;padding:2px 8px;border-radius:999px;background:var(--indigo-tint);color:var(--indigo);font-size:11px;font-weight:500}
+  .wf-mock .chip.ok{background:#E3EAE3;color:#2F5D3A}
+  .wf-mock .chip.warn{background:#F3EADA;color:#7A5512}
+
+  /* TESTIMONIAL */
+  section.quote{padding:120px 0;background:var(--ink);color:var(--paper)}
+  .quote .inner{display:grid;grid-template-columns:3fr 9fr;gap:48px;align-items:start}
+  @media (max-width:820px){.quote .inner{grid-template-columns:1fr;gap:24px}}
+  .quote .avatars{display:flex}
+  .quote .avatars img{width:44px;height:44px;border-radius:50%;border:2px solid var(--ink);margin-left:-12px;object-fit:cover;background:var(--graphite)}
+  .quote .avatars img:first-child{margin-left:0}
+  .quote h2{font-size:clamp(26px,2.6vw,34px);font-weight:400;line-height:1.35;letter-spacing:-.01em;max-width:880px}
+  .quote h2 .serif{color:#C8D2EA}
+  .quote .signoff{display:flex;gap:16px;align-items:center;margin-top:36px;padding-top:24px;border-top:1px solid #2A3242;color:#A9B0BF;font-size:13px}
+  .quote .signoff img{width:40px;height:40px;border-radius:8px;background:#fff;object-fit:contain;padding:4px}
+
+  /* INTEGRATIONS */
+  section.integrations{padding:96px 0}
+  .int-head{max-width:720px;margin-bottom:48px}
+  .int-head h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.02em;line-height:1.1;font-weight:400}
+  .int-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--mist);border:1px solid var(--mist);border-radius:12px;overflow:hidden}
+  @media (max-width:820px){.int-grid{grid-template-columns:repeat(3,1fr)}}
+  .int-cell{background:var(--paper);aspect-ratio:1/.6;display:grid;place-items:center;padding:16px;font-size:12px;color:var(--graphite);font-weight:500;letter-spacing:.02em;transition:background .2s}
+  .int-cell:hover{background:#fff;color:var(--ink)}
+
+  /* ONBOARDING STEPS */
+  section.onboard{padding:96px 0;background:var(--paper-2)}
+  .onboard-head h2{font-size:clamp(32px,4vw,54px);line-height:1.04;letter-spacing:-.025em;max-width:780px;font-weight:400;margin-bottom:8px}
+  .onboard-head h2 .serif{color:var(--indigo)}
+  .onboard-head p{color:var(--graphite);max-width:540px;margin-bottom:56px}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;counter-reset:step}
+  @media (max-width:820px){.steps{grid-template-columns:1fr 1fr}}
+  @media (max-width:520px){.steps{grid-template-columns:1fr}}
+  .step{position:relative;padding-top:48px;border-top:1px solid var(--ink)}
+  .step::before{counter-increment:step;content:"0" counter(step);position:absolute;top:16px;left:0;font-size:12px;color:var(--graphite);letter-spacing:.1em}
+  .step h4{font-size:20px;letter-spacing:-.015em;margin-bottom:10px;font-weight:500}
+  .step p{color:var(--graphite);font-size:14px}
+
+  /* PRODUCT CARDS */
+  section.products{padding:96px 0}
+  .prod-intro{max-width:820px;margin-bottom:56px}
+  .prod-intro .eyebrow{margin-bottom:16px}
+  .prod-intro h2{font-size:clamp(28px,3.2vw,40px);line-height:1.15;letter-spacing:-.018em;font-weight:400;color:var(--ink-2)}
+  .prod-intro h2 em{color:var(--ink);font-style:normal;background:linear-gradient(transparent 62%, var(--indigo-tint) 62%);padding:0 2px}
+  .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+  @media (max-width:820px){.prod-grid{grid-template-columns:1fr}}
+  .prod{background:var(--paper-2);border-radius:16px;padding:32px;display:grid;grid-template-columns:1fr auto;gap:32px;align-items:end;min-height:280px;transition:background .2s}
+  .prod:hover{background:#EAE7DE}
+  .prod .eyebrow{margin-bottom:20px}
+  .prod h3{font-size:28px;letter-spacing:-.02em;margin-bottom:10px;font-weight:500}
+  .prod p{color:var(--graphite);max-width:320px;font-size:15px;margin-bottom:20px}
+  .prod a.arrow{display:inline-flex;align-items:center;gap:8px;color:var(--indigo);font-size:14px;font-weight:500}
+  .prod a.arrow svg{width:14px;height:14px;transition:transform .2s}
+  .prod a.arrow:hover svg{transform:translateX(4px)}
+  .prod .mini{width:180px;height:140px;border-radius:8px;background:#fff;border:1px solid var(--mist);padding:12px;font-size:10px;color:var(--graphite);box-shadow:0 12px 30px -20px rgba(20,30,55,.2)}
+  .prod .mini .cap{width:100%;height:6px;border-radius:3px;background:var(--mist)}
+  .prod .mini .cap + .cap{margin-top:8px}
+  .prod .mini .cap.acc{background:var(--indigo);width:40%}
+
+  /* STATS */
+  section.stats{padding:120px 0;background:var(--ink);color:var(--paper)}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:56px;align-items:start}
+  @media (max-width:820px){.stats-grid{grid-template-columns:1fr;gap:48px}}
+  .stat .num{font-size:clamp(72px,10vw,140px);line-height:.92;letter-spacing:-.04em;font-weight:300;color:#fff}
+  .stat .num .serif{color:#C8D2EA;font-weight:400}
+  .stat .lbl{margin-top:16px;color:#A9B0BF;font-size:15px;max-width:260px;padding-top:16px;border-top:1px solid #2A3242}
+
+  /* MISSION */
+  section.mission{padding:120px 0}
+  .mission .body{max-width:860px;margin:0 auto;text-align:left}
+  .mission .eyebrow{margin-bottom:20px}
+  .mission h2{font-size:clamp(28px,3vw,38px);line-height:1.25;letter-spacing:-.015em;font-weight:400;color:var(--ink-2);text-wrap:pretty}
+  .mission h2 em{font-style:normal;color:var(--ink);font-family:'Instrument Serif',serif;font-weight:400}
+  .mission h2 em.i{font-style:italic}
+
+  /* CONTACT */
+  section.contact{padding:96px 0;background:var(--paper-2)}
+  .contact h2{font-size:clamp(28px,3.4vw,42px);letter-spacing:-.02em;margin-bottom:48px;font-weight:400}
+  .contact h2 .serif{color:var(--indigo)}
+  .contact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--mist);border:1px solid var(--mist);border-radius:16px;overflow:hidden}
+  @media (max-width:820px){.contact-grid{grid-template-columns:1fr}}
+  .c-col{background:var(--paper);padding:32px;display:flex;flex-direction:column;gap:14px}
+  .c-col h3{font-size:20px;font-weight:500;letter-spacing:-.015em}
+  .c-col p{color:var(--graphite);font-size:14px}
+  .c-col .btn{align-self:flex-start;margin-top:auto}
+  .c-form input,.c-form select,.c-form textarea{width:100%;background:transparent;border:0;border-bottom:1px solid var(--mist-2);padding:10px 0;font-family:inherit;font-size:14px;color:var(--ink);outline:none;transition:border-color .2s}
+  .c-form input:focus,.c-form textarea:focus,.c-form select:focus{border-color:var(--indigo)}
+  .c-form textarea{resize:vertical;min-height:64px}
+  .c-form label{font-size:11px;color:var(--graphite);text-transform:uppercase;letter-spacing:.1em}
+  .c-form .field{display:flex;flex-direction:column;gap:2px}
+
+  /* FOOTER */
+  footer{background:var(--ink);color:var(--paper);padding:72px 0 40px}
+  .foot-grid{display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:48px;align-items:start}
+  @media (max-width:820px){.foot-grid{grid-template-columns:1fr 1fr}}
+  footer h5{font-size:11px;color:#A9B0BF;text-transform:uppercase;letter-spacing:.12em;margin-bottom:20px;font-weight:500}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  footer ul a{color:#D9DBE1;font-size:14px}
+  footer ul a:hover{color:#fff}
+  .foot-brand .brand{color:#fff;font-size:20px;margin-bottom:14px}
+  .foot-brand .brand .mark{background:var(--indigo)}
+  .foot-brand p.tag{color:#A9B0BF;font-size:14px;max-width:320px;margin-bottom:24px}
+  .foot-brand .seals{display:flex;gap:10px;margin-top:24px}
+  .foot-brand .seals img{height:48px;width:auto;background:#fff;border-radius:8px;padding:6px 8px}
+  .foot-bottom{margin-top:64px;padding-top:24px;border-top:1px solid #2A3242;display:flex;justify-content:space-between;color:#A9B0BF;font-size:12px;font-family:'Instrument Serif',serif;font-style:italic}
+  .foot-bottom .poem{color:#C8D2EA}
+</style>
+</head>
+<body>
+
+<nav class="top" id="topnav">
+  <div class="container inner">
+    <a class="brand" href="#">
+      <span class="mark">g</span>
+      <span>GenHealth</span>
+    </a>
+    <div class="nav-links">
+      <a href="#trinity">Platform</a>
+      <a href="#workflows">Workflows</a>
+      <a href="#products">Products</a>
+      <a href="#company">Company</a>
+    </div>
+    <a class="btn btn-primary" href="#contact">Get a demo
+      <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m0 0L9 4m4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="bloom"></div>
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow" style="margin-bottom:24px">Generative healthcare AI · Est. 2023</div>
+      <h1 class="display">
+        Quiet infrastructure<br/>
+        for the work <span class="serif">behind</span><br/>
+        the care.
+      </h1>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#contact">Get a demo</a>
+        <a class="btn btn-ghost" href="#contact">Try GenHealth free</a>
+      </div>
+      <div class="trust-row">
+        <div class="seal"><span class="dot"></span>HIPAA & SOC 2 Type II</div>
+        <div class="seal">Deployed across 12+ workflows</div>
+        <div class="seal" style="margin-left:auto">Deployed across DME, providers, health plans</div>
+      </div>
+    </div>
+
+    <div>
+      <p class="hero-sub">
+        Intake. Eligibility. Prior auth. Appeals.<br/>
+        The administrative weight of healthcare, carried by AI employees that work across web, fax, and phone — with the context of your policies, portals, and patients.
+      </p>
+      <div style="margin-top:32px" id="agent-mount">
+        <!-- agent widget -->
+        <div class="agent-card">
+          <div class="bar">
+            <div class="lights"><i></i><i></i><i></i></div>
+            <div class="url" id="agent-url">priorauth.payer.com/submit</div>
+            <div style="width:40px"></div>
+          </div>
+          <div class="agent-body">
+            <div class="channel-tabs" role="tablist">
+              <button role="tab" aria-selected="true" data-ch="web">Web</button>
+              <button role="tab" data-ch="fax">Fax</button>
+              <button role="tab" data-ch="phone">Phone</button>
+            </div>
+            <div id="agent-steps"></div>
+            <div class="agent-foot">
+              <span class="running"><span class="pulse"></span> GenHealth · running</span>
+              <span id="agent-elapsed">00:00</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRINITY -->
+<section class="trinity" id="trinity">
+  <div class="container">
+    <div class="trinity-head">
+      <div class="eyebrow" style="margin-bottom:20px">The surface area of health ops</div>
+      <h2>One agent. Every channel a human uses.</h2>
+    </div>
+    <div class="trinity-grid">
+      <div class="trinity-cell">
+        <span class="num">i.</span>
+        <h3>Web</h3>
+        <p>Automates tasks in websites, portals, EMRs, and billing systems the way a teammate would — click by click.</p>
+        <svg class="glyph" viewBox="0 0 200 110">
+          <rect x="20" y="18" width="160" height="74" rx="4"/>
+          <line x1="20" y1="34" x2="180" y2="34"/>
+          <circle cx="30" cy="26" r="2"/><circle cx="38" cy="26" r="2"/><circle cx="46" cy="26" r="2"/>
+          <line x1="36" y1="48" x2="120" y2="48"/>
+          <line x1="36" y1="58" x2="100" y2="58"/>
+          <rect x="36" y="70" width="40" height="12" rx="2"/>
+          <path d="M150 72 l6 6 l12 -14" />
+        </svg>
+      </div>
+      <div class="trinity-cell">
+        <span class="num">ii.</span>
+        <h3>Fax</h3>
+        <p>Receives, reads, and files faxed documents — OCR, classification, field extraction, handed to the right workflow.</p>
+        <svg class="glyph" viewBox="0 0 200 110">
+          <rect x="34" y="42" width="132" height="48" rx="3"/>
+          <rect x="56" y="18" width="88" height="32"/>
+          <line x1="62" y1="26" x2="132" y2="26"/>
+          <line x1="62" y1="32" x2="120" y2="32"/>
+          <line x1="62" y1="38" x2="108" y2="38"/>
+          <rect x="50" y="60" width="100" height="20" rx="2"/>
+          <circle cx="60" cy="70" r="3"/><circle cx="70" cy="70" r="3"/>
+          <line x1="92" y1="66" x2="140" y2="66"/>
+          <line x1="92" y1="74" x2="130" y2="74"/>
+        </svg>
+      </div>
+      <div class="trinity-cell">
+        <span class="num">iii.</span>
+        <h3>Phone</h3>
+        <p>Calls patients and providers to collect information only a voice can — verification, consent, the missing detail.</p>
+        <svg class="glyph" viewBox="0 0 200 110">
+          <path d="M70 30 L70 80 Q70 90 80 90 L120 90 Q130 90 130 80 L130 30 Q130 20 120 20 L80 20 Q70 20 70 30 Z"/>
+          <circle cx="100" cy="78" r="3"/>
+          <line x1="40" y1="50" x2="58" y2="50"/>
+          <line x1="40" y1="58" x2="54" y2="58"/>
+          <line x1="142" y1="50" x2="160" y2="50"/>
+          <line x1="146" y1="58" x2="160" y2="58"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WORKFLOWS -->
+<section class="workflows" id="workflows">
+  <div class="container">
+    <div class="work-head">
+      <h2>Integrated workflows,<br/>from fax to final keystroke.</h2>
+      <p>GenHealth's AIs move across multiple applications to transfer information, apply complex medical-necessity logic, and decide — using context from provider actions, plan policies, and patient charts.</p>
+    </div>
+    <div class="wf-tabs" role="tablist" id="wfTabs">
+      <button role="tab" aria-selected="true" data-wf="intake">Intake</button>
+      <button role="tab" data-wf="eligibility">Eligibility</button>
+      <button role="tab" data-wf="pa">Prior Auth</button>
+      <button role="tab" data-wf="resupplies">Resupplies</button>
+      <button role="tab" data-wf="appeals">Appeals</button>
+    </div>
+    <div class="wf-panel" id="wfPanel"></div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="quote">
+  <div class="container inner">
+    <div>
+      <div class="avatars">
+        <img src="assets/jack.png" alt=""><img src="assets/sanjay.png" alt=""><img src="assets/chris.png" alt=""><img src="assets/patti.png" alt="">
+      </div>
+      <div class="eyebrow" style="color:#A9B0BF;margin-top:20px">Piedmont Medical Solutions</div>
+    </div>
+    <div>
+      <h2>
+        <span class="serif">“</span>We transitioned to GenHealth for full-service intake and billing and couldn't be happier. By leveraging AI, they've automated more work with better results than our previous outsourced team — which was five times their size. As a true partner, they catch problems sooner and offer a level of transparency we never had before.<span class="serif">”</span>
+      </h2>
+      <div class="signoff">
+        <img src="assets/piedmont.jpg" alt="">
+        <div>
+          <div style="color:#fff">Jack Bachman</div>
+          <div>CEO, Piedmont Medical Solutions · DME Supplier</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section class="integrations">
+  <div class="container">
+    <div class="int-head">
+      <div class="eyebrow" style="margin-bottom:20px">Pre-built agents</div>
+      <h2>GenHealth speaks the systems you already use.</h2>
+    </div>
+    <div class="int-grid" id="intGrid"></div>
+  </div>
+</section>
+
+<!-- ONBOARDING -->
+<section class="onboard">
+  <div class="container">
+    <div class="onboard-head">
+      <h2>Starting GenHealth is like<br/><span class="serif">bringing on</span> a new team member.</h2>
+      <p>Four steps, no rip-and-replace, no new systems for your team to learn.</p>
+    </div>
+    <div class="steps">
+      <div class="step"><h4>Share workflows</h4><p>Record your screen. Step through the flows you want to automate. Narrate the context.</p></div>
+      <div class="step"><h4>Grant access</h4><p>Create user accounts for the apps and systems; share credentials with GenHealth's agent.</p></div>
+      <div class="step"><h4>Let GenHealth learn</h4><p>The browser agent builds deterministic flows and tests executions in batches for your approval.</p></div>
+      <div class="step"><h4>Set it loose</h4><p>Flows operate autonomously in the background — every execution tracked inside GenHealth's app.</p></div>
+    </div>
+    <div style="margin-top:48px"><a class="btn btn-ghost" href="#contact">Schedule workflow review →</a></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="container">
+    <div class="prod-intro">
+      <div class="eyebrow">The catalogue</div>
+      <h2>Purpose-built agents for the <em>specific</em> rooms of your operation.</h2>
+    </div>
+    <div class="prod-grid">
+      <div class="prod">
+        <div>
+          <div class="eyebrow">Processing</div>
+          <h3>Intake & Data Entry</h3>
+          <p>Connect to fax or upload documents. GenHealth extracts every field and enters the data into your EMR and billing systems.</p>
+          <a class="arrow" href="#">Learn more <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="mini">
+          <div style="font-weight:500;color:var(--ink);margin-bottom:10px;font-size:11px">Document Upload</div>
+          <div class="cap"></div><div class="cap"></div><div class="cap acc"></div>
+          <div style="margin-top:12px;color:var(--indigo);font-size:10px">✓ 46 fields extracted</div>
+        </div>
+      </div>
+      <div class="prod">
+        <div>
+          <div class="eyebrow">Utilization management</div>
+          <h3>Prior Authorization</h3>
+          <p>Submit or adjudicate prior auths with AI that sees the full picture between plan policies and patient histories.</p>
+          <a class="arrow" href="#">Learn more <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="mini">
+          <div style="font-weight:500;color:var(--ink);margin-bottom:10px;font-size:11px">EMR · Patient Chart</div>
+          <div class="cap acc" style="width:72%"></div><div class="cap"></div><div class="cap" style="width:82%"></div>
+          <div style="margin-top:12px;color:var(--indigo);font-size:10px">Policy match: 94%</div>
+        </div>
+      </div>
+      <div class="prod">
+        <div>
+          <div class="eyebrow">Verification</div>
+          <h3>Eligibility</h3>
+          <p>Run eligibility checks without running eligibility checks. GenHealth logs in, verifies, and closes the loop in your apps.</p>
+          <a class="arrow" href="#">Learn more <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="mini">
+          <div style="font-weight:500;color:var(--ink);margin-bottom:10px;font-size:11px">Health Plan Portal</div>
+          <div class="cap"></div><div class="cap"></div><div class="cap acc" style="width:55%"></div>
+          <div style="margin-top:12px;color:var(--indigo);font-size:10px">Verified · In-network</div>
+        </div>
+      </div>
+      <div class="prod">
+        <div>
+          <div class="eyebrow">Orders</div>
+          <h3>DME Resupplies</h3>
+          <p>Everything from patient outreach and data entry to provider fax fulfillment — automated end to end.</p>
+          <a class="arrow" href="#">Learn more <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10m-4-4l4 4l-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></a>
+        </div>
+        <div class="mini">
+          <div style="font-weight:500;color:var(--ink);margin-bottom:10px;font-size:11px">Resupply Schedule</div>
+          <div class="cap"></div><div class="cap acc" style="width:45%"></div><div class="cap"></div>
+          <div style="margin-top:12px;color:var(--indigo);font-size:10px">Next cycle: Feb 14</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container stats-grid">
+    <div class="stat"><div class="num" data-counter="95" data-suffix="%">0%</div><div class="lbl">AI accuracy adjudicating prior auth cases.</div></div>
+    <div class="stat"><div class="num" data-counter="4" data-suffix="×">0×</div><div class="lbl">More efficient administrative productivity, measured across deployed customers.</div></div>
+    <div class="stat"><div class="num" data-counter="10" data-suffix="×">0×</div><div class="lbl">ROI of cost savings relative to OpEx, within the first year.</div></div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission" id="company">
+  <div class="container body">
+    <div class="eyebrow">Generative Healthcare AI</div>
+    <h2>
+      GenHealth automates administrative burden for providers, health plans, and DME suppliers. We deploy <em>AI employees</em> that navigate the internal and external applications, portals, fax and phone systems your teams use every day. Our agents execute intake, eligibility, prior authorization, claims, denials, and posting the way your operators do — inside the tools they already use, with every action logged and every decision cited.
+    </h2>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <h2>Choose how you'd like to <span class="serif">learn more.</span></h2>
+    <div class="contact-grid">
+      <div class="c-col">
+        <div class="eyebrow">Email</div>
+        <h3>Send a message</h3>
+        <p>Ask a question, share a workflow, or request a security packet.</p>
+        <form class="c-form" style="display:flex;flex-direction:column;gap:14px;margin-top:8px" onsubmit="event.preventDefault()">
+          <div class="field"><label>Email</label><input type="email" placeholder="you@clinic.com"></div>
+          <div class="field"><label>Organization type</label><select><option>Select…</option><option>Provider</option><option>DME</option><option>Health plan</option><option>Patient</option><option>Other</option></select></div>
+          <div class="field"><label>Message</label><textarea placeholder="Tell us about the workflow you'd like to automate."></textarea></div>
+          <button class="btn btn-primary" type="submit" style="align-self:flex-start;margin-top:8px">Send</button>
+        </form>
+      </div>
+      <div class="c-col">
+        <div class="eyebrow">Meet</div>
+        <h3>Book a call</h3>
+        <p>30 minutes. We'll walk a live agent through one of your workflows and leave you with a deployment plan.</p>
+        <div style="margin-top:14px;border:1px solid var(--mist);border-radius:10px;padding:18px;background:var(--paper-2)">
+          <div style="font-size:12px;color:var(--graphite);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px">April · next available</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:13px">
+            <div style="padding:8px;text-align:center;border-radius:6px;background:var(--paper)">Tue 22</div>
+            <div style="padding:8px;text-align:center;border-radius:6px;background:var(--indigo);color:#fff">Wed 23</div>
+            <div style="padding:8px;text-align:center;border-radius:6px;background:var(--paper)">Thu 24</div>
+            <div style="padding:8px;text-align:center;border-radius:6px;background:var(--paper)">Fri 25</div>
+          </div>
+        </div>
+        <a class="btn btn-ghost" href="#" style="margin-top:auto">Open full calendar →</a>
+      </div>
+      <div class="c-col">
+        <div class="eyebrow">Sign up free</div>
+        <h3>See the product</h3>
+        <p>Create a free account. Automate intake, eligibility, and prior auth with agents that work inside your EMR and billing systems.</p>
+        <a class="btn btn-primary" href="https://umpa.genhealth.ai" style="margin-top:auto">Create free account</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#"><span class="mark">g</span><span>GenHealth.ai</span></a>
+        <p class="tag">Generative healthcare AI — the quiet infrastructure for health operations.</p>
+        <div class="eyebrow" style="color:#A9B0BF">Enterprise Security</div>
+        <ul style="margin-top:10px"><li><a href="https://trust.genhealth.ai">Trust Center</a></li><li><a href="https://status.genhealth.ai">Status Dashboard</a></li></ul>
+        <div class="seals">
+          <img src="assets/socII.png" alt="SOC II"><img src="assets/hipaa.png" alt="HIPAA">
+        </div>
+      </div>
+      <div>
+        <h5>Workflows</h5>
+        <ul>
+          <li><a href="#">Automate Workflows</a></li>
+          <li><a href="#">Intake</a></li>
+          <li><a href="#">Prior Authorization</a></li>
+          <li><a href="#">Eligibility</a></li>
+          <li><a href="#">Resupplies</a></li>
+          <li><a href="#">Medical Necessity</a></li>
+          <li><a href="#">Referrals</a></li>
+          <li><a href="#">Specialties</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support & Policies</h5>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="mailto:support@genhealth.ai">Tech Support</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Security Policy</a></li>
+          <li><a href="#">Terms of Service</a></li>
+          <li><a href="#">Business Associate Agreement</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Jobs</a></li>
+          <li><a href="#">Medical Codes</a></li>
+          <li><a href="#">Medical Policies</a></li>
+          <li><a href="#">ROI Calculator</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span class="poem">The paperwork, quieted.</span>
+      <span>© 2026 GenHealth.ai</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+// NAV scroll state
+const nav=document.getElementById('topnav');
+addEventListener('scroll',()=>{nav.classList.toggle('scrolled',scrollY>8)});
+
+// -------- Agent widget --------
+const scripts = {
+  web: [
+    {icon:'→', txt:'Opening <em>priorauth.payer.com</em>'},
+    {icon:'⏎', txt:'Logging in with <em>saved credentials</em>'},
+    {icon:'↳', txt:'Reading payer policy for CPAP supplies'},
+    {icon:'☑', txt:'Cross-referencing patient chart'},
+    {icon:'↑', txt:'Submitting PA for <em>Member #204319</em>'},
+    {icon:'✓', txt:'Approval received — writing back to EMR'},
+  ],
+  fax: [
+    {icon:'≡', txt:'New fax — 4 pages — <em>NJM DME</em>'},
+    {icon:'↳', txt:'OCR + document classification'},
+    {icon:'☑', txt:'Extracting 46 fields from CMN'},
+    {icon:'→', txt:'Matching to patient <em>Doe, Jane</em>'},
+    {icon:'↑', txt:'Filing into billing queue'},
+    {icon:'✓', txt:'Complete — intake task closed'},
+  ],
+  phone: [
+    {icon:'☎', txt:'Calling <em>Cigna · member services</em>'},
+    {icon:'↳', txt:'Navigating IVR · "billing, press 2"'},
+    {icon:'☑', txt:'Verifying eligibility for patient'},
+    {icon:'→', txt:'Reading deductible + OOP max'},
+    {icon:'↑', txt:'Writing coverage details to chart'},
+    {icon:'✓', txt:'Call ended — 3m 42s'},
+  ]
+};
+const urls = {web:'priorauth.payer.com/submit', fax:'fax-queue.genhealth.ai', phone:'voice.genhealth.ai/call'};
+let agentTimer=null, elapsedTimer=null, curCh='web', startedAt=Date.now();
+
+function renderChannel(ch){
+  curCh=ch; startedAt=Date.now();
+  document.querySelectorAll('.channel-tabs button').forEach(b=>b.setAttribute('aria-selected', b.dataset.ch===ch));
+  document.getElementById('agent-url').textContent=urls[ch];
+  const host=document.getElementById('agent-steps');
+  host.innerHTML='';
+  scripts[ch].forEach((s,i)=>{
+    const el=document.createElement('div');
+    el.className='agent-step';
+    el.innerHTML=`<div class="ico"><span>${s.icon}</span></div><div class="txt">${s.txt}</div>`;
+    host.appendChild(el);
+  });
+  const steps=[...host.children];
+  if(agentTimer) clearTimeout(agentTimer);
+  const runStep=(idx)=>{
+    if(idx>=steps.length){ agentTimer=setTimeout(()=>renderChannel(ch), 1800); return; }
+    steps[idx].classList.add('shown');
+    if(idx>0) steps[idx-1].classList.add('done');
+    agentTimer=setTimeout(()=>runStep(idx+1), 900);
+  };
+  runStep(0);
+}
+document.querySelectorAll('.channel-tabs button').forEach(b=>b.addEventListener('click',()=>renderChannel(b.dataset.ch)));
+renderChannel('web');
+if(elapsedTimer) clearInterval(elapsedTimer);
+elapsedTimer=setInterval(()=>{
+  const s=Math.floor((Date.now()-startedAt)/1000);
+  const m=String(Math.floor(s/60)).padStart(2,'0'), ss=String(s%60).padStart(2,'0');
+  const el=document.getElementById('agent-elapsed'); if(el) el.textContent=`${m}:${ss}`;
+},1000);
+
+// -------- Workflow tabs --------
+const wfData = {
+  intake: {
+    eyebrow:'Processing',
+    title:'Intake & data entry, from fax to final keystroke.',
+    lede:'Connect to fax or upload documents. GenHealth extracts every field and enters the data into your EMR and billing systems.',
+    mock: [
+      ['Document', 'CMN — CPAP · 4 pp'],
+      ['Patient', 'Doe, Jane · DOB 03/14/1962'],
+      ['Fields extracted', '<span class="chip ok">46 / 46</span>'],
+      ['Destination', 'Brightree · Intake Queue'],
+      ['Status', '<span class="chip ok">Closed</span>'],
+    ]
+  },
+  eligibility: {
+    eyebrow:'Verification',
+    title:'Eligibility, verified while you sleep.',
+    lede:'GenHealth logs into the payer portal, verifies coverage, and writes the result back into your internal system.',
+    mock:[
+      ['Payer', 'UnitedHealthcare'],
+      ['Member ID', '****-82019'],
+      ['Plan', 'Choice Plus PPO'],
+      ['Deductible', '$1,200 / $2,400'],
+      ['Coverage', '<span class="chip ok">In-network · Active</span>'],
+    ]
+  },
+  pa: {
+    eyebrow:'Utilization management',
+    title:'Prior authorization, adjudicated with the full picture.',
+    lede:'Submit or adjudicate PAs with AI that reads plan policy against patient chart — and explains its reasoning.',
+    mock:[
+      ['Service', 'E0601 · CPAP Device'],
+      ['Policy', 'Aetna 0004 · v2024.3'],
+      ['Chart signals', 'AHI 14.2 · Dx G47.33'],
+      ['Medical necessity', '<span class="chip ok">Met</span>'],
+      ['Decision', '<span class="chip ok">Approved</span>'],
+    ]
+  },
+  resupplies: {
+    eyebrow:'Orders',
+    title:'DME resupplies, scheduled and shipped without a single call dropped.',
+    lede:'Patient outreach, data entry, provider fax fulfillment — every step handled end to end.',
+    mock:[
+      ['Patient', 'Ellis, Marcus'],
+      ['Device', 'CPAP · Resupply cycle'],
+      ['Last fulfillment', 'Jan 14, 2026'],
+      ['Next cycle', '<span class="chip">Feb 14, 2026</span>'],
+      ['Outreach', '<span class="chip ok">Confirmed via SMS</span>'],
+    ]
+  },
+  appeals: {
+    eyebrow:'Denials',
+    title:'Appeals, written with the policy in hand.',
+    lede:'When a claim is denied, GenHealth drafts the appeal — citing policy language, chart evidence, and prior decisions.',
+    mock:[
+      ['Claim', '#CMS-77431'],
+      ['Denial', 'CO-50 · Not medically necessary'],
+      ['Appeal letter', '<span class="chip">Draft · 1 page</span>'],
+      ['Evidence', '3 chart notes · 1 policy citation'],
+      ['Confidence', '<span class="chip ok">High</span>'],
+    ]
+  }
+};
+function renderWF(key){
+  document.querySelectorAll('#wfTabs button').forEach(b=>b.setAttribute('aria-selected', b.dataset.wf===key));
+  const d=wfData[key];
+  const rows=d.mock.map(([k,v])=>`<div class="row"><span class="k">${k}</span><b>${v}</b></div>`).join('');
+  document.getElementById('wfPanel').innerHTML=`
+    <div class="left">
+      <div class="eyebrow">${d.eyebrow}</div>
+      <h3>${d.title}</h3>
+      <p class="lede">${d.lede}</p>
+      <a class="btn btn-ghost" href="#contact">Get started →</a>
+    </div>
+    <div class="right">
+      <div style="padding:14px 20px;border-bottom:1px solid var(--mist);font-size:12px;color:var(--graphite);display:flex;gap:10px;align-items:center">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--indigo)"></span> Live run · GenHealth agent
+      </div>
+      <div class="wf-mock">${rows}</div>
+    </div>`;
+}
+document.querySelectorAll('#wfTabs button').forEach(b=>b.addEventListener('click',()=>renderWF(b.dataset.wf)));
+renderWF('intake');
+
+// -------- Integrations --------
+const integrations = [
+  'Brightree','UnitedHealthcare','Cigna','Aetna','Niko Health','Epic Systems',
+  'eClinicalWorks','athenahealth','eMedNY','myCGS DME MAC','Noridian','CMS',
+  'EviCore','Gmail','Outlook','RingCentral','Faxage','Kareo'
+];
+document.getElementById('intGrid').innerHTML = integrations.map(n=>`<div class="int-cell">${n}</div>`).join('');
+
+// -------- Stat counters on scroll --------
+const counters = document.querySelectorAll('[data-counter]');
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    const el=e.target, target=parseInt(el.dataset.counter,10), suf=el.dataset.suffix||'';
+    const start=performance.now(), dur=1400;
+    function tick(t){
+      const p=Math.min(1,(t-start)/dur), eased=1-Math.pow(1-p,3);
+      el.textContent=Math.round(eased*target)+suf;
+      if(p<1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+    io.unobserve(el);
+  });
+},{threshold:.4});
+counters.forEach(c=>io.observe(c));
+
+// -------- Stagger reveal --------
+const reveal = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='translateY(0)'; reveal.unobserve(e.target); }
+  });
+},{threshold:.12});
+document.querySelectorAll('.trinity-cell, .step, .prod, .stat').forEach((el,i)=>{
+  el.style.opacity=0; el.style.transform='translateY(16px)'; el.style.transition=`opacity .7s ${i*40}ms cubic-bezier(.2,.8,.2,1), transform .7s ${i*40}ms cubic-bezier(.2,.8,.2,1)`;
+  reveal.observe(el);
+});
+</script>
+</body>
+</html>

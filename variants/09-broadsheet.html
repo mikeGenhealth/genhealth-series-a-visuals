@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>The GenHealth Record — Healthcare ops, automated.</title>
+<link href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F6F1E6;--paper-2:#EDE6D2;--ink:#15130E;--muted:#5C574B;--rule:#1A1812;
+    --accent:#A52A22;--seal:#1F3D2E;--soft:#8E8676;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:'Newsreader',serif;-webkit-font-smoothing:antialiased}
+  body{font-size:16px;line-height:1.45;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence baseFrequency='.9' numOctaves='2' seed='5'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .07 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");opacity:.55;mix-blend-mode:multiply;z-index:1}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .head-serif{font-family:'Old Standard TT',serif}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .container{max-width:1320px;margin:0 auto;padding:0 28px;position:relative;z-index:2}
+  @media (max-width:720px){.container{padding:0 18px}}
+
+  /* ============ MASTHEAD ============ */
+  .topbar{border-bottom:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .topbar .row{display:flex;justify-content:space-between;padding:6px 0;flex-wrap:wrap;gap:8px}
+  .topbar a:hover{color:var(--accent)}
+  .masthead{padding:18px 0 14px;border-bottom:3px double var(--rule);text-align:center;position:relative}
+  .masthead .pre{display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;flex-wrap:wrap;gap:6px}
+  .masthead h1.title{font-family:'Old Standard TT',serif;font-weight:700;font-size:clamp(54px,9vw,128px);letter-spacing:-.025em;line-height:.92;font-variant:small-caps;text-rendering:optimizeLegibility}
+  .masthead h1.title em{font-style:italic;font-variant:normal;color:var(--accent)}
+  .masthead .sub{margin-top:4px;font-family:'Newsreader',serif;font-style:italic;font-size:18px;color:var(--muted);font-weight:300}
+  .masthead .post{margin-top:14px;display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;border-top:1px solid var(--rule);padding-top:8px;flex-wrap:wrap;gap:6px;color:var(--muted)}
+  .masthead .post b{color:var(--ink);font-weight:500}
+
+  nav.sect{border-bottom:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  nav.sect .inner{display:flex;justify-content:center;gap:28px;padding:10px 0;flex-wrap:wrap}
+  nav.sect a{color:var(--muted)}
+  nav.sect a.active,nav.sect a:hover{color:var(--accent)}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:500;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule);background:transparent;color:var(--ink);cursor:pointer;transition:all .15s}
+  .btn:hover{background:var(--ink);color:var(--paper)}
+  .btn-primary{background:var(--ink);color:var(--paper)}
+  .btn-primary:hover{background:var(--accent);border-color:var(--accent);color:var(--paper)}
+
+  /* ============ FRONT PAGE ============ */
+  section.front{padding:32px 0 60px;border-bottom:1px solid var(--rule)}
+  .front-grid{display:grid;grid-template-columns:1fr 3fr 1fr;gap:36px}
+  @media (max-width:1100px){.front-grid{grid-template-columns:1fr 2fr;gap:28px}.col-r{grid-column:1/-1}}
+  @media (max-width:720px){.front-grid{grid-template-columns:1fr}}
+
+  .col-l, .col-r{display:flex;flex-direction:column;gap:32px}
+  .col-c{display:flex;flex-direction:column;gap:24px;border-left:1px solid var(--rule);border-right:1px solid var(--rule);padding:0 32px}
+  @media (max-width:720px){.col-c{border:0;padding:0}}
+
+  /* lead story */
+  .kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+  h1.headline{font-family:'Old Standard TT',serif;font-weight:700;font-size:clamp(42px,5.6vw,82px);line-height:.96;letter-spacing:-.02em;text-wrap:balance;margin-top:8px}
+  h1.headline em{font-style:italic;font-weight:400;color:var(--accent)}
+  .deck{margin-top:18px;font-family:'Newsreader',serif;font-size:24px;line-height:1.32;font-weight:300;color:var(--ink);font-style:italic;text-wrap:balance;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 0}
+  .byline{margin-top:12px;display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .byline b{color:var(--ink);font-weight:500}
+
+  .lead-img{margin-top:20px;border:1px solid var(--rule);position:relative;overflow:hidden;background:var(--paper-2);height:340px}
+  .lead-img .cap{padding:8px 12px;background:var(--paper-2);border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+  /* schematic illustration in lead image area */
+  .schematic{width:100%;height:100%;display:block}
+
+  .body-cols{margin-top:20px;column-count:2;column-gap:24px;column-rule:1px solid var(--rule);font-size:16.5px;line-height:1.55;font-family:'Newsreader',serif}
+  @media (max-width:720px){.body-cols{column-count:1}}
+  .body-cols p{margin-bottom:12px;text-wrap:pretty;break-inside:avoid-column}
+  .body-cols p:first-of-type::first-letter{font-family:'Old Standard TT',serif;font-weight:700;font-size:62px;float:left;line-height:.85;padding:6px 10px 0 0;color:var(--accent)}
+  .body-cols em{font-style:italic;color:var(--accent)}
+  .body-cols .pull{break-inside:avoid;margin:8px 0;padding:14px 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);font-family:'Old Standard TT',serif;font-style:italic;font-size:22px;line-height:1.3;color:var(--ink);text-align:center;text-wrap:balance}
+  .body-cols .pull span{display:block;margin-top:6px;font-family:'IBM Plex Mono',monospace;font-style:normal;font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+
+  .cta-row{margin-top:24px;padding-top:18px;border-top:1px solid var(--rule);display:flex;gap:10px;flex-wrap:wrap}
+
+  /* SIDE COL ITEMS */
+  .item{padding-bottom:20px;border-bottom:1px solid var(--rule)}
+  .item:last-child{border-bottom:0}
+  .item .kk{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+  .item h3{font-family:'Old Standard TT',serif;font-weight:700;font-size:24px;line-height:1.05;letter-spacing:-.01em;margin-bottom:8px}
+  .item h3 em{font-style:italic;color:var(--accent);font-weight:400}
+  .item p{font-size:14.5px;color:var(--ink);line-height:1.5}
+  .item p em{font-style:italic;color:var(--accent)}
+  .item .more{display:inline-block;margin-top:8px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent)}
+
+  /* QUOTE BOX top of right column */
+  .quotebox{padding:20px;border:1px solid var(--rule);background:var(--paper-2);position:relative}
+  .quotebox::before{content:"\201C";position:absolute;top:-12px;left:14px;font-family:'Old Standard TT',serif;font-size:74px;line-height:1;color:var(--accent);background:var(--paper-2);padding:0 6px}
+  .quotebox blockquote{font-family:'Newsreader',serif;font-style:italic;font-size:20px;line-height:1.35;font-weight:400;text-wrap:balance;margin-top:8px}
+  .quotebox blockquote em{color:var(--accent)}
+  .quotebox .sig{margin-top:12px;padding-top:10px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+  .quotebox .sig b{display:block;color:var(--ink);font-family:'Old Standard TT',serif;font-weight:700;text-transform:none;letter-spacing:0;font-size:14px;margin-bottom:1px}
+
+  /* WEATHER-LIKE BOX */
+  .vitals{border:1px solid var(--rule);background:var(--paper)}
+  .vitals .h{padding:8px 12px;background:var(--ink);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between}
+  .vitals .b{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .vitals .b > div{font-family:'IBM Plex Mono',monospace;font-size:11px}
+  .vitals .b .k{font-size:9.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:3px}
+  .vitals .b .v{font-family:'Old Standard TT',serif;font-size:26px;font-weight:700;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums}
+  .vitals .b .v em{font-style:italic;color:var(--accent);font-weight:400}
+  .vitals .ft{padding:8px 12px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:9.5px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+
+  /* Bulletin / live ticker */
+  .bulletin{border:1px solid var(--rule);background:var(--paper)}
+  .bulletin .h{padding:8px 12px;background:var(--accent);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;display:flex;justify-content:space-between}
+  .bulletin .h::before{content:"●";margin-right:4px;animation:blink 1.2s infinite}
+  @keyframes blink{50%{opacity:.3}}
+  .bulletin .b{padding:8px 12px;max-height:240px;overflow:hidden;position:relative}
+  .bulletin .b::after{content:"";position:absolute;inset:auto 0 0 0;height:36px;background:linear-gradient(transparent,var(--paper))}
+  .bulletin .b .ev{display:grid;grid-template-columns:42px 1fr;gap:8px;padding:5px 0;border-bottom:1px dashed var(--rule);font-family:'IBM Plex Mono',monospace;font-size:11px;line-height:1.4}
+  .bulletin .b .ev .t{color:var(--muted)}
+  .bulletin .b .ev .m{color:var(--ink)}
+  .bulletin .b .ev .m .hl{color:var(--accent)}
+
+  /* ============ INTERIOR PAGES (sections after front page) ============ */
+  .pg{padding:64px 0;border-bottom:1px solid var(--rule)}
+  .pg-hd{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:end;border-bottom:2px solid var(--rule);padding-bottom:14px;margin-bottom:32px}
+  .pg-hd .pn{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  .pg-hd h2{font-family:'Old Standard TT',serif;font-weight:700;font-size:clamp(36px,5vw,64px);line-height:.95;letter-spacing:-.02em;font-variant:small-caps;text-wrap:balance}
+  .pg-hd h2 em{font-style:italic;color:var(--accent);font-variant:normal}
+  .pg-hd .pp{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase}
+
+  /* Reports / workflows: 4-up newspaper grid */
+  .reports{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  @media (max-width:1100px){.reports{grid-template-columns:1fr 1fr}}
+  @media (max-width:600px){.reports{grid-template-columns:1fr}}
+  .report{padding:22px 22px 22px 0;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .report:nth-child(4n){border-right:0;padding-right:0}
+  .report:first-child{padding-left:0}
+  .report:nth-child(4n+1){padding-left:0}
+  .report:nth-child(n){padding-left:22px}
+  .report:nth-child(4n+1){padding-left:0}
+  @media (max-width:1100px){.report{padding:22px}.report:nth-child(2n){border-right:0}.report:first-child,.report:nth-child(4n+1){padding-left:22px}}
+  .report .kk{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+  .report h3{font-family:'Old Standard TT',serif;font-weight:700;font-size:26px;line-height:1.05;letter-spacing:-.01em;margin-bottom:10px;text-wrap:balance}
+  .report h3 em{font-style:italic;color:var(--accent);font-weight:400}
+  .report p{font-size:15px;line-height:1.5;color:var(--ink);font-family:'Newsreader',serif}
+  .report .meta{margin-top:14px;padding-top:10px;border-top:1px dashed var(--rule);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
+  .report .meta b{color:var(--ink);font-weight:500}
+
+  /* CHART of figures */
+  .chart{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule);background:var(--paper)}
+  @media (max-width:820px){.chart{grid-template-columns:1fr}}
+  .ch-c{padding:48px 32px;border-right:1px solid var(--rule);position:relative}
+  .ch-c:last-child{border-right:0}
+  @media (max-width:820px){.ch-c{border-right:0;border-bottom:1px solid var(--rule)}.ch-c:last-child{border-bottom:0}}
+  .ch-c .l{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
+  .ch-c .n{font-family:'Old Standard TT',serif;font-size:clamp(96px,13vw,180px);font-weight:700;line-height:.85;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .ch-c .n em{font-style:italic;color:var(--accent);font-weight:400}
+  .ch-c .d{margin-top:12px;font-size:16px;line-height:1.4;color:var(--ink);max-width:300px;font-family:'Newsreader',serif}
+  .ch-c .src{margin-top:14px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+
+  /* OPINION (mission) */
+  .opinion{display:grid;grid-template-columns:auto 1fr;gap:48px;padding:48px;border:2px solid var(--rule);background:var(--paper-2);position:relative}
+  @media (max-width:820px){.opinion{grid-template-columns:1fr;padding:32px;gap:24px}}
+  .opinion .label{font-family:'Old Standard TT',serif;font-weight:700;font-style:italic;font-size:64px;line-height:.85;color:var(--accent);writing-mode:vertical-rl;transform:rotate(180deg);letter-spacing:-.02em}
+  @media (max-width:820px){.opinion .label{writing-mode:horizontal-tb;transform:none;font-size:42px}}
+  .opinion .body{font-family:'Newsreader',serif}
+  .opinion .body .head{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+  .opinion .body h2{font-family:'Old Standard TT',serif;font-weight:700;font-size:clamp(28px,3.6vw,42px);line-height:1.2;letter-spacing:-.015em;text-wrap:pretty;margin-bottom:14px}
+  .opinion .body h2 em{font-style:italic;color:var(--accent);font-weight:400}
+  .opinion .body p{font-size:18px;line-height:1.45;color:var(--ink);max-width:780px;font-family:'Newsreader',serif;text-wrap:pretty}
+  .opinion .body p em{font-style:italic;color:var(--accent)}
+  .opinion .body .signoff{margin-top:18px;padding-top:14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;flex-wrap:wrap;gap:8px}
+  .opinion .body .signoff em{font-family:'Old Standard TT',serif;font-style:italic;color:var(--accent);font-size:18px;letter-spacing:0;text-transform:none}
+
+  /* TESTIMONY */
+  .test{display:grid;grid-template-columns:5fr 7fr;gap:0;border:1px solid var(--rule);background:var(--paper)}
+  @media (max-width:820px){.test{grid-template-columns:1fr}}
+  .test .from{padding:28px;border-right:1px solid var(--rule);background:var(--paper-2);display:flex;flex-direction:column;gap:18px}
+  @media (max-width:820px){.test .from{border-right:0;border-bottom:1px solid var(--rule)}}
+  .test .from img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:grayscale(.85) contrast(1.1);border:1px solid var(--rule)}
+  .test .from .meta{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:grid;grid-template-columns:auto 1fr;gap:6px 16px}
+  .test .from .meta b{color:var(--ink);font-weight:500}
+  .test .body{padding:40px;display:flex;flex-direction:column;gap:24px;justify-content:center}
+  .test .head-line{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+  .test blockquote{font-family:'Old Standard TT',serif;font-size:clamp(24px,2.8vw,34px);line-height:1.32;letter-spacing:-.01em;font-weight:400;text-wrap:balance}
+  .test blockquote em{font-style:italic;color:var(--accent)}
+  .test .sig{padding-top:18px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+  .test .sig b{display:block;color:var(--ink);font-family:'Old Standard TT',serif;font-weight:700;font-size:16px;text-transform:none;letter-spacing:0;margin-bottom:2px}
+
+  /* CLASSIFIED — onboarding */
+  .classified{border:2px solid var(--rule);padding:24px;background:var(--paper)}
+  .classified h3.cl-h{font-family:'Old Standard TT',serif;font-weight:700;font-size:36px;letter-spacing:-.01em;line-height:1;margin-bottom:6px;font-variant:small-caps}
+  .classified h3.cl-h em{font-style:italic;color:var(--accent);font-variant:normal}
+  .classified .tag{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.14em;text-transform:uppercase;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--rule)}
+  .ad-list{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  @media (max-width:720px){.ad-list{grid-template-columns:1fr 1fr}}
+  .ad{padding:14px;border:1px dashed var(--rule);font-family:'Newsreader',serif}
+  .ad .when{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+  .ad h4{font-family:'Old Standard TT',serif;font-weight:700;font-size:20px;line-height:1.05;margin-bottom:6px}
+  .ad h4 em{font-style:italic;font-weight:400;color:var(--accent)}
+  .ad p{font-size:13.5px;color:var(--ink);line-height:1.45}
+
+  /* DIRECTORY (integrations) */
+  .dir{border:1px solid var(--rule);background:var(--paper);columns:4 200px;column-gap:24px;padding:18px 22px;column-rule:1px dashed var(--rule)}
+  .dir .e{break-inside:avoid;padding:6px 0;border-bottom:1px dashed var(--rule);display:flex;justify-content:space-between;align-items:baseline;font-family:'Newsreader',serif;font-size:15px}
+  .dir .e:last-child{border-bottom:0}
+  .dir .e .nm{font-weight:500}
+  .dir .e .ty{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+
+  /* CORRESPONDENCE — contact */
+  .correspond{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule)}
+  @media (max-width:820px){.correspond{grid-template-columns:1fr}}
+  .corr{padding:32px;background:var(--paper);border-right:1px solid var(--rule);display:flex;flex-direction:column;gap:14px}
+  .corr:last-child{border-right:0;background:var(--ink);color:var(--paper)}
+  @media (max-width:820px){.corr{border-right:0;border-bottom:1px solid var(--rule)}.corr:last-child{border-bottom:0}}
+  .corr .kk{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+  .corr h3{font-family:'Old Standard TT',serif;font-weight:700;font-size:34px;letter-spacing:-.015em;line-height:1;font-variant:small-caps}
+  .corr h3 em{font-style:italic;color:var(--accent);font-variant:normal;font-weight:400}
+  .corr p{font-size:15px;color:var(--ink);font-family:'Newsreader',serif}
+  .corr:last-child p{color:rgba(246,241,230,.7)}
+  .corr-form{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+  .corr-form input,.corr-form select,.corr-form textarea{background:var(--paper);border:1px solid var(--rule);padding:11px 13px;font-family:'Newsreader',serif;font-size:15px;outline:none;color:var(--ink);border-radius:0}
+  .corr-form textarea{resize:vertical;min-height:80px}
+  .corr-form input:focus,.corr-form textarea:focus,.corr-form select:focus{border-color:var(--accent)}
+  .corr .actions{margin-top:auto;padding-top:18px;display:flex;gap:10px;flex-wrap:wrap}
+  .corr:last-child .btn{border-color:var(--paper);color:var(--paper)}
+  .corr:last-child .btn:hover{background:var(--paper);color:var(--ink)}
+  .corr:last-child .btn-primary{background:var(--accent);border-color:var(--accent)}
+
+  footer{background:var(--paper-2);border-top:3px double var(--rule);padding:48px 0 22px;margin-top:72px;position:relative;z-index:2}
+  .foot{display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:36px}
+  @media (max-width:820px){.foot{grid-template-columns:1fr 1fr}}
+  .foot-brand .nm{font-family:'Old Standard TT',serif;font-weight:700;font-size:28px;letter-spacing:-.015em;font-variant:small-caps}
+  .foot-brand .nm em{font-style:italic;color:var(--accent);font-variant:normal}
+  .foot-brand .tag{margin-top:8px;color:var(--muted);font-size:15px;font-family:'Newsreader',serif;font-style:italic;max-width:300px}
+  .foot-brand .seals{display:flex;gap:8px;margin-top:14px}
+  .foot-brand .seals img{height:40px;background:#fff;border:1px solid var(--rule);padding:3px 5px}
+  .foot h5{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.14em;color:var(--muted);margin-bottom:12px;text-transform:uppercase}
+  .foot ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+  .foot ul a{color:var(--ink);font-family:'Newsreader',serif;font-size:15px}
+  .foot ul a:hover{color:var(--accent)}
+  .colophon{margin-top:40px;padding-top:14px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;flex-wrap:wrap;gap:10px}
+  .colophon em{font-family:'Old Standard TT',serif;font-style:italic;font-size:14px;color:var(--accent);letter-spacing:0;text-transform:none}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="container row">
+    <span>Vol. III · No. 47 · Tuesday, April 29, 2026 · <b>$ Free</b></span>
+    <span><a href="https://trust.genhealth.ai">Trust Center</a> · <a href="#">Subscribe</a> · <a href="https://umpa.genhealth.ai">Sign in</a></span>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="container">
+    <div class="pre">
+      <span>est. MMXXIII · Durham, NC</span>
+      <span>Late edition · Final</span>
+    </div>
+    <h1 class="title">The GenHealth <em>Record</em></h1>
+    <div class="sub">— a daily report on the state of healthcare administration —</div>
+    <div class="post">
+      <span>Weather · Cloudy w/ <b>4×</b> productivity</span>
+      <span>Index · <b>95%</b> PA accuracy · <b>10×</b> ROI · 12+ workflows</span>
+      <span>Pp. 1–24 in 4 sections</span>
+    </div>
+  </div>
+</header>
+
+<nav class="sect">
+  <div class="container inner">
+    <a href="#front" class="active">Front Page</a>
+    <a href="#reports">Reports</a>
+    <a href="#chart">Figures</a>
+    <a href="#opinion">Opinion</a>
+    <a href="#test">Testimony</a>
+    <a href="#classified">Classified</a>
+    <a href="#correspond">Correspondence</a>
+  </div>
+</nav>
+
+<!-- ============ FRONT PAGE ============ -->
+<section class="front" id="front">
+  <div class="container">
+    <div class="front-grid">
+
+      <!-- LEFT COLUMN: side stories -->
+      <aside class="col-l">
+        <div class="item">
+          <div class="kk">Inside · A2</div>
+          <h3>Fax in. <em>Record</em> out.</h3>
+          <p>The <em>FaxReader</em> agent now extracts an average of 46 fields per CMN with 98% confidence — and writes them straight into Brightree without a human keystroke.</p>
+          <a class="more" href="#reports">Read the report →</a>
+        </div>
+        <div class="item">
+          <div class="kk">Inside · A4</div>
+          <h3>Policy, applied <em>in seconds</em>.</h3>
+          <p>A <em>PriorAuth</em> agent now adjudicates an end-to-end CPAP request — chart consulted, four citations attached — in 42 seconds.</p>
+          <a class="more" href="#reports">Read the report →</a>
+        </div>
+        <div class="item">
+          <div class="kk">Inside · A6</div>
+          <h3>The phone, <em>plainly</em>.</h3>
+          <p>Voice agents now place 1,992 outbound calls a day — confirming consent, catching the missing detail, closing the loop.</p>
+          <a class="more" href="#reports">Read the report →</a>
+        </div>
+        <div class="item">
+          <div class="kk">Inside · A8</div>
+          <h3>The 837P leaves on a <em>Wednesday</em>.</h3>
+          <p>And the 835 returns on a Tuesday. Mean cycle from referral to paid: 21 days. No appeals. No reworks. No queue.</p>
+          <a class="more" href="#reports">Read the report →</a>
+        </div>
+      </aside>
+
+      <!-- CENTER: lead story -->
+      <article class="col-c">
+        <span class="kicker">SECTION A · LEAD · DURHAM, NC</span>
+        <h1 class="headline">Healthcare ops, <em>quietly automated</em>.</h1>
+        <p class="deck">A four-year-old startup deploys AI employees inside the same browsers, fax lines, and phone trees clinicians use — and produces, by some measures, more work than teams five times its size.</p>
+        <div class="byline">
+          <span>By <b>The Record Staff</b></span>
+          <span>Filed 09:14 EDT · Updated continuously</span>
+        </div>
+
+        <div class="lead-img">
+          <svg class="schematic" viewBox="0 0 800 320" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect width="800" height="320" fill="#EDE6D2"/>
+            <!-- columns -->
+            <g font-family="IBM Plex Mono, monospace" font-size="10" letter-spacing="2" fill="#5C574B" text-anchor="middle">
+              <text x="120" y="32">CHANNELS</text>
+              <text x="400" y="32">GENHEALTH</text>
+              <text x="680" y="32">SYSTEMS OF RECORD</text>
+            </g>
+            <!-- channels -->
+            <g font-family="Old Standard TT, serif" font-size="22" fill="#15130E">
+              <rect x="40" y="60" width="160" height="46" fill="#F6F1E6" stroke="#15130E"/>
+              <text x="120" y="89" text-anchor="middle">Web</text>
+              <rect x="40" y="130" width="160" height="46" fill="#F6F1E6" stroke="#15130E"/>
+              <text x="120" y="159" text-anchor="middle">Fax</text>
+              <rect x="40" y="200" width="160" height="46" fill="#F6F1E6" stroke="#15130E"/>
+              <text x="120" y="229" text-anchor="middle">Voice</text>
+            </g>
+            <!-- center hub -->
+            <circle cx="400" cy="160" r="74" fill="#15130E"/>
+            <text x="400" y="148" text-anchor="middle" font-family="Old Standard TT, serif" font-size="22" font-style="italic" fill="#F6F1E6">AI</text>
+            <text x="400" y="178" text-anchor="middle" font-family="Old Standard TT, serif" font-size="22" font-weight="700" fill="#F6F1E6">Employees</text>
+            <!-- flowing lines -->
+            <g stroke="#A52A22" stroke-width="1.2" fill="none">
+              <path d="M200,83 C280,83 300,160 326,160"/>
+              <path d="M200,153 L326,160"/>
+              <path d="M200,223 C280,223 300,160 326,160"/>
+              <path d="M474,160 C500,160 520,76 600,76"/>
+              <path d="M474,160 L600,134"/>
+              <path d="M474,160 L600,192"/>
+              <path d="M474,160 C500,160 520,260 600,260"/>
+            </g>
+            <!-- right systems -->
+            <g font-family="IBM Plex Mono, monospace" font-size="11" fill="#15130E">
+              <text x="610" y="80">Brightree</text>
+              <text x="610" y="138">Epic / athena</text>
+              <text x="610" y="196">Payer portals</text>
+              <text x="610" y="264">Voice / Fax / Mail</text>
+            </g>
+            <!-- footer line -->
+            <line x1="40" y1="290" x2="760" y2="290" stroke="#15130E"/>
+            <text x="40" y="306" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="2" fill="#5C574B">SCHEMATIC · OPERATIONAL VIEW · GENHEALTH 2026</text>
+          </svg>
+          <div class="cap">Fig. 1 — Schematic of GenHealth's operational flow across web, fax, and voice channels.</div>
+        </div>
+
+        <div class="body-cols">
+          <p>The administrative work behind a single CPAP claim — a fax to read, a policy to apply, a phone call to make, an 835 to post — used to occupy four people over the course of two weeks. At GenHealth, it now occupies four agents over the course of twenty-one days. <em>None of them are people.</em></p>
+          <p>The Durham, NC company, founded in 2023, deploys what it calls "AI employees" inside the very systems clinicians and billers already use: Brightree, Epic, athenahealth, UnitedHealthcare's portal, the supplier's fax line, RingCentral. The agents do the work the human team had been doing — intake, eligibility, prior authorization, claims, denials, posting — only continuously, and with a written record of every action.</p>
+          <div class="pull">"More work, with better results, than a team five times their size."<span>— Jack Bachman, Piedmont Medical Solutions</span></div>
+          <p>The pitch is plain enough that customers describe it as a relief. Where prior tools promised to <em>summarize</em> documents or <em>suggest</em> codes, GenHealth's agents finish the task: a Certificate of Medical Necessity is read and the intake record is written. A prior authorization is adjudicated against payer policy and the four chart citations are attached. A 1992-day's worth of resupply calls go out before lunch.</p>
+          <p>Every action is logged. Every decision cites the policy line and the chart note that drove it. The result is a quieter kind of automation — one customers say they trust because they can read it.</p>
+          <p>"We catch problems sooner now," Bachman said in a written statement to <em>The Record</em>. "And we have a level of transparency we never had before."</p>
+        </div>
+
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#correspond">Request a demo →</a>
+          <a class="btn" href="https://umpa.genhealth.ai">Try UMPA free</a>
+          <a class="btn" href="#reports">Continue inside</a>
+        </div>
+      </article>
+
+      <!-- RIGHT COLUMN: quote, vitals, ticker -->
+      <aside class="col-r">
+        <div class="quotebox">
+          <blockquote>By leveraging AI, they've automated <em>more work with better results</em> than our previous outsourced team — which was five times their size.</blockquote>
+          <div class="sig"><b>Jack Bachman</b>CEO · Piedmont Medical Solutions</div>
+        </div>
+
+        <div class="vitals">
+          <div class="h"><span>OPERATIONAL VITALS</span><span>03:42 EDT</span></div>
+          <div class="b">
+            <div><div class="k">Intake · today</div><div class="v">1,240</div></div>
+            <div><div class="k">PA decisions</div><div class="v">418</div></div>
+            <div><div class="k">Resupplies dialed</div><div class="v">1,992</div></div>
+            <div><div class="k">PA accuracy 30d</div><div class="v"><em>95</em>%</div></div>
+            <div><div class="k">Cycle to paid</div><div class="v">21<em>d</em></div></div>
+            <div><div class="k">Productivity</div><div class="v"><em>4</em>×</div></div>
+          </div>
+          <div class="ft">Trailing measures · across deployed customers</div>
+        </div>
+
+        <div class="bulletin">
+          <div class="h"><span>BULLETIN · LIVE</span><span>FEED</span></div>
+          <div class="b" id="bulletin"></div>
+        </div>
+
+        <div class="item" style="border:0;padding:0">
+          <div class="kk">Notice</div>
+          <h3>Open a free <em>UMPA</em> account</h3>
+          <p>Deploy a single AI agent today — for intake, eligibility, or prior authorization. Free for solo and small teams.</p>
+          <a class="btn" style="margin-top:12px" href="https://umpa.genhealth.ai">Begin →</a>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REPORTS (workflows) ============ -->
+<section class="pg" id="reports">
+  <div class="container">
+    <div class="pg-hd">
+      <span class="pn">Section B · Reports</span>
+      <h2>Eight stories from the <em>back office</em>.</h2>
+      <span class="pp">Pp. B1–B8</span>
+    </div>
+    <div class="reports">
+      <div class="report"><div class="kk">B1 · Intake</div><h3>The fax becomes a <em>record</em>.</h3><p>FaxReader extracts every field from inbound CMNs and writes intake straight into Brightree.</p><div class="meta"><b>1,240 / day</b><span>46 fields avg</span></div></div>
+      <div class="report"><div class="kk">B2 · Eligibility</div><h3>Verified, before <em>the visit</em>.</h3><p>Logs into payer portals, verifies coverage, writes benefits back. 42 seconds per patient.</p><div class="meta"><b>862 / day</b><span>42s · per patient</span></div></div>
+      <div class="report"><div class="kk">B3 · Prior auth</div><h3>The policy, <em>cited</em>.</h3><p>Reads plan policy against chart, attaches citations, submits and tracks.</p><div class="meta"><b>418 / day</b><span>95% accuracy</span></div></div>
+      <div class="report"><div class="kk">B4 · Resupplies</div><h3>The patient, <em>called</em>.</h3><p>Outreach, fulfillment, follow-up — the entire cycle, end to end.</p><div class="meta"><b>1,992 / day</b><span>SMS · email · voice</span></div></div>
+      <div class="report"><div class="kk">B5 · Appeals</div><h3>The denial, <em>answered</em>.</h3><p>Appeals drafted with policy quoted and chart attached for clinician review.</p><div class="meta"><b>~3 cites / draft</b><span>queued for sign</span></div></div>
+      <div class="report"><div class="kk">B6 · Necessity</div><h3>Necessity, <em>established</em>.</h3><p>Every claim leaves with the chart evidence that justifies it bound to the file.</p><div class="meta"><b>at submission</b><span>tied to claim</span></div></div>
+      <div class="report"><div class="kk">B7 · Referrals</div><h3>The loop, <em>closed</em>.</h3><p>Send, transmit, confirm, schedule, and follow up — across every provider in the network.</p><div class="meta"><b>247 / day</b><span>cross-portal</span></div></div>
+      <div class="report"><div class="kk">B8 · Posting</div><h3>The 835, <em>posted</em>.</h3><p>835/ERA matched, posted, contractual adjustments reconciled. Closed nightly.</p><div class="meta"><b>auto · nightly</b><span>cycle 21 days</span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CHART OF FIGURES ============ -->
+<section class="pg" id="chart">
+  <div class="container">
+    <div class="pg-hd">
+      <span class="pn">Section C · Chart of Figures</span>
+      <h2>Sworn to the <em>numbers</em>.</h2>
+      <span class="pp">Pp. C1–C2</span>
+    </div>
+    <div class="chart">
+      <div class="ch-c"><div class="l">Fig. I · PA accuracy</div><div class="n" data-counter="95" data-suffix="%">0<em>%</em></div><div class="d">End-to-end accuracy of AI adjudicating prior authorization cases.</div><div class="src">Source: Internal benchmark · 30-day trailing</div></div>
+      <div class="ch-c"><div class="l">Fig. II · Productivity</div><div class="n" data-counter="4" data-suffix="×">0<em>×</em></div><div class="d">Improvement in administrative throughput against pre-deployment baseline.</div><div class="src">Source: Customer cohort · deployed > 90 days</div></div>
+      <div class="ch-c"><div class="l">Fig. III · Return on investment</div><div class="n" data-counter="10" data-suffix="×">0<em>×</em></div><div class="d">First-year cost savings relative to operating expense.</div><div class="src">Source: Customer-reported · FY 2025</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OPINION (mission) ============ -->
+<section class="pg" id="opinion">
+  <div class="container">
+    <div class="pg-hd">
+      <span class="pn">Section D · Opinion</span>
+      <h2>From the <em>editors</em>.</h2>
+      <span class="pp">P. D1</span>
+    </div>
+    <div class="opinion">
+      <div class="label">Editorial.</div>
+      <div class="body">
+        <div class="head">A statement of purpose</div>
+        <h2>What we believe healthcare administration could be.</h2>
+        <p>GenHealth automates the administrative burden for providers, health plans, and DME suppliers. We deploy <strong>AI employees</strong> that navigate the internal and external applications, portals, fax, and phone systems your teams use every day. <em>Every action logged. Every decision cited. Every page reviewable.</em> Agents execute intake, eligibility, prior authorization, claims, denials, and posting the way your operators do — inside the tools they already use.</p>
+        <div class="signoff">
+          <span>Durham, NC · Founded 2023</span>
+          <em>— The Editors, GenHealth</em>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TESTIMONY ============ -->
+<section class="pg" id="test">
+  <div class="container">
+    <div class="pg-hd">
+      <span class="pn">Section E · Letters</span>
+      <h2>From the <em>field</em>.</h2>
+      <span class="pp">P. E1</span>
+    </div>
+    <div class="test">
+      <div class="from">
+        <img src="assets/piedmont.jpg" alt="">
+        <div class="meta">
+          <span>Account</span><b>Piedmont Medical Solutions</b>
+          <span>Type</span><b>DME Supplier</b>
+          <span>Deployed</span><b>July 2024</b>
+          <span>Workflows</b><b>12 of 12</b>
+          <span>Prior team</span><b>5× larger</b>
+        </div>
+      </div>
+      <div class="body">
+        <div class="head-line">Letter to The Record · April 2026</div>
+        <blockquote>We transitioned to GenHealth for full-service intake and billing and couldn't be happier. By leveraging AI, they've automated <em>more work with better results</em> than our previous outsourced team — which was five times their size. As a true partner, they catch problems sooner and offer a level of transparency we never had before.</blockquote>
+        <div class="sig"><b>Jack Bachman</b>CEO & Owner · Piedmont Medical Solutions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CLASSIFIED (onboarding) ============ -->
+<section class="pg" id="classified">
+  <div class="container">
+    <div class="pg-hd">
+      <span class="pn">Section F · Classified</span>
+      <h2>Help <em>wanted</em>.</h2>
+      <span class="pp">P. F1</span>
+    </div>
+    <div class="classified">
+      <h3 class="cl-h">Now <em>onboarding</em>.</h3>
+      <div class="tag">Position · AI Employee · Full-time · Inside your stack · Starts within the week</div>
+      <div class="ad-list">
+        <div class="ad"><div class="when">Day 1</div><h4>Share <em>workflows</em></h4><p>Record screens. Walk through the work. Narrate your context, your edge cases, your exceptions.</p></div>
+        <div class="ad"><div class="when">Day 2</div><h4>Grant <em>access</em></h4><p>Create logins for the systems your team already uses. Hand the agent its credentials.</p></div>
+        <div class="ad"><div class="when">Days 3–5</div><h4>Let it <em>learn</em></h4><p>Deterministic flows are built and tested. Supervised runs reviewed alongside your team.</p></div>
+        <div class="ad"><div class="when">Day 6+</div><h4>Go <em>live</em></h4><p>Autonomous operation. Every action logged. Every decision cited. Every run reviewable.</p></div>
+      </div>
+    </div>
+
+    <div class="pg-hd" style="margin-top:48px">
+      <span class="pn">Directory</span>
+      <h2>Where the agents <em>work</em>.</h2>
+      <span class="pp">P. F2</span>
+    </div>
+    <div class="dir">
+      <div class="e"><span class="nm">Brightree</span><span class="ty">DME billing</span></div>
+      <div class="e"><span class="nm">Niko Health</span><span class="ty">DME platform</span></div>
+      <div class="e"><span class="nm">Epic Systems</span><span class="ty">EMR</span></div>
+      <div class="e"><span class="nm">athenahealth</span><span class="ty">EMR</span></div>
+      <div class="e"><span class="nm">eClinicalWorks</span><span class="ty">EMR</span></div>
+      <div class="e"><span class="nm">UnitedHealthcare</span><span class="ty">Payer</span></div>
+      <div class="e"><span class="nm">Aetna</span><span class="ty">Payer</span></div>
+      <div class="e"><span class="nm">Cigna</span><span class="ty">Payer</span></div>
+      <div class="e"><span class="nm">Humana</span><span class="ty">MA plan</span></div>
+      <div class="e"><span class="nm">eMedNY</span><span class="ty">Medicaid · NY</span></div>
+      <div class="e"><span class="nm">Noridian Medicare</span><span class="ty">MAC</span></div>
+      <div class="e"><span class="nm">myCGS DME MAC</span><span class="ty">Jurisdiction B</span></div>
+      <div class="e"><span class="nm">EviCore</span><span class="ty">Benefit mgmt</span></div>
+      <div class="e"><span class="nm">Faxage</span><span class="ty">Cloud fax</span></div>
+      <div class="e"><span class="nm">RingCentral</span><span class="ty">Voice</span></div>
+      <div class="e"><span class="nm">Gmail / Outlook</span><span class="ty">Email</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CORRESPONDENCE (contact) ============ -->
+<section class="pg" id="correspond">
+  <div class="container">
+    <div class="pg-hd">
+      <span class="pn">Section G · Correspondence</span>
+      <h2>Write to <em>the editors</em>.</h2>
+      <span class="pp">P. G1</span>
+    </div>
+    <div class="correspond">
+      <div class="corr">
+        <div class="kk">By post</div>
+        <h3>Send a <em>letter</em></h3>
+        <p>Tell us about a workflow. We'll write back with a deployment plan and a number you can take to your CFO.</p>
+        <form class="corr-form" onsubmit="event.preventDefault()">
+          <input type="email" placeholder="you@clinic.com">
+          <select><option>Select organization…</option><option>Provider</option><option>DME</option><option>Health plan</option><option>Patient</option><option>Other</option></select>
+          <textarea placeholder="A short description of the work you'd like to put on paper."></textarea>
+          <div class="actions"><button class="btn btn-primary" type="submit">Send to The Record →</button></div>
+        </form>
+      </div>
+      <div class="corr">
+        <div class="kk">By wire</div>
+        <h3>Open one <em>now</em></h3>
+        <p>Create a free UMPA account and deploy your first AI agent today — for intake, eligibility, or prior authorization. No subscription required to start.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://umpa.genhealth.ai">Create account →</a>
+          <a class="btn" href="#">Book a call</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="foot-brand">
+        <div class="nm">The GenHealth <em>Record</em></div>
+        <p class="tag">A daily report on the state of healthcare administration.</p>
+        <h5 style="margin-top:14px">Enterprise security</h5>
+        <ul style="display:flex;flex-direction:column;gap:6px"><li><a href="https://trust.genhealth.ai">Trust Center</a></li><li><a href="https://status.genhealth.ai">Status</a></li></ul>
+        <div class="seals"><img src="assets/socII.png" alt=""><img src="assets/hipaa.png" alt=""></div>
+      </div>
+      <div><h5>Workflows</h5><ul><li><a href="#">Intake</a></li><li><a href="#">Prior auth</a></li><li><a href="#">Eligibility</a></li><li><a href="#">Resupplies</a></li><li><a href="#">Necessity</a></li><li><a href="#">Referrals</a></li></ul></div>
+      <div><h5>Support</h5><ul><li><a href="#">Documentation</a></li><li><a href="mailto:support@genhealth.ai">Tech support</a></li><li><a href="#">Privacy</a></li><li><a href="#">Security</a></li><li><a href="#">Terms</a></li><li><a href="#">BAA</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Jobs</a></li><li><a href="#">ROI calculator</a></li><li><a href="#">Medical codes</a></li><li><a href="#">Medical policies</a></li></ul></div>
+    </div>
+    <div class="colophon">
+      <span>© 2026 GENHEALTH.AI · ALL RIGHTS RESERVED · DURHAM, NC</span>
+      <em>— The Record · Vol. III, No. 47</em>
+    </div>
+  </div>
+</footer>
+
+<script>
+// BULLETIN ticker
+const events=[
+  ['09:14','Intake · <span class="hl">Doe, J.</span> · CMN parsed → Brightree'],
+  ['09:21','PA · E0601 · Aetna 0004 · 4 cites · <span class="hl">approved</span>'],
+  ['09:28','Eligibility · UHC member ****-82019 · <span class="hl">active</span>'],
+  ['09:36','Fax · 4pp CMN · 46 fields · conf 0.98'],
+  ['09:42','Voice · resupply <span class="hl">Ellis, M.</span> · consent recorded'],
+  ['09:51','Appeal CO-50 drafted · 3 citations · <span class="hl">queued</span>'],
+  ['10:02','Posting · 835/ERA · Cigna batch 8812'],
+  ['10:14','Referral · cardiology · Novant Heart · <span class="hl">scheduled</span>'],
+  ['10:22','PA · K0554 CGM · Humana · <span class="hl">approved</span>'],
+  ['10:31','Intake · <span class="hl">Chen, R.</span> · sleep study classified'],
+];
+const bul=document.getElementById('bulletin');
+function render(){bul.innerHTML='';events.forEach(e=>{const d=document.createElement('div');d.className='ev';d.innerHTML=`<span class="t">${e[0]}</span><span class="m">${e[1]}</span>`;bul.appendChild(d)})}
+render();
+setInterval(()=>{events.push(events.shift());render()},2400);
+
+// COUNTER
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const el=e.target,t=+el.dataset.counter,s=el.dataset.suffix||'';
+  const start=performance.now(),dur=1400;
+  function tick(ts){const p=Math.min(1,(ts-start)/dur),ea=1-Math.pow(1-p,3);el.innerHTML=`${Math.round(ea*t)}<em>${s}</em>`;if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);io.unobserve(el);
+}),{threshold:.3});
+document.querySelectorAll('[data-counter]').forEach(c=>io.observe(c));
+</script>
+</body>
+</html>

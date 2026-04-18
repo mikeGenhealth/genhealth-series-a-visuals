@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GenHealth — Meet the team.</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,500;1,400&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEEAE3;
+    --bg-2:#E4DED3;
+    --bg-3:#D8D0C0;
+    --ink:#1B2434;
+    --ink-2:#39455A;
+    --muted:#6A7488;
+    --steel:#4A6A8F;
+    --steel-deep:#355075;
+    --steel-tint:#C8D5E4;
+    --rule:#BDB5A4;
+    --accent:#C7603D;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+  body{font-size:16px;line-height:1.55;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .serif{font-family:'Fraunces',serif}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;color:var(--muted);text-transform:uppercase}
+  .container{max-width:1280px;margin:0 auto;padding:0 40px}
+  @media (max-width:720px){.container{padding:0 22px}}
+
+  /* NAV */
+  nav.top{position:sticky;top:0;z-index:50;background:color-mix(in oklab,var(--bg) 86%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid transparent;transition:border-color .3s}
+  nav.top.scrolled{border-bottom-color:var(--rule)}
+  nav.top .inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:400;font-size:24px;letter-spacing:-.01em}
+  .brand .mark{width:28px;height:28px;border-radius:50%;background:var(--ink);position:relative;overflow:hidden}
+  .brand .mark::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,transparent 48%,var(--bg) 48%,var(--bg) 52%,transparent 52%)}
+  .nav-links{display:flex;gap:30px;font-size:14px;color:var(--ink-2)}
+  .nav-links a:hover{color:var(--steel)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 20px;border-radius:999px;font-size:13px;font-weight:500;border:1px solid transparent;cursor:pointer;transition:all .2s;font-family:'Inter',sans-serif}
+  .btn-primary{background:var(--ink);color:var(--bg)}
+  .btn-primary:hover{background:var(--ink-2)}
+  .btn-ghost{border-color:var(--ink);color:var(--ink)}
+  .btn-ghost:hover{background:var(--ink);color:var(--bg)}
+
+  /* HERO — editorial roster */
+  section.hero{padding:56px 0 80px}
+  .hero-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:36px;color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;flex-wrap:wrap;gap:8px}
+  .hero-meta .right{color:var(--accent)}
+  .hero h1{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(54px,8.5vw,148px);line-height:.92;letter-spacing:-.03em;max-width:13ch;text-wrap:balance}
+  .hero h1 em{font-style:italic;font-weight:400;color:var(--steel)}
+  .hero-row{display:grid;grid-template-columns:6fr 6fr;gap:48px;margin-top:56px;padding-top:32px;border-top:1px solid var(--rule);align-items:start}
+  @media (max-width:820px){.hero-row{grid-template-columns:1fr;gap:32px}}
+  .hero-row .lede{font-size:18px;line-height:1.55;color:var(--ink-2);max-width:500px}
+  .hero-row .lede p+p{margin-top:14px}
+  .hero-cta{margin-top:28px;display:flex;gap:10px;flex-wrap:wrap}
+
+  /* ROSTER — signature */
+  .roster{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .card-emp{background:var(--bg-2);border:1px solid var(--rule);border-radius:10px;padding:16px;position:relative;transition:transform .3s,box-shadow .3s}
+  .card-emp:hover{transform:translateY(-3px);box-shadow:0 18px 30px -22px rgba(27,36,52,.35)}
+  .card-emp .pic{aspect-ratio:1;border-radius:8px;overflow:hidden;background:var(--bg-3);position:relative;margin-bottom:12px}
+  .card-emp .pic .face{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-size:48px;color:var(--steel-deep);font-style:italic}
+  .card-emp .pic .badge{position:absolute;bottom:8px;right:8px;background:var(--ink);color:var(--bg);padding:3px 8px;border-radius:999px;font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.05em;text-transform:uppercase}
+  .card-emp .pic .online{position:absolute;top:8px;left:8px;width:8px;height:8px;background:#5FB28A;border-radius:50%;box-shadow:0 0 0 3px rgba(95,178,138,.25);animation:pulse 1.8s infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(95,178,138,.25)}50%{box-shadow:0 0 0 6px rgba(95,178,138,.1)}}
+  .card-emp h4{font-family:'Fraunces',serif;font-weight:400;font-size:22px;letter-spacing:-.01em;line-height:1.1;margin-bottom:2px}
+  .card-emp .role{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:10px}
+  .card-emp .stat-row{display:flex;justify-content:space-between;font-size:11px;padding-top:10px;border-top:1px solid var(--rule)}
+  .card-emp .stat-row .k{color:var(--muted)}
+  .card-emp .stat-row .v{color:var(--ink);font-family:'JetBrains Mono',monospace}
+  @media (max-width:620px){.roster{grid-template-columns:1fr 1fr}}
+
+  /* Shared headings */
+  .sec-head{display:grid;grid-template-columns:5fr 7fr;gap:40px;margin-bottom:56px;align-items:end}
+  @media (max-width:820px){.sec-head{grid-template-columns:1fr;gap:20px}}
+  .sec-head h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(36px,5vw,68px);line-height:.98;letter-spacing:-.025em}
+  .sec-head h2 em{font-style:italic;font-weight:400;color:var(--steel)}
+  .sec-head p{color:var(--ink-2);font-size:16px;max-width:480px}
+
+  /* CHANNELS — job description style */
+  section.channels{padding:120px 0;border-top:1px solid var(--rule)}
+  .ch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+  @media (max-width:820px){.ch-grid{grid-template-columns:1fr}}
+  .ch-card{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:28px;position:relative;overflow:hidden;min-height:380px;display:flex;flex-direction:column}
+  .ch-card .ch-hdr{display:flex;justify-content:space-between;align-items:start;margin-bottom:28px}
+  .ch-card .ch-hdr .tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--rule);border-radius:999px}
+  .ch-card .ch-hdr .dept{font-family:'Fraunces',serif;font-style:italic;color:var(--steel);font-size:15px}
+  .ch-card h3{font-family:'Fraunces',serif;font-weight:400;font-size:52px;letter-spacing:-.03em;line-height:.92;margin-bottom:16px}
+  .ch-card h3 em{font-style:italic}
+  .ch-card p{color:var(--ink-2);font-size:15px;margin-bottom:22px}
+  .ch-card .skills{border-top:1px dashed var(--rule);padding-top:16px;margin-top:auto}
+  .ch-card .skills .slbl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.06em;margin-bottom:10px;text-transform:uppercase}
+  .ch-card .skills ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+  .ch-card .skills li{display:flex;gap:10px;align-items:center;font-size:13px;color:var(--ink-2)}
+  .ch-card .skills li::before{content:"";width:4px;height:4px;border-radius:50%;background:var(--steel);flex-shrink:0}
+  .ch-card .live{position:absolute;bottom:24px;right:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);display:flex;align-items:center;gap:6px}
+  .ch-card .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.6s infinite}
+
+  /* WORKFLOWS — Slack/kanban hybrid */
+  section.flows{padding:120px 0;background:var(--bg-2)}
+  .flows-wrap{display:grid;grid-template-columns:4fr 8fr;gap:32px}
+  @media (max-width:820px){.flows-wrap{grid-template-columns:1fr}}
+  .flows-list{background:var(--bg);border:1px solid var(--rule);border-radius:12px;padding:12px}
+  .flows-list button{text-align:left;background:transparent;border:0;width:100%;padding:14px 16px;border-radius:8px;font-family:inherit;font-size:15px;color:var(--ink-2);cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .2s;border-bottom:1px solid var(--rule)}
+  .flows-list button:last-child{border-bottom:0}
+  .flows-list button:hover{color:var(--ink)}
+  .flows-list button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+  .flows-list button .ct{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.6}
+  .flows-stage{background:var(--bg);border:1px solid var(--rule);border-radius:12px;overflow:hidden;min-height:540px;display:flex;flex-direction:column}
+  .fs-top{padding:18px 24px;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:14px}
+  .fs-top .avatar{width:32px;height:32px;border-radius:50%;background:var(--steel);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;font-size:14px}
+  .fs-top .who{font-size:13px}
+  .fs-top .who b{display:block;font-weight:500}
+  .fs-top .who span{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px}
+  .fs-top .status{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--accent);display:flex;align-items:center;gap:6px}
+  .fs-top .status::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.6s infinite}
+  .fs-body{padding:28px 32px;flex:1;display:flex;flex-direction:column;gap:18px}
+  .fs-body h3{font-family:'Fraunces',serif;font-weight:400;font-size:38px;letter-spacing:-.02em;line-height:1}
+  .fs-body h3 em{font-style:italic;color:var(--steel)}
+  .fs-body .lede{color:var(--ink-2);max-width:500px}
+  .log{border:1px solid var(--rule);border-radius:8px;background:var(--bg-2);overflow:hidden;flex:1;display:flex;flex-direction:column}
+  .log-head{padding:10px 16px;border-bottom:1px solid var(--rule);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);display:flex;justify-content:space-between}
+  .log-body{padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:10px;font-size:13px}
+  .log-entry{display:flex;gap:12px}
+  .log-entry .t{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);width:60px;flex-shrink:0;padding-top:2px}
+  .log-entry .m{color:var(--ink-2);line-height:1.5}
+  .log-entry .m b{color:var(--ink);font-weight:500}
+  .log-entry .m .tag{display:inline-block;padding:1px 7px;background:var(--steel-tint);color:var(--steel-deep);border-radius:3px;font-family:'JetBrains Mono',monospace;font-size:11px;margin:0 2px}
+  .log-entry.hl .m{background:#FDF1E8;padding:6px 10px;margin-left:-10px;border-radius:4px;border-left:2px solid var(--accent)}
+  .fs-foot{padding:14px 24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted)}
+  .fs-foot b{color:var(--ink)}
+
+  /* TESTIMONIAL — as interview */
+  section.testimonial{padding:140px 0}
+  .interview{display:grid;grid-template-columns:4fr 8fr;gap:48px;max-width:1100px;margin:0 auto}
+  @media (max-width:820px){.interview{grid-template-columns:1fr}}
+  .interview .aside{display:flex;flex-direction:column;gap:16px}
+  .interview .aside .logo-card{background:var(--bg-2);border:1px solid var(--rule);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:16px}
+  .interview .aside .logo-card img{width:84px;height:84px;border-radius:8px;object-fit:cover}
+  .interview .aside .logo-card h5{font-family:'Fraunces',serif;font-weight:400;font-size:24px;letter-spacing:-.01em;line-height:1.05}
+  .interview .aside .logo-card p{font-size:13px;color:var(--muted)}
+  .interview .aside .stats-mini{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .stat-mini{padding:14px;background:var(--bg-2);border:1px solid var(--rule);border-radius:10px}
+  .stat-mini .v{font-family:'Fraunces',serif;font-weight:400;font-size:28px;letter-spacing:-.02em;line-height:1}
+  .stat-mini .k{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);margin-top:4px;text-transform:uppercase;letter-spacing:.04em}
+  .interview blockquote{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(22px,2.8vw,34px);line-height:1.3;letter-spacing:-.015em;text-wrap:balance}
+  .interview blockquote em{font-style:italic;color:var(--steel)}
+  .interview .by{display:flex;align-items:center;gap:14px;margin-top:32px;padding-top:24px;border-top:1px solid var(--rule)}
+  .interview .by .av{width:48px;height:48px;border-radius:50%;background:var(--steel);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;font-size:18px}
+  .interview .by .who{font-size:13px;color:var(--muted)}
+  .interview .by .who b{display:block;color:var(--ink);font-weight:500;font-size:15px;font-family:'Inter',sans-serif}
+
+  /* INTEGRATIONS — as org chart directory */
+  section.integrations{padding:110px 0;background:var(--bg-2);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .dir{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+  @media (max-width:820px){.dir{grid-template-columns:1fr}}
+  .dir-col h4{font-family:'Fraunces',serif;font-weight:400;font-size:22px;margin-bottom:14px}
+  .dir-col h4 em{font-style:italic;color:var(--steel)}
+  .dir-list{display:flex;flex-direction:column;gap:2px}
+  .dir-row{padding:14px 16px;background:var(--bg);border-radius:8px;display:flex;justify-content:space-between;align-items:center;font-size:14px;transition:background .2s}
+  .dir-row:hover{background:var(--bg-3)}
+  .dir-row .name{font-weight:500}
+  .dir-row .type{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px}
+
+  /* ONBOARDING — new-hire checklist */
+  section.onboard{padding:120px 0}
+  .checklist{max-width:900px;margin:0 auto;background:var(--bg-2);border:1px solid var(--rule);border-radius:16px;padding:40px;display:flex;flex-direction:column;gap:4px;position:relative}
+  .checklist .title{font-family:'Fraunces',serif;font-weight:400;font-size:28px;letter-spacing:-.01em;margin-bottom:8px}
+  .checklist .title em{font-style:italic;color:var(--steel)}
+  .checklist .sub{color:var(--muted);font-size:14px;margin-bottom:24px}
+  .check-row{display:grid;grid-template-columns:32px 1fr auto;gap:16px;padding:18px 0;border-top:1px solid var(--rule);align-items:center}
+  .check-row .box{width:22px;height:22px;border-radius:50%;border:2px solid var(--ink);display:flex;align-items:center;justify-content:center}
+  .check-row .box svg{opacity:0;transition:opacity .3s}
+  .check-row.done .box{background:var(--ink)}
+  .check-row.done .box svg{opacity:1}
+  .check-row .label{font-size:16px;color:var(--ink)}
+  .check-row .label b{font-weight:500}
+  .check-row .label span{display:block;color:var(--muted);font-size:13px;margin-top:2px}
+  .check-row.done .label b{text-decoration:line-through;text-decoration-thickness:1px;color:var(--muted)}
+  .check-row .when{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em}
+
+  /* PRODUCTS — resume cards */
+  section.products{padding:120px 0;background:var(--bg-2)}
+  .prod-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+  @media (max-width:820px){.prod-grid{grid-template-columns:1fr}}
+  .resume{background:var(--bg);border:1px solid var(--rule);border-radius:14px;padding:28px;position:relative}
+  .resume .rh{display:flex;gap:18px;align-items:center;padding-bottom:20px;border-bottom:1px solid var(--rule);margin-bottom:20px}
+  .resume .rh .pic{width:60px;height:60px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-style:italic;font-size:24px;flex-shrink:0}
+  .resume .rh h3{font-family:'Fraunces',serif;font-weight:400;font-size:26px;letter-spacing:-.015em;line-height:1.05}
+  .resume .rh .sub{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;margin-top:4px}
+  .resume .desc{color:var(--ink-2);font-size:14px;margin-bottom:16px}
+  .resume .kv{display:grid;grid-template-columns:auto 1fr;gap:8px 14px;font-size:13px}
+  .resume .kv .k{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;padding-top:2px}
+  .resume .kv .v{color:var(--ink-2)}
+
+  /* STATS */
+  section.stats{padding:130px 0;border-top:1px solid var(--rule)}
+  .stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}
+  @media (max-width:820px){.stats-row{grid-template-columns:1fr}}
+  .sbig{padding:28px 0;border-top:1px solid var(--ink)}
+  .sbig .num{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(90px,11vw,164px);line-height:.92;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
+  .sbig .num em{font-style:italic;color:var(--steel);font-weight:400}
+  .sbig .k{font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-top:16px;margin-bottom:12px}
+  .sbig p{font-size:14px;color:var(--ink-2);max-width:320px}
+
+  /* MISSION — letter */
+  section.mission{padding:140px 0;background:var(--ink);color:var(--bg)}
+  .letter{max-width:780px;margin:0 auto;background:var(--bg);color:var(--ink);padding:56px;border-radius:8px;position:relative;box-shadow:0 40px 80px -30px rgba(0,0,0,.5)}
+  .letter .eyebrow{color:var(--accent)}
+  .letter h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(24px,2.8vw,36px);line-height:1.35;letter-spacing:-.01em;margin:24px 0 28px;text-wrap:pretty}
+  .letter h2 em{font-style:italic;color:var(--steel)}
+  .letter h2 b{font-weight:500}
+  .letter .sign{margin-top:36px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;align-items:baseline;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+  .letter .sign em{font-family:'Fraunces',serif;font-style:italic;color:var(--ink);font-size:22px;text-transform:none;letter-spacing:0}
+
+  /* CONTACT */
+  section.contact{padding:120px 0}
+  .contact h2{font-family:'Fraunces',serif;font-weight:300;font-size:clamp(38px,5vw,68px);line-height:.98;letter-spacing:-.03em;margin-bottom:48px;max-width:14ch}
+  .contact h2 em{font-style:italic;color:var(--steel)}
+  .c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:820px){.c-grid{grid-template-columns:1fr}}
+  .c-card{background:var(--bg-2);border:1px solid var(--rule);border-radius:14px;padding:28px;display:flex;flex-direction:column;gap:12px}
+  .c-card h3{font-family:'Fraunces',serif;font-weight:400;font-size:26px;letter-spacing:-.015em;line-height:1.05}
+  .c-card h3 em{font-style:italic;color:var(--steel)}
+  .c-card p{font-size:14px;color:var(--muted)}
+  .c-form{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+  .c-form input,.c-form select,.c-form textarea{background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:10px 14px;font-family:inherit;font-size:14px;outline:none;color:var(--ink)}
+  .c-form input:focus,.c-form textarea:focus,.c-form select:focus{border-color:var(--steel)}
+  .c-form textarea{resize:vertical;min-height:70px}
+  .c-card .btn{margin-top:auto;align-self:flex-start}
+
+  /* FOOTER */
+  footer{background:var(--bg-2);border-top:1px solid var(--rule);padding:72px 0 28px}
+  .foot-colophon{display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:48px;align-items:start}
+  @media (max-width:820px){.foot-colophon{grid-template-columns:1fr 1fr}}
+  .foot-brand .tag{color:var(--muted);font-size:14px;max-width:320px;margin:14px 0 20px}
+  .foot-brand h5{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;text-transform:uppercase}
+  .foot-brand .seals{display:flex;gap:10px;margin-top:16px}
+  .foot-brand .seals img{height:44px;background:#fff;border:1px solid var(--rule);border-radius:6px;padding:4px 6px}
+  footer h5{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--muted);margin-bottom:14px;text-transform:uppercase}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  footer ul a{color:var(--ink-2);font-size:13px}
+  footer ul a:hover{color:var(--steel)}
+  .foot-bottom{margin-top:56px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);flex-wrap:wrap;gap:10px}
+  .foot-bottom em{color:var(--steel);font-family:'Fraunces',serif;font-size:16px;font-style:italic}
+</style>
+</head>
+<body>
+
+<nav class="top" id="topnav">
+  <div class="container inner">
+    <a class="brand" href="#"><span class="mark"></span><span>GenHealth</span></a>
+    <div class="nav-links">
+      <a href="#team">The team</a>
+      <a href="#flows">Workflows</a>
+      <a href="#products">Products</a>
+      <a href="#company">Company</a>
+    </div>
+    <a class="btn btn-primary" href="#contact">Hire a team →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta">
+      <div>Est. 2023 · Durham, NC · <span style="color:var(--accent)">●</span> hiring 24 / 7</div>
+      <div class="right">Currently working: 18,432 agents</div>
+    </div>
+    <h1>Meet your <em>new</em> team.</h1>
+
+    <div class="hero-row">
+      <div>
+        <p class="lede">
+          Your best coworkers aren't tired today. GenHealth deploys AI employees that handle intake, eligibility, prior auth, claims, denials, and resupplies — on web, fax, and phone, inside the systems you already use.
+        </p>
+        <p class="lede">
+          They onboard like a new hire: shadow your process, ask clarifying questions, run supervised for a week, then operate independently. You stay the manager.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#contact">Hire a team →</a>
+          <a class="btn btn-ghost" href="https://umpa.genhealth.ai">Try free with one agent</a>
+        </div>
+      </div>
+
+      <div class="roster" id="roster">
+        <!-- filled by JS -->
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHANNELS as job descriptions -->
+<section class="channels" id="team">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Three departments,<br/>one <em>hire.</em></h2>
+      <p>Your new employees work across the channels healthcare operations live on — and move seamlessly between them.</p>
+    </div>
+    <div class="ch-grid">
+      <div class="ch-card">
+        <div class="ch-hdr"><span class="tag">Department 01</span><span class="dept">Digital</span></div>
+        <h3>The <em>Web</em><br/>Operator.</h3>
+        <p>Lives in your EMR, billing system, and payer portals. Reads, clicks, and enters data like a teammate.</p>
+        <div class="skills">
+          <div class="slbl">Known systems</div>
+          <ul><li>Brightree · Niko · Epic · athenahealth</li><li>UnitedHealthcare · Aetna · Cigna portals</li><li>Medicare / Medicaid MACs</li></ul>
+        </div>
+        <span class="live">● on shift</span>
+      </div>
+      <div class="ch-card">
+        <div class="ch-hdr"><span class="tag">Department 02</span><span class="dept">Documents</span></div>
+        <h3>The <em>Fax</em><br/>Reader.</h3>
+        <p>Receives inbound faxes, reads them like a document specialist, extracts the fields, routes them where they belong.</p>
+        <div class="skills">
+          <div class="slbl">Known systems</div>
+          <ul><li>Faxage · SRFax · Sfax · Ringcentral Fax</li><li>CMNs · sleep studies · scripts</li><li>Multi-page classification & OCR</li></ul>
+        </div>
+        <span class="live">● on shift</span>
+      </div>
+      <div class="ch-card">
+        <div class="ch-hdr"><span class="tag">Department 03</span><span class="dept">Voice</span></div>
+        <h3>The <em>Phone</em><br/>Caller.</h3>
+        <p>Places outbound calls to patients and providers for the pieces only voice can confirm. Transcripts and notes written to chart.</p>
+        <div class="skills">
+          <div class="slbl">Known systems</div>
+          <ul><li>RingCentral · Twilio · Dialpad</li><li>Patient outreach · verification · consent</li><li>Payer IVR navigation</li></ul>
+        </div>
+        <span class="live">● on shift</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOWS -->
+<section class="flows" id="flows">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Watch them <em>work.</em></h2>
+      <p>Every task your team runs, your AI teammates can run too — with context, reasoning, and a full activity log.</p>
+    </div>
+    <div class="flows-wrap">
+      <div class="flows-list" id="flowsList">
+        <button aria-selected="true" data-wf="intake"><span>Intake & data entry</span><span class="ct">1,240 today</span></button>
+        <button data-wf="eligibility"><span>Eligibility</span><span class="ct">862 today</span></button>
+        <button data-wf="pa"><span>Prior authorization</span><span class="ct">418 today</span></button>
+        <button data-wf="resupplies"><span>DME resupplies</span><span class="ct">1,992 today</span></button>
+        <button data-wf="appeals"><span>Denials & appeals</span><span class="ct">154 today</span></button>
+        <button data-wf="medneed"><span>Medical necessity</span><span class="ct">386 today</span></button>
+        <button data-wf="referrals"><span>Referrals</span><span class="ct">247 today</span></button>
+      </div>
+      <div class="flows-stage" id="flowsStage"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="container interview">
+    <div class="aside">
+      <div class="logo-card">
+        <img src="assets/piedmont.jpg" alt="">
+        <div>
+          <h5>Piedmont Medical Solutions</h5>
+          <p>DME · 5-state · respiratory & mobility</p>
+        </div>
+      </div>
+      <div class="stats-mini">
+        <div class="stat-mini"><div class="v">5×</div><div class="k">smaller team</div></div>
+        <div class="stat-mini"><div class="v">∞</div><div class="k">transparency</div></div>
+        <div class="stat-mini"><div class="v">0</div><div class="k">drop-off</div></div>
+        <div class="stat-mini"><div class="v">24/7</div><div class="k">coverage</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="eyebrow" style="color:var(--accent)">Customer interview · Jan 2026</div>
+      <blockquote style="margin-top:24px">
+        We transitioned to GenHealth for full-service intake and billing and couldn't be happier. By leveraging AI, they've automated <em>more work with better results</em> than our previous outsourced team — which was five times their size. As a true partner, they catch problems sooner and offer a level of transparency we never had before.
+      </blockquote>
+      <div class="by">
+        <div class="av">JB</div>
+        <div class="who"><b>Jack Bachman</b>CEO & Owner, Piedmont Medical Solutions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS as directory -->
+<section class="integrations">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Where they <em>work.</em></h2>
+      <p>Pre-built agents for the plans, EMRs, billing systems, fax lines, and phone trees your operation already runs on.</p>
+    </div>
+    <div class="dir">
+      <div class="dir-col">
+        <h4>Payers <em>& programs</em></h4>
+        <div class="dir-list">
+          <div class="dir-row"><span class="name">UnitedHealthcare</span><span class="type">Commercial · Medicare Adv.</span></div>
+          <div class="dir-row"><span class="name">Aetna</span><span class="type">Commercial · Exchange</span></div>
+          <div class="dir-row"><span class="name">Cigna</span><span class="type">Commercial</span></div>
+          <div class="dir-row"><span class="name">Humana</span><span class="type">Medicare Adv.</span></div>
+          <div class="dir-row"><span class="name">eMedNY</span><span class="type">Medicaid (NY)</span></div>
+          <div class="dir-row"><span class="name">Noridian Medicare</span><span class="type">MAC</span></div>
+          <div class="dir-row"><span class="name">myCGS DME MAC</span><span class="type">Jurisdiction B</span></div>
+          <div class="dir-row"><span class="name">EviCore</span><span class="type">Benefit management</span></div>
+        </div>
+      </div>
+      <div class="dir-col">
+        <h4>Software <em>& channels</em></h4>
+        <div class="dir-list">
+          <div class="dir-row"><span class="name">Brightree</span><span class="type">DME billing</span></div>
+          <div class="dir-row"><span class="name">Niko Health</span><span class="type">DME platform</span></div>
+          <div class="dir-row"><span class="name">Epic Systems</span><span class="type">EMR</span></div>
+          <div class="dir-row"><span class="name">athenahealth</span><span class="type">EMR / practice mgmt</span></div>
+          <div class="dir-row"><span class="name">eClinicalWorks</span><span class="type">EMR</span></div>
+          <div class="dir-row"><span class="name">Faxage</span><span class="type">Cloud fax</span></div>
+          <div class="dir-row"><span class="name">RingCentral</span><span class="type">Voice</span></div>
+          <div class="dir-row"><span class="name">Gmail · Outlook</span><span class="type">Email</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ONBOARDING -->
+<section class="onboard">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Their first <em>week.</em></h2>
+      <p>Onboarding an AI teammate looks almost exactly like onboarding a person — minus the training, the drop-off, and the turnover.</p>
+    </div>
+    <div class="checklist">
+      <div class="title">New hire: <em>UMPA Intake</em></div>
+      <div class="sub">Start date — Monday · Manager — your ops lead</div>
+      <div class="check-row done">
+        <div class="box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="label"><b>Share workflows</b><span>Record your screen. Walk through the flows you want to automate. Narrate context.</span></div>
+        <div class="when">Day 1</div>
+      </div>
+      <div class="check-row done">
+        <div class="box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="label"><b>Grant system access</b><span>Create accounts in your apps. Share credentials with the agent.</span></div>
+        <div class="when">Day 2</div>
+      </div>
+      <div class="check-row done">
+        <div class="box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="label"><b>Let GenHealth learn</b><span>Agent builds deterministic flows and runs tests for your approval.</span></div>
+        <div class="when">Days 3–5</div>
+      </div>
+      <div class="check-row">
+        <div class="box"><svg width="12" height="10" viewBox="0 0 12 10" fill="none"><path d="M1 5l3.5 3.5L11 1.5" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg></div>
+        <div class="label"><b>Set it loose</b><span>Flows go autonomous. Every execution tracked inside GenHealth's app.</span></div>
+        <div class="when">Day 6+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Open <em>roles.</em></h2>
+      <p>Specialists for the specific rooms of your operation.</p>
+    </div>
+    <div class="prod-grid">
+      <div class="resume">
+        <div class="rh"><div class="pic">I</div><div><h3>Intake & Data Entry</h3><div class="sub">Full-time · on-shift 24/7</div></div></div>
+        <p class="desc">Connect to fax or upload documents. Every field extracted, entered into your EMR and billing systems.</p>
+        <div class="kv">
+          <div class="k">Handles</div><div class="v">CMNs, sleep studies, referrals, scripts</div>
+          <div class="k">Writes to</div><div class="v">Brightree · Niko · Epic · athena</div>
+          <div class="k">Tenure</div><div class="v">Deployed since 2024</div>
+        </div>
+      </div>
+      <div class="resume">
+        <div class="rh"><div class="pic">P</div><div><h3>Prior Authorization</h3><div class="sub">Full-time · on-shift 24/7</div></div></div>
+        <p class="desc">Submit or adjudicate PAs with AI that reads plan policy against patient chart and explains its reasoning.</p>
+        <div class="kv">
+          <div class="k">Handles</div><div class="v">Provider PA · payer adjudication</div>
+          <div class="k">Policies</div><div class="v">CMS LCDs · commercial MCGs</div>
+          <div class="k">Accuracy</div><div class="v">95% vs. human adjudicator</div>
+        </div>
+      </div>
+      <div class="resume">
+        <div class="rh"><div class="pic">E</div><div><h3>Eligibility</h3><div class="sub">Full-time · on-shift 24/7</div></div></div>
+        <p class="desc">Runs eligibility without running batches. Logs in, verifies, writes coverage back to your system.</p>
+        <div class="kv">
+          <div class="k">Handles</div><div class="v">Coverage · deductible · benefits</div>
+          <div class="k">Sources</div><div class="v">Payer portals · 270/271</div>
+          <div class="k">Latency</div><div class="v">Avg. 42s per patient</div>
+        </div>
+      </div>
+      <div class="resume">
+        <div class="rh"><div class="pic">R</div><div><h3>DME Resupplies</h3><div class="sub">Full-time · on-shift 24/7</div></div></div>
+        <p class="desc">Patient outreach, data entry, fulfillment coordination — end to end, with provider fax loops closed.</p>
+        <div class="kv">
+          <div class="k">Handles</div><div class="v">CPAP · CGM · wound · mobility</div>
+          <div class="k">Outreach</div><div class="v">SMS · email · voice</div>
+          <div class="k">Cycle</div><div class="v">Automated per payer rule</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="sec-head">
+      <h2>A team that <em>compounds.</em></h2>
+      <p>Trailing 30-day performance across deployed customers.</p>
+    </div>
+    <div class="stats-row">
+      <div class="sbig">
+        <div class="num" data-counter="95" data-suffix="%">0<em>%</em></div>
+        <div class="k">PA accuracy</div>
+        <p>Accuracy of AI adjudicating prior auth cases end-to-end.</p>
+      </div>
+      <div class="sbig">
+        <div class="num" data-counter="4" data-suffix="×">0<em>×</em></div>
+        <div class="k">Productivity</div>
+        <p>More efficient administrative productivity against baseline.</p>
+      </div>
+      <div class="sbig">
+        <div class="num" data-counter="10" data-suffix="×">0<em>×</em></div>
+        <div class="k">ROI</div>
+        <p>Return of cost savings relative to operating expense in year one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission" id="company">
+  <div class="container">
+    <div class="letter">
+      <div class="eyebrow">A letter from the founders</div>
+      <h2>GenHealth automates the administrative burden for providers, health plans, and DME suppliers. We deploy <b>AI employees</b> that navigate internal and external applications, portals, fax, and phone systems your teams use every day. <em>They onboard like a new hire, work inside the tools you already use, and show their work on every task.</em> Your people stay the managers.</h2>
+      <div class="sign">
+        <span>Durham, NC · 2026</span>
+        <em>— The GenHealth team</em>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <h2>Ready to <em>hire?</em></h2>
+    <div class="c-grid">
+      <div class="c-card">
+        <div class="eyebrow" style="color:var(--accent)">01 · Email</div>
+        <h3>Send a <em>message</em></h3>
+        <p>Ask a question, share a workflow, or request our security packet.</p>
+        <form class="c-form" onsubmit="event.preventDefault()">
+          <input type="email" placeholder="you@clinic.com">
+          <select><option>Select organization…</option><option>Provider</option><option>DME</option><option>Health plan</option><option>Patient</option><option>Other</option></select>
+          <textarea placeholder="Tell us about a workflow."></textarea>
+          <button class="btn btn-primary" type="submit">Send →</button>
+        </form>
+      </div>
+      <div class="c-card">
+        <div class="eyebrow" style="color:var(--accent)">02 · Meet</div>
+        <h3>Book a <em>call</em></h3>
+        <p>30 minutes. We'll walk a live agent through your workflow and leave you with a deployment plan.</p>
+        <div style="margin:8px 0;padding:14px;background:var(--bg);border:1px solid var(--rule);border-radius:8px">
+          <div class="eyebrow" style="color:var(--muted);margin-bottom:10px">Next available</div>
+          <div style="display:flex;gap:6px;font-family:'JetBrains Mono',monospace;font-size:13px">
+            <div style="flex:1;padding:8px;text-align:center;background:var(--bg-2);border-radius:4px">Tue 9:30</div>
+            <div style="flex:1;padding:8px;text-align:center;background:var(--ink);color:var(--bg);border-radius:4px">Wed 14:00</div>
+            <div style="flex:1;padding:8px;text-align:center;background:var(--bg-2);border-radius:4px">Thu 11:00</div>
+          </div>
+        </div>
+        <a class="btn btn-ghost" href="#" style="margin-top:auto">Open calendar →</a>
+      </div>
+      <div class="c-card">
+        <div class="eyebrow" style="color:var(--accent)">03 · Try free</div>
+        <h3>Meet <em>UMPA</em></h3>
+        <p>Create a free account. Deploy one AI agent to automate intake, eligibility, or PA inside your EMR.</p>
+        <a class="btn btn-primary" href="https://umpa.genhealth.ai" style="margin-top:auto">Create free account →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-colophon">
+      <div class="foot-brand">
+        <div class="brand"><span class="mark"></span><span>GenHealth</span></div>
+        <p class="tag">AI employees for healthcare operations. Providers, plans, and DME suppliers.</p>
+        <h5>Enterprise security</h5>
+        <ul><li><a href="https://trust.genhealth.ai">Trust Center</a></li><li><a href="https://status.genhealth.ai">Status</a></li></ul>
+        <div class="seals"><img src="assets/socII.png" alt=""><img src="assets/hipaa.png" alt=""></div>
+      </div>
+      <div>
+        <h5>Workflows</h5>
+        <ul>
+          <li><a href="#">Automate workflows</a></li><li><a href="#">Intake</a></li>
+          <li><a href="#">Prior authorization</a></li><li><a href="#">Eligibility</a></li>
+          <li><a href="#">Resupplies</a></li><li><a href="#">Medical necessity</a></li>
+          <li><a href="#">Referrals</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support & policies</h5>
+        <ul>
+          <li><a href="#">Documentation</a></li><li><a href="mailto:support@genhealth.ai">Tech support</a></li>
+          <li><a href="#">Privacy</a></li><li><a href="#">Security</a></li>
+          <li><a href="#">Terms</a></li><li><a href="#">BAA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">Home</a></li><li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li><li><a href="#">Jobs</a></li>
+          <li><a href="#">ROI calculator</a></li><li><a href="#">Medical codes</a></li>
+          <li><a href="#">Medical policies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 GenHealth.ai · All rights reserved</span>
+      <em>AI employees for healthcare.</em>
+    </div>
+  </div>
+</footer>
+
+<script>
+const nav=document.getElementById('topnav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8));
+
+// ROSTER
+const roster=[
+  {init:'U',name:'Umpa',role:'Intake agent',dept:'Web',started:'2024-06',runs:'1.4M'},
+  {init:'R',name:'Ria',role:'Resupplies',dept:'Voice',started:'2024-09',runs:'892K'},
+  {init:'P',name:'Pax',role:'Prior auth',dept:'Web',started:'2025-01',runs:'241K'},
+  {init:'E',name:'Eli',role:'Eligibility',dept:'Web',started:'2024-07',runs:'2.1M'},
+  {init:'F',name:'Fin',role:'Fax reader',dept:'Docs',started:'2024-08',runs:'3.8M'},
+  {init:'A',name:'Alba',role:'Appeals',dept:'Web',started:'2025-02',runs:'38K'},
+];
+document.getElementById('roster').innerHTML=roster.map(r=>`
+  <div class="card-emp">
+    <div class="pic">
+      <div class="online"></div>
+      <div class="face">${r.init}</div>
+      <div class="badge">${r.dept}</div>
+    </div>
+    <h4>${r.name}</h4>
+    <div class="role">${r.role}</div>
+    <div class="stat-row"><span class="k">Started</span><span class="v">${r.started}</span></div>
+    <div class="stat-row" style="border-top:0;padding-top:4px"><span class="k">Runs</span><span class="v">${r.runs}</span></div>
+  </div>
+`).join('');
+
+// WORKFLOWS
+const wf={
+  intake:{agent:'Umpa',dept:'Intake · Web',title:'Intake & <em>data entry</em>.',lede:'Connect to fax or upload docs. Umpa reads every field and enters it into your EMR and billing system.',
+    log:[['09:14:02','Received fax: <b>CMN · CPAP</b> (4 pages) from Dr. Morales'],
+         ['09:14:08','OCR complete · <span class="tag">46 fields</span> detected'],
+         ['09:14:11','Matched patient <b>Doe, Jane</b> · DOB 1962-03-14', true],
+         ['09:14:15','Writing to <span class="tag">Brightree intake queue</span>'],
+         ['09:14:21','Closed · intake #<b>4421</b> ready for fulfillment']]},
+  eligibility:{agent:'Eli',dept:'Eligibility · Web',title:'Eligibility.',lede:'Eli logs into payer portals, verifies coverage, and writes results back to your system.',
+    log:[['10:02:12','Queued <b>18</b> patients for verification'],
+         ['10:02:20','Logged into <span class="tag">UHC Provider</span>'],
+         ['10:02:34','Verified member <b>****-82019</b> · <span class="tag">active · in-network</span>',true],
+         ['10:02:36','Deductible YTD: 1200 / 2400 · copay $30'],
+         ['10:02:40','Wrote back to EMR · queue advanced']]},
+  pa:{agent:'Pax',dept:'PA · Utilization',title:'Prior <em>authorization</em>.',lede:'Pax reads plan policy against patient chart, then explains its reasoning.',
+    log:[['11:33:08','Request: <span class="tag">E0601 CPAP device</span>'],
+         ['11:33:09','Loaded policy <span class="tag">Aetna 0004 v2024.3</span>'],
+         ['11:33:14','Chart review: AHI 14.2 · Dx G47.33 · 3 citations'],
+         ['11:33:17','Necessity: <b>met</b>',true],
+         ['11:33:23','Submitted · <b>approved</b> · ref PA-77431']]},
+  resupplies:{agent:'Ria',dept:'Resupplies · Voice',title:'DME <em>resupplies</em>.',lede:'Ria calls patients, confirms needs, and schedules fulfillment — every loop closed.',
+    log:[['08:45:02','Dialed <b>Ellis, Marcus</b> · CPAP resupply cycle'],
+         ['08:45:40','Patient confirmed mask + hose · no tubing'],
+         ['08:45:58','Consent recorded · transcript saved',true],
+         ['08:46:01','Order written · <span class="tag">Brightree FO #8812</span>'],
+         ['08:46:04','Ship date set · 2026-02-14']]},
+  appeals:{agent:'Alba',dept:'Appeals · Denials',title:'Denials & <em>appeals</em>.',lede:'Alba drafts appeals with policy language, chart evidence, and prior decisions attached.',
+    log:[['13:20:11','Claim #CMS-77431 denied · <span class="tag">CO-50</span>'],
+         ['13:20:14','Retrieved policy + 3 chart notes'],
+         ['13:20:28','Drafted 1-page appeal · formal tone'],
+         ['13:20:29','Cited §2.1.a, §3.2.c',true],
+         ['13:20:31','Ready for manager review']]},
+  medneed:{agent:'Pax',dept:'Necessity · Clinical',title:'Medical <em>necessity</em>.',lede:'Every decision tied back to the specific chart evidence that drove it.',
+    log:[['14:08:00','Service <span class="tag">K0554 CGM</span>'],
+         ['14:08:02','Policy: <span class="tag">CMS LCD L33822</span>'],
+         ['14:08:09','Evidence: HbA1c 8.4% · 4 chart refs'],
+         ['14:08:12','Necessity: <b>met</b> · rationale auto-drafted',true],
+         ['14:08:15','Attached to claim package']]},
+  referrals:{agent:'Fin',dept:'Referrals · Docs',title:'Referrals.',lede:'Fin sends, tracks, and closes referrals across provider partners.',
+    log:[['15:55:04','Referral to cardiology · from Dr. Chen'],
+         ['15:55:07','Transmitted via fax + Novant portal'],
+         ['15:55:20','Scheduled 2026-04-29',true],
+         ['15:55:24','Notified PCP · loop logged'],
+         ['15:55:25','Follow-up set for 2026-05-02']]},
+};
+function renderFlow(k){
+  document.querySelectorAll('#flowsList button').forEach(b=>b.setAttribute('aria-selected',b.dataset.wf===k));
+  const d=wf[k];
+  document.getElementById('flowsStage').innerHTML=`
+    <div class="fs-top">
+      <div class="avatar">${d.agent[0]}</div>
+      <div class="who"><b>${d.agent}</b><span>${d.dept}</span></div>
+      <div class="status">working</div>
+    </div>
+    <div class="fs-body">
+      <h3>${d.title}</h3>
+      <p class="lede">${d.lede}</p>
+      <div class="log">
+        <div class="log-head"><span>activity</span><span>shift · today</span></div>
+        <div class="log-body">
+          ${d.log.map(e=>`<div class="log-entry${e[2]?' hl':''}"><span class="t">${e[0]}</span><span class="m">${e[1]}</span></div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="fs-foot"><span>supervised by <b>ops lead</b></span><span>5 of 5 steps complete</span></div>
+  `;
+}
+document.querySelectorAll('#flowsList button').forEach(b=>b.addEventListener('click',()=>renderFlow(b.dataset.wf)));
+renderFlow('intake');
+
+// STATS counter
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const el=e.target, t=+el.dataset.counter, s=el.dataset.suffix||'';
+  const start=performance.now(),dur=1400;
+  function tick(ts){const p=Math.min(1,(ts-start)/dur),ea=1-Math.pow(1-p,3);el.innerHTML=`${Math.round(ea*t)}<em>${s}</em>`;if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick); io.unobserve(el);
+}),{threshold:.4});
+document.querySelectorAll('[data-counter]').forEach(c=>io.observe(c));
+</script>
+</body>
+</html>

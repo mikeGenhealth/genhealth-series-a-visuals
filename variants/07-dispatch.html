@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GenHealth — Dispatch for healthcare operations.</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&family=Fraunces:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E1116;--panel:#161A21;--panel-2:#1E242E;--ink:#E8E5DC;--muted:#7A8291;--rule:#2A313C;
+    --signal:#F2B04A;--go:#6DC89B;--stop:#E06A5F;--cool:#7FB4D4;
+    --rail:#252C37;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--ink);font-family:'Space Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
+  body{font-size:15px;line-height:1.5;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .mono{font-family:'JetBrains Mono',monospace;letter-spacing:-.01em}
+  .serif{font-family:'Fraunces',serif}
+  .eyebrow{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .container{max-width:1360px;margin:0 auto;padding:0 32px}
+  @media (max-width:720px){.container{padding:0 20px}}
+
+  nav.top{position:sticky;top:0;z-index:50;background:rgba(14,17,22,.85);backdrop-filter:blur(14px);border-bottom:1px solid var(--rule)}
+  nav.top .inner{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-size:20px;font-weight:400;letter-spacing:-.01em}
+  .brand .mk{width:10px;height:10px;background:var(--go);border-radius:50%;box-shadow:0 0 10px var(--go);animation:pulse 1.4s infinite}
+  @keyframes pulse{50%{opacity:.5}}
+  .nav-links{display:flex;gap:24px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .nav-links a:hover{color:var(--signal)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;font-size:12px;font-family:'JetBrains Mono',monospace;font-weight:500;letter-spacing:.04em;text-transform:uppercase;border:1px solid var(--rule);cursor:pointer;transition:all .15s;background:transparent;color:var(--ink)}
+  .btn:hover{border-color:var(--signal);color:var(--signal)}
+  .btn-primary{background:var(--signal);color:#121820;border-color:var(--signal)}
+  .btn-primary:hover{background:#FFC561;border-color:#FFC561;color:#121820}
+
+  section.hero{padding:40px 0 72px}
+  .strip{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;flex-wrap:wrap;gap:8px}
+  .strip .cell{display:flex;gap:8px}.strip .cell b{color:var(--ink);font-weight:500}
+  .hero-grid{display:grid;grid-template-columns:7fr 5fr;gap:48px;padding:56px 0 0}
+  @media (max-width:900px){.hero-grid{grid-template-columns:1fr;gap:40px}}
+  h1.disp{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(56px,9vw,148px);line-height:.92;letter-spacing:-.035em}
+  h1.disp em{font-style:italic;color:var(--signal)}
+  .hero-lede{margin-top:32px;padding-top:24px;border-top:1px solid var(--rule);max-width:560px;color:var(--ink);font-size:18px;line-height:1.5}
+  .hero-lede b{color:var(--signal);font-weight:500}
+  .hero-cta{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+
+  /* DISPATCH BOARD */
+  .board{background:var(--panel);border:1px solid var(--rule);position:relative}
+  .board .bhd{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;border-bottom:1px solid var(--rule);background:var(--panel-2);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+  .board .bhd .go{display:inline-flex;align-items:center;gap:6px;color:var(--go)}
+  .board .bhd .go::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--go);box-shadow:0 0 6px var(--go);animation:pulse 1.2s infinite}
+  .board .ticker{padding:14px;display:flex;flex-direction:column;gap:2px;max-height:420px;overflow:hidden;position:relative}
+  .board .ticker::after{content:"";position:absolute;inset:auto 0 0 0;height:40px;background:linear-gradient(transparent,var(--panel))}
+  .ticker .row{display:grid;grid-template-columns:48px 64px 1fr 60px;gap:12px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:12px;border-bottom:1px dashed var(--rail);align-items:baseline;animation:slide .6s ease}
+  @keyframes slide{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .ticker .row .t{color:var(--muted)}
+  .ticker .row .chan{padding:2px 6px;font-size:10px;letter-spacing:.06em;text-align:center}
+  .ticker .row .chan.web{background:rgba(127,180,212,.15);color:var(--cool)}
+  .ticker .row .chan.fax{background:rgba(242,176,74,.15);color:var(--signal)}
+  .ticker .row .chan.voice{background:rgba(109,200,155,.15);color:var(--go)}
+  .ticker .row .m{color:var(--ink)}
+  .ticker .row .m .hl{color:var(--signal)}
+  .ticker .row .m .pid{color:var(--cool)}
+  .ticker .row .st{text-align:right;font-size:10px;color:var(--go);text-transform:uppercase;letter-spacing:.06em}
+  .ticker .row .st.wait{color:var(--signal)}
+  .ticker .row .st.err{color:var(--stop)}
+  .board .bfoot{padding:8px 14px;border-top:1px solid var(--rule);background:var(--panel-2);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}
+
+  /* METRICS STRIP */
+  .mstrip{margin-top:56px;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule)}
+  @media (max-width:820px){.mstrip{grid-template-columns:1fr 1fr}}
+  .mcell{padding:20px;border-right:1px solid var(--rule);font-family:'JetBrains Mono',monospace}
+  .mcell:last-child{border-right:0}
+  .mcell .k{font-size:10px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:8px}
+  .mcell .v{font-family:'Fraunces',serif;font-size:38px;font-weight:400;letter-spacing:-.02em;line-height:1;font-variant-numeric:tabular-nums}
+  .mcell .v em{color:var(--signal);font-style:italic}
+  .mcell .spark{height:20px;margin-top:8px;display:flex;gap:2px;align-items:flex-end}
+  .mcell .spark span{flex:1;background:var(--signal);opacity:.5;min-height:2px}
+
+  .sec{padding:120px 0;border-top:1px solid var(--rule);position:relative}
+  .sec-head{display:grid;grid-template-columns:auto 1fr;gap:32px;margin-bottom:56px;align-items:end;padding-bottom:18px;border-bottom:1px solid var(--rule)}
+  .sec-head .num{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--signal);letter-spacing:.12em;text-transform:uppercase;padding-top:8px}
+  .sec-head h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(36px,5vw,64px);line-height:1;letter-spacing:-.025em;max-width:20ch}
+  .sec-head h2 em{font-style:italic;color:var(--signal)}
+  .sec-head .lede{margin-top:14px;color:var(--muted);max-width:620px;font-size:16px;line-height:1.5}
+
+  /* CHANNELS: map-like */
+  .channels{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:820px){.channels{grid-template-columns:1fr}}
+  .chan-card{background:var(--panel);border:1px solid var(--rule);padding:28px;position:relative;display:flex;flex-direction:column;min-height:380px}
+  .chan-card .ct{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:20px;display:flex;justify-content:space-between}
+  .chan-card.web .ct .live{color:var(--cool)}
+  .chan-card.fax .ct .live{color:var(--signal)}
+  .chan-card.voice .ct .live{color:var(--go)}
+  .chan-card h3{font-family:'Fraunces',serif;font-size:52px;font-weight:400;letter-spacing:-.02em;line-height:.95;margin-bottom:12px}
+  .chan-card h3 em{font-style:italic}
+  .chan-card.web h3 em{color:var(--cool)}
+  .chan-card.fax h3 em{color:var(--signal)}
+  .chan-card.voice h3 em{color:var(--go)}
+  .chan-card p{color:var(--muted);font-size:14px;margin-bottom:24px}
+  .chan-card .diag{margin-top:auto;padding-top:18px;border-top:1px dashed var(--rail);display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono',monospace;font-size:11px}
+  .chan-card .diag .r{display:flex;justify-content:space-between;padding:3px 0}
+  .chan-card .diag .r .k{color:var(--muted)}
+  .chan-card .diag .r .v{color:var(--ink)}
+
+  /* WORKFLOWS: route selector + live run */
+  .flows{display:grid;grid-template-columns:3fr 9fr;gap:0;border:1px solid var(--rule);background:var(--panel)}
+  @media (max-width:900px){.flows{grid-template-columns:1fr}}
+  .flows .list{background:var(--panel-2);border-right:1px solid var(--rule)}
+  @media (max-width:900px){.flows .list{border-right:0;border-bottom:1px solid var(--rule)}}
+  .flows .list button{width:100%;text-align:left;background:transparent;border:0;padding:14px 16px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);cursor:pointer;border-bottom:1px solid var(--rail);display:flex;justify-content:space-between;align-items:center;text-transform:uppercase;letter-spacing:.06em;transition:color .15s}
+  .flows .list button:hover{color:var(--ink)}
+  .flows .list button[aria-selected="true"]{color:var(--signal);background:linear-gradient(90deg,rgba(242,176,74,.08),transparent)}
+  .flows .list button .ct{color:var(--muted);font-size:10px;letter-spacing:.1em}
+  .flows .list button[aria-selected="true"] .ct{color:var(--signal)}
+  .flows .stage{display:flex;flex-direction:column}
+  .flows .stage .shd{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid var(--rule);background:var(--panel-2);font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+  .flows .stage .shd .live{color:var(--go);display:inline-flex;gap:6px;align-items:center}
+  .flows .stage .shd .live::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--go);box-shadow:0 0 6px var(--go);animation:pulse 1.1s infinite}
+  .flows .stage .body{padding:32px;flex:1}
+  .flows .stage h3{font-family:'Fraunces',serif;font-size:42px;font-weight:400;letter-spacing:-.02em;line-height:1;margin-bottom:12px}
+  .flows .stage h3 em{font-style:italic;color:var(--signal)}
+  .flows .stage .lede{color:var(--muted);max-width:560px;margin-bottom:28px}
+  .flows .stage .route{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--rule)}
+  .flows .stage .route .step{flex:1;padding:14px;border-right:1px solid var(--rule);font-family:'JetBrains Mono',monospace;font-size:11px;position:relative}
+  .flows .stage .route .step:last-child{border-right:0}
+  .flows .stage .route .step.done{background:rgba(109,200,155,.08)}
+  .flows .stage .route .step.live{background:rgba(242,176,74,.1)}
+  .flows .stage .route .step .n{color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-size:9px;margin-bottom:4px}
+  .flows .stage .route .step .l{color:var(--ink);font-size:12px;margin-bottom:6px}
+  .flows .stage .route .step .m{color:var(--muted)}
+  .flows .stage .route .step.done .l::after{content:" ●";color:var(--go)}
+  .flows .stage .route .step.live .l::after{content:" ●";color:var(--signal);animation:pulse 1s infinite}
+  .flows .stage .receipt{padding:14px 18px;border:1px solid var(--rule);background:var(--bg);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+  .flows .stage .receipt b{color:var(--go)}
+
+  /* TESTIMONIAL */
+  .quote{display:grid;grid-template-columns:4fr 8fr;gap:0;border:1px solid var(--rule);background:var(--panel)}
+  @media (max-width:820px){.quote{grid-template-columns:1fr}}
+  .quote .meta{padding:28px;border-right:1px solid var(--rule);background:var(--panel-2);display:flex;flex-direction:column;gap:16px}
+  @media (max-width:820px){.quote .meta{border-right:0;border-bottom:1px solid var(--rule)}}
+  .quote .meta img{width:100%;aspect-ratio:4/3;object-fit:cover;filter:grayscale(.3) contrast(1.05)}
+  .quote .meta .plate{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;display:grid;grid-template-columns:auto 1fr;gap:6px 14px}
+  .quote .meta .plate b{color:var(--ink);font-weight:500}
+  .quote .body{padding:40px;display:flex;flex-direction:column;gap:28px;justify-content:center}
+  .quote blockquote{font-family:'Fraunces',serif;font-size:clamp(22px,2.7vw,32px);line-height:1.28;letter-spacing:-.015em;font-weight:400;text-wrap:balance}
+  .quote blockquote em{font-style:italic;color:var(--signal)}
+  .quote .by{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;padding-top:20px;border-top:1px solid var(--rule)}
+  .quote .by b{display:block;color:var(--ink);font-family:'Space Grotesk',sans-serif;text-transform:none;letter-spacing:0;font-size:14px;font-weight:500;margin-bottom:2px}
+
+  /* INTEGRATIONS as station list */
+  .stations{border:1px solid var(--rule);background:var(--panel)}
+  .station{display:grid;grid-template-columns:80px 1fr auto;gap:20px;padding:14px 20px;border-bottom:1px solid var(--rail);align-items:center;font-family:'JetBrains Mono',monospace;font-size:12px;transition:background .15s}
+  .station:hover{background:var(--panel-2)}
+  .station:last-child{border-bottom:0}
+  .station .code{color:var(--signal);letter-spacing:.06em}
+  .station .nm{color:var(--ink);font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:500}
+  .station .nm span{color:var(--muted);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:400;margin-left:10px}
+  .station .st{color:var(--go);font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+
+  /* ONBOARDING: shift schedule */
+  .shifts{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--rule)}
+  @media (max-width:820px){.shifts{grid-template-columns:1fr 1fr}}
+  @media (max-width:520px){.shifts{grid-template-columns:1fr}}
+  .shift{padding:28px;border-right:1px solid var(--rule);position:relative}
+  .shift:last-child{border-right:0}
+  @media (max-width:820px){.shift:nth-child(2){border-right:0}}
+  .shift .w{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--signal);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px}
+  .shift h4{font-family:'Fraunces',serif;font-size:26px;font-weight:400;letter-spacing:-.015em;line-height:1;margin-bottom:10px}
+  .shift h4 em{font-style:italic}
+  .shift p{color:var(--muted);font-size:13px}
+  .shift .bar{margin-top:18px;height:4px;background:var(--rail)}
+  .shift .bar span{display:block;height:100%;background:var(--signal)}
+
+  /* PRODUCTS */
+  .bay{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--rule)}
+  @media (max-width:820px){.bay{grid-template-columns:1fr}}
+  .bay .slot{padding:32px;border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);background:var(--panel);position:relative}
+  .bay .slot:nth-child(2n){border-right:0}
+  .bay .slot:nth-last-child(-n+2){border-bottom:0}
+  @media (max-width:820px){.bay .slot{border-right:0}.bay .slot:last-child{border-bottom:0}}
+  .bay .slot .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  .bay .slot .hd .pid{color:var(--signal)}
+  .bay .slot h3{font-family:'Fraunces',serif;font-size:32px;font-weight:400;letter-spacing:-.02em;margin-bottom:12px}
+  .bay .slot h3 em{font-style:italic;color:var(--signal)}
+  .bay .slot p{color:var(--muted);font-size:14px;margin-bottom:20px;max-width:460px}
+  .bay .slot .kv{display:grid;grid-template-columns:auto 1fr;gap:6px 20px;padding-top:16px;border-top:1px dashed var(--rail);font-family:'JetBrains Mono',monospace;font-size:11px}
+  .bay .slot .kv .k{color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+  .bay .slot .kv .v{color:var(--ink)}
+
+  /* STATS */
+  .dials{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule);background:var(--panel)}
+  @media (max-width:820px){.dials{grid-template-columns:1fr}}
+  .dial{padding:44px 32px;border-right:1px solid var(--rule)}
+  .dial:last-child{border-right:0}
+  @media (max-width:820px){.dial{border-right:0;border-bottom:1px solid var(--rule)}.dial:last-child{border-bottom:0}}
+  .dial .k{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:14px}
+  .dial .n{font-family:'Fraunces',serif;font-size:clamp(88px,12vw,172px);font-weight:400;letter-spacing:-.04em;line-height:.9;font-variant-numeric:tabular-nums}
+  .dial .n em{font-style:italic;color:var(--signal)}
+  .dial .l{margin-top:14px;color:var(--muted);font-size:14px;max-width:300px}
+  .dial .bar{margin-top:20px;height:3px;background:var(--rail);position:relative}
+  .dial .bar span{display:block;height:100%;background:var(--signal)}
+
+  /* MISSION */
+  .mission{background:var(--signal);color:#1A1207;padding:80px;position:relative}
+  @media (max-width:720px){.mission{padding:40px 24px}}
+  .mission .eyebrow{color:rgba(26,18,7,.55)}
+  .mission h2{font-family:'Fraunces',serif;font-weight:400;font-size:clamp(24px,2.8vw,36px);line-height:1.32;letter-spacing:-.01em;margin-top:20px;max-width:860px;text-wrap:pretty}
+  .mission h2 em{font-style:italic}
+  .mission h2 b{font-weight:500}
+  .mission .sig{margin-top:36px;padding-top:20px;border-top:1px solid rgba(26,18,7,.25);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase}
+  .mission .sig em{font-family:'Fraunces',serif;font-style:italic;font-size:18px;letter-spacing:0;text-transform:none}
+
+  /* CONTACT */
+  .c-grid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--rule)}
+  @media (max-width:820px){.c-grid{grid-template-columns:1fr}}
+  .c-cell{padding:28px;border-right:1px solid var(--rule);background:var(--panel);display:flex;flex-direction:column;gap:12px}
+  .c-cell:last-child{border-right:0}
+  @media (max-width:820px){.c-cell{border-right:0;border-bottom:1px solid var(--rule)}.c-cell:last-child{border-bottom:0}}
+  .c-cell .num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--signal);letter-spacing:.12em;text-transform:uppercase}
+  .c-cell h3{font-family:'Fraunces',serif;font-size:28px;font-weight:400;letter-spacing:-.02em}
+  .c-cell h3 em{font-style:italic;color:var(--signal)}
+  .c-cell p{font-size:13px;color:var(--muted)}
+  .c-form{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+  .c-form input,.c-form select,.c-form textarea{background:var(--bg);border:1px solid var(--rule);padding:10px 12px;font-family:inherit;font-size:13px;outline:none;color:var(--ink);border-radius:0}
+  .c-form input:focus,.c-form textarea:focus,.c-form select:focus{border-color:var(--signal)}
+  .c-form textarea{resize:vertical;min-height:70px}
+  .c-cell .btn{margin-top:auto;align-self:flex-start}
+
+  footer{background:var(--panel);border-top:1px solid var(--rule);padding:60px 0 24px;margin-top:80px}
+  .foot{display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:40px}
+  @media (max-width:820px){.foot{grid-template-columns:1fr 1fr}}
+  .foot-brand .tag{color:var(--muted);font-size:13px;max-width:300px;margin:14px 0 16px;line-height:1.5}
+  .foot h5{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);margin-bottom:14px;text-transform:uppercase}
+  .foot ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  .foot ul a{color:var(--ink);font-size:13px}
+  .foot ul a:hover{color:var(--signal)}
+  .foot-brand .seals{display:flex;gap:8px;margin-top:12px}
+  .foot-brand .seals img{height:40px;background:#fff;border:1px solid var(--rule);padding:3px 5px}
+  .foot-bottom{margin-top:56px;padding-top:20px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;flex-wrap:wrap;gap:10px}
+  .foot-bottom em{font-family:'Fraunces',serif;font-style:italic;font-size:15px;color:var(--signal);letter-spacing:0;text-transform:none}
+</style>
+</head>
+<body>
+<nav class="top">
+  <div class="container inner">
+    <a class="brand" href="#"><span class="mk"></span><span>GenHealth</span></a>
+    <div class="nav-links"><a href="#channels">Channels</a><a href="#flows">Workflows</a><a href="#products">Products</a><a href="#company">Company</a></div>
+    <a class="btn btn-primary" href="#contact">Request demo</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="container">
+    <div class="strip">
+      <span class="cell">FILE / <b>GH-SA-001</b> · DURHAM, NC</span>
+      <span class="cell">DISPATCH / <b>LIVE</b> · 03:42 EDT</span>
+      <span class="cell">● <b>18,432</b> AGENTS ON SHIFT</span>
+    </div>
+
+    <div class="hero-grid">
+      <div>
+        <h1 class="disp">Dispatch for<br/>healthcare <em>ops.</em></h1>
+        <p class="hero-lede">GenHealth is the <b>nerve center</b> for administrative work. AI employees dispatched across web, fax, and phone — handling intake, eligibility, prior auth, claims, denials, and posting inside the systems your team already uses.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#contact">Request demo →</a>
+          <a class="btn" href="https://umpa.genhealth.ai">Deploy free agent</a>
+        </div>
+      </div>
+
+      <div class="board">
+        <div class="bhd"><span>DISPATCH BOARD · TODAY</span><span class="go">LIVE</span></div>
+        <div class="ticker" id="ticker"></div>
+        <div class="bfoot"><span>CH · web / fax / voice</span><span>UPDATED <span id="updT">03:42:07</span></span></div>
+      </div>
+    </div>
+
+    <div class="mstrip">
+      <div class="mcell"><div class="k">Intake · today</div><div class="v">1,240</div><div class="spark"><span style="height:30%"></span><span style="height:52%"></span><span style="height:68%"></span><span style="height:45%"></span><span style="height:80%"></span><span style="height:62%"></span><span style="height:90%"></span></div></div>
+      <div class="mcell"><div class="k">PA decisions</div><div class="v">418</div><div class="spark"><span style="height:22%"></span><span style="height:40%"></span><span style="height:58%"></span><span style="height:70%"></span><span style="height:52%"></span><span style="height:78%"></span><span style="height:65%"></span></div></div>
+      <div class="mcell"><div class="k">Resupplies dialed</div><div class="v">1,992</div><div class="spark"><span style="height:42%"></span><span style="height:58%"></span><span style="height:75%"></span><span style="height:90%"></span><span style="height:62%"></span><span style="height:80%"></span><span style="height:95%"></span></div></div>
+      <div class="mcell"><div class="k">Accuracy · trailing 30d</div><div class="v"><em>95</em>%</div><div class="spark"><span style="height:88%"></span><span style="height:92%"></span><span style="height:90%"></span><span style="height:94%"></span><span style="height:95%"></span><span style="height:93%"></span><span style="height:96%"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="channels">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 01 / CHANNELS</div>
+      <div>
+        <h2>Three <em>dispatch</em> lanes.</h2>
+        <p class="lede">Healthcare ops lives across browsers, fax lines, and phone trees. GenHealth dispatches agents across all three — and moves work seamlessly between them.</p>
+      </div>
+    </div>
+    <div class="channels">
+      <div class="chan-card web">
+        <div class="ct"><span>CH · 01</span><span class="live">● active</span></div>
+        <h3>The <em>Web</em>Operator.</h3>
+        <p>Navigates EMRs, billing systems, and payer portals like a teammate — click-by-click, with full audit trail.</p>
+        <div class="diag">
+          <div class="r"><span class="k">dispatched</span><span class="v">1,240 / hr</span></div>
+          <div class="r"><span class="k">systems</span><span class="v">Brightree · Epic · UHC</span></div>
+          <div class="r"><span class="k">uptime</span><span class="v">99.9% / 90d</span></div>
+        </div>
+      </div>
+      <div class="chan-card fax">
+        <div class="ct"><span>CH · 02</span><span class="live">● active</span></div>
+        <h3>The <em>Fax</em>Reader.</h3>
+        <p>OCR with field extraction. Inbound documents classified, parsed, and handed cleanly into the right workflow.</p>
+        <div class="diag">
+          <div class="r"><span class="k">dispatched</span><span class="v">3,812 / day</span></div>
+          <div class="r"><span class="k">types</span><span class="v">CMN · Rx · sleep studies</span></div>
+          <div class="r"><span class="k">fields avg</span><span class="v">46 / doc</span></div>
+        </div>
+      </div>
+      <div class="chan-card voice">
+        <div class="ct"><span>CH · 03</span><span class="live">● active</span></div>
+        <h3>The <em>Voice</em>Caller.</h3>
+        <p>Outbound calls for the data only voice can collect — verifications, consent, the missing detail.</p>
+        <div class="diag">
+          <div class="r"><span class="k">dispatched</span><span class="v">1,992 / day</span></div>
+          <div class="r"><span class="k">uses</span><span class="v">RingCentral · Twilio</span></div>
+          <div class="r"><span class="k">avg call</span><span class="v">3m 42s</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="flows">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 02 / WORKFLOWS</div>
+      <div>
+        <h2>Every route, <em>tracked.</em></h2>
+        <p class="lede">Each workflow dispatches through a traceable route — policy fetched, chart read, action taken, receipt returned. Open any run, see every leg.</p>
+      </div>
+    </div>
+    <div class="flows">
+      <div class="list" id="flowsList">
+        <button aria-selected="true" data-wf="intake"><span>Intake & data entry</span><span class="ct">1,240</span></button>
+        <button data-wf="eligibility"><span>Eligibility</span><span class="ct">862</span></button>
+        <button data-wf="pa"><span>Prior authorization</span><span class="ct">418</span></button>
+        <button data-wf="resupplies"><span>DME resupplies</span><span class="ct">1,992</span></button>
+        <button data-wf="appeals"><span>Denials & appeals</span><span class="ct">154</span></button>
+        <button data-wf="medneed"><span>Medical necessity</span><span class="ct">386</span></button>
+        <button data-wf="referrals"><span>Referrals</span><span class="ct">247</span></button>
+      </div>
+      <div class="stage" id="flowsStage"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 03 / FIELD REPORT</div>
+      <div>
+        <h2>Deployed at <em>Piedmont.</em></h2>
+        <p class="lede">A DME supplier replaced a five-times-larger outsourced team with GenHealth — and gained transparency they'd never had before.</p>
+      </div>
+    </div>
+    <div class="quote">
+      <div class="meta">
+        <img src="assets/piedmont.jpg" alt="">
+        <div class="plate">
+          <span>ACCT</span><b>PIEDMONT-MED</b>
+          <span>DEPLOYED</span><b>2024-07</b>
+          <span>WORKFLOWS</span><b>12 / 12</b>
+          <span>PRIOR TEAM</span><b>5× larger</b>
+        </div>
+      </div>
+      <div class="body">
+        <blockquote>We transitioned to GenHealth for full-service intake and billing and couldn't be happier. By leveraging AI, they've automated <em>more work with better results</em> than our previous outsourced team — which was five times their size. As a true partner, they catch problems sooner and offer a level of transparency we never had before.</blockquote>
+        <div class="by"><b>Jack Bachman</b>CEO & Owner · Piedmont Medical Solutions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 04 / STATIONS</div>
+      <div>
+        <h2>Pre-built <em>stations.</em></h2>
+        <p class="lede">Interacts with the plans, EMRs, billing systems, fax lines, and phone trees your operation already runs on.</p>
+      </div>
+    </div>
+    <div class="stations" id="stations"></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 05 / FIRST SHIFT</div>
+      <div>
+        <h2>On shift in <em>days, not months.</em></h2>
+        <p class="lede">Onboarding an AI teammate looks almost exactly like onboarding a person — minus the turnover.</p>
+      </div>
+    </div>
+    <div class="shifts">
+      <div class="shift"><div class="w">Day 1</div><h4>Share <em>workflows</em></h4><p>Record your screen. Walk through the flows. Narrate context.</p><div class="bar"><span style="width:100%"></span></div></div>
+      <div class="shift"><div class="w">Day 2</div><h4>Grant <em>access</em></h4><p>Create accounts. Share credentials with your agent.</p><div class="bar"><span style="width:100%"></span></div></div>
+      <div class="shift"><div class="w">Days 3–5</div><h4>Let it <em>learn</em></h4><p>Deterministic flows built. Supervised tests run for approval.</p><div class="bar"><span style="width:100%"></span></div></div>
+      <div class="shift"><div class="w">Day 6+</div><h4>Go <em>live</em></h4><p>Autonomous operation. Every execution logged and measurable.</p><div class="bar"><span style="width:60%"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="products">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 06 / AGENTS</div>
+      <div>
+        <h2>Specialists, <em>on call.</em></h2>
+        <p class="lede">Purpose-built agents for the specific rooms of your operation.</p>
+      </div>
+    </div>
+    <div class="bay">
+      <div class="slot">
+        <div class="hd"><span>P · 01 · INTAKE</span><span class="pid">● ON SHIFT</span></div>
+        <h3>Intake & <em>Data Entry</em></h3>
+        <p>Connect to fax or upload documents. Every field extracted, entered into your EMR and billing systems.</p>
+        <div class="kv"><span class="k">handles</span><span class="v">CMNs · sleep studies · referrals</span><span class="k">writes</span><span class="v">Brightree · Niko · Epic · athena</span><span class="k">uptime</span><span class="v">99.9% trailing 90d</span></div>
+      </div>
+      <div class="slot">
+        <div class="hd"><span>P · 02 · AUTHORIZATION</span><span class="pid">● ON SHIFT</span></div>
+        <h3>Prior <em>Authorization</em></h3>
+        <p>Submit or adjudicate PAs with AI that reads plan policy against patient chart — and explains its reasoning.</p>
+        <div class="kv"><span class="k">policies</span><span class="v">CMS LCDs · commercial MCGs</span><span class="k">accuracy</span><span class="v">95% vs. human</span><span class="k">citations</span><span class="v">3 avg per decision</span></div>
+      </div>
+      <div class="slot">
+        <div class="hd"><span>P · 03 · ELIGIBILITY</span><span class="pid">● ON SHIFT</span></div>
+        <h3>Eligibility</h3>
+        <p>Runs eligibility without running batches. Logs in, verifies coverage, writes benefits back.</p>
+        <div class="kv"><span class="k">sources</span><span class="v">payer portals · 270/271</span><span class="k">latency</span><span class="v">42s per patient</span><span class="k">cadence</span><span class="v">real-time or pre-visit</span></div>
+      </div>
+      <div class="slot">
+        <div class="hd"><span>P · 04 · RESUPPLIES</span><span class="pid">● ON SHIFT</span></div>
+        <h3>DME <em>Resupplies</em></h3>
+        <p>Patient outreach, data entry, provider fax fulfillment — end to end, every loop closed.</p>
+        <div class="kv"><span class="k">supports</span><span class="v">CPAP · CGM · wound · mobility</span><span class="k">outreach</span><span class="v">SMS · email · voice</span><span class="k">cycle</span><span class="v">auto-scheduled per payer</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 07 / PERFORMANCE</div>
+      <div>
+        <h2>Measured. Not <em>marketed.</em></h2>
+        <p class="lede">Trailing 30-day performance across deployed customers.</p>
+      </div>
+    </div>
+    <div class="dials">
+      <div class="dial"><div class="k">PA accuracy</div><div class="n" data-counter="95" data-suffix="%">0<em>%</em></div><div class="bar"><span style="width:95%"></span></div><div class="l">Accuracy of AI adjudicating prior authorization cases end-to-end.</div></div>
+      <div class="dial"><div class="k">Productivity</div><div class="n" data-counter="4" data-suffix="×">0<em>×</em></div><div class="bar"><span style="width:80%"></span></div><div class="l">More efficient administrative productivity against baseline.</div></div>
+      <div class="dial"><div class="k">ROI</div><div class="n" data-counter="10" data-suffix="×">0<em>×</em></div><div class="bar"><span style="width:83%"></span></div><div class="l">ROI of cost savings relative to operating expense in year one.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="company">
+  <div class="container">
+    <div class="mission">
+      <div class="eyebrow">§ 08 / THESIS</div>
+      <h2>GenHealth automates the administrative burden for providers, health plans, and DME suppliers. We deploy <b>AI employees</b> dispatched across the internal and external applications, portals, fax, and phone systems teams use every day. <em>Every action logged. Every decision cited. Every run measurable.</em> Agents execute intake, eligibility, prior authorization, claims, denials, and posting the way operators do — inside the tools they already use.</h2>
+      <div class="sig"><span>Durham, NC · Founded 2023</span><em>— Generative Healthcare AI</em></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="contact">
+  <div class="container">
+    <div class="sec-head">
+      <div class="num">§ 09 / REQUEST</div>
+      <div>
+        <h2>Three ways <em>in.</em></h2>
+        <p class="lede">Pick the shape of the conversation.</p>
+      </div>
+    </div>
+    <div class="c-grid">
+      <div class="c-cell">
+        <div class="num">01 · MESSAGE</div>
+        <h3>Send a <em>note</em></h3>
+        <p>Ask a question, share a workflow, or request our security packet.</p>
+        <form class="c-form" onsubmit="event.preventDefault()">
+          <input type="email" placeholder="you@clinic.com">
+          <select><option>Select organization…</option><option>Provider</option><option>DME</option><option>Health plan</option><option>Patient</option><option>Other</option></select>
+          <textarea placeholder="Tell us about a workflow."></textarea>
+          <button class="btn btn-primary" type="submit">Transmit →</button>
+        </form>
+      </div>
+      <div class="c-cell">
+        <div class="num">02 · MEET</div>
+        <h3>Book a <em>call</em></h3>
+        <p>30 minutes. Live agent demo over your workflow, with a deployment plan to take back.</p>
+        <div style="background:var(--bg);border:1px solid var(--rule);padding:14px;margin-top:4px">
+          <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">NEXT AVAILABLE</div>
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:4px;font-family:'JetBrains Mono',monospace;font-size:12px">
+            <div style="padding:8px;text-align:center;background:var(--panel-2)">TUE 9:30</div>
+            <div style="padding:8px;text-align:center;background:var(--signal);color:#1A1207">WED 14:00</div>
+            <div style="padding:8px;text-align:center;background:var(--panel-2)">THU 11:00</div>
+          </div>
+        </div>
+        <a class="btn" href="#" style="margin-top:auto">Open calendar →</a>
+      </div>
+      <div class="c-cell">
+        <div class="num">03 · DEPLOY</div>
+        <h3>Try <em>UMPA</em></h3>
+        <p>Create a free account. Deploy one AI agent to automate intake, eligibility, or PA inside your EMR.</p>
+        <a class="btn btn-primary" href="https://umpa.genhealth.ai" style="margin-top:auto">Create account →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div class="foot-brand">
+        <div class="brand"><span class="mk"></span><span>GenHealth</span></div>
+        <p class="tag">Dispatch for healthcare operations. AI employees deployed across web, fax, and phone.</p>
+        <h5>Enterprise security</h5>
+        <ul><li><a href="https://trust.genhealth.ai">Trust Center</a></li><li><a href="https://status.genhealth.ai">Status</a></li></ul>
+        <div class="seals"><img src="assets/socII.png" alt=""><img src="assets/hipaa.png" alt=""></div>
+      </div>
+      <div><h5>Workflows</h5><ul><li><a href="#">Intake</a></li><li><a href="#">Prior auth</a></li><li><a href="#">Eligibility</a></li><li><a href="#">Resupplies</a></li><li><a href="#">Medical necessity</a></li><li><a href="#">Referrals</a></li></ul></div>
+      <div><h5>Support</h5><ul><li><a href="#">Documentation</a></li><li><a href="mailto:support@genhealth.ai">Tech support</a></li><li><a href="#">Privacy</a></li><li><a href="#">Security</a></li><li><a href="#">Terms</a></li><li><a href="#">BAA</a></li></ul></div>
+      <div><h5>Company</h5><ul><li><a href="#">About</a></li><li><a href="#">Blog</a></li><li><a href="#">Jobs</a></li><li><a href="#">ROI calculator</a></li><li><a href="#">Medical codes</a></li><li><a href="#">Medical policies</a></li></ul></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 GENHEALTH.AI · ALL RIGHTS RESERVED</span>
+      <em>Dispatch for healthcare operations.</em>
+    </div>
+  </div>
+</footer>
+
+<script>
+// TICKER
+const events=[
+  ['web','Intake · <span class="pid">Doe, Jane</span> · CMN parsed → Brightree',4421,'done'],
+  ['fax','OCR <span class="hl">4pp CMN/CPAP</span> · 46 fields extracted',null,'done'],
+  ['voice','Dialed <span class="pid">Ellis, Marcus</span> · consent recorded',null,'done'],
+  ['web','PA <span class="hl">E0601</span> · policy Aetna-0004 · approved',77431,'done'],
+  ['web','Eligibility <span class="pid">****-82019</span> · UHC active',null,'done'],
+  ['fax','Referral · cardiology · Novant portal',null,'wait'],
+  ['voice','Resupply cycle <span class="pid">Chen, R.</span> · confirmed mask+hose',null,'done'],
+  ['web','Appeal CO-50 drafted · <span class="hl">3 citations</span>',null,'wait'],
+  ['web','Posting <span class="hl">835/ERA</span> · Cigna batch 8812',null,'done'],
+  ['fax','Rx · sleep study rec\'d · <span class="hl">classified</span>',null,'done'],
+];
+const tk=document.getElementById('ticker');
+let t=new Date();
+function stamp(){t=new Date(t.getTime()+2000+Math.random()*3000);return `${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}:${String(t.getSeconds()).padStart(2,'0')}`}
+function seed(){ for(let i=0;i<10;i++) pushRow(); }
+function pushRow(){
+  const e=events[Math.floor(Math.random()*events.length)];
+  const row=document.createElement('div');row.className='row';
+  row.innerHTML=`<span class="t">${stamp()}</span><span class="chan ${e[0]}">${e[0].toUpperCase()}</span><span class="m">${e[1]}${e[2]?` · <span class="hl">#${e[2]}</span>`:''}</span><span class="st ${e[3]}">${e[3]==='done'?'● CLOSED':'● OPEN'}</span>`;
+  tk.appendChild(row);
+  while(tk.children.length>9) tk.removeChild(tk.firstChild);
+  const ut=document.getElementById('updT');if(ut){const n=new Date();ut.textContent=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')}`}
+}
+seed();
+setInterval(pushRow, 1800);
+
+// WORKFLOWS
+const wf={
+  intake:{label:'CH.01 · INTAKE',title:'Intake & <em>data entry</em>.',lede:'Connect to fax or upload documents. Every field extracted, entered cleanly into your EMR and billing system.',
+    route:[['01','receive','fax · CMN CPAP · 4pp','done'],['02','parse','OCR · 46 fields','done'],['03','match','patient Doe, Jane','done'],['04','write','Brightree intake queue','live'],['05','close','intake #4421','']],
+    r:['CLOSED · 1m 06s','intake #4421 · queue advanced']},
+  eligibility:{label:'CH.02 · ELIGIBILITY',title:'Eligibility.',lede:'Agent logs in, verifies coverage, writes benefits back to your system.',
+    route:[['01','login','uhc.com/provider','done'],['02','query','member ****-82019','done'],['03','verify','active · in-network','done'],['04','read','benefits · deductible','live'],['05','writeback','EMR','']],
+    r:['VERIFIED','loop closed · EMR updated']},
+  pa:{label:'CH.03 · PRIOR AUTH',title:'Prior <em>authorization</em>.',lede:'Reads plan policy against chart, cites evidence, submits and tracks.',
+    route:[['01','load','Aetna 0004 v2024.3','done'],['02','chart','AHI 14.2 · Dx G47.33','done'],['03','cite','3 citations','done'],['04','submit','to payer','live'],['05','receive','response','']],
+    r:['APPROVED','ref PA-77431 · 3 cites']},
+  resupplies:{label:'CH.04 · RESUPPLY',title:'DME <em>resupplies</em>.',lede:'Patient outreach to provider fax fulfillment — every step handled end-to-end.',
+    route:[['01','cycle','next 2026-02-14','done'],['02','dial','Ellis, Marcus','done'],['03','consent','recorded','done'],['04','write','Brightree FO #8812','live'],['05','ship','2026-02-14','']],
+    r:['SCHEDULED','ship 2026-02-14']},
+  appeals:{label:'CH.05 · APPEAL',title:'Denials & <em>appeals</em>.',lede:'Drafts with policy language, chart evidence, and prior decisions attached.',
+    route:[['01','retrieve','denial CO-50','done'],['02','load','policy + 3 chart notes','done'],['03','draft','1p formal','done'],['04','cite','§2.1.a / §3.2.c','live'],['05','review','queued','']],
+    r:['DRAFT READY','manager review queued']},
+  medneed:{label:'CH.06 · NECESSITY',title:'Medical <em>necessity</em>.',lede:'Every decision tied to the exact chart evidence that drove it.',
+    route:[['01','service','K0554 CGM','done'],['02','policy','CMS LCD L33822','done'],['03','evidence','HbA1c 8.4% · 4 refs','done'],['04','rationale','auto-drafted','live'],['05','attach','to claim','']],
+    r:['NECESSITY MET','rationale attached']},
+  referrals:{label:'CH.07 · REFERRAL',title:'Referrals.',lede:'Sends, tracks, and confirms referrals across providers.',
+    route:[['01','create','cardiology referral','done'],['02','transmit','fax + portal','done'],['03','confirm','Novant Heart','done'],['04','schedule','2026-04-29','live'],['05','follow-up','2026-05-02','']],
+    r:['LOOP OPEN','follow-up 2026-05-02']},
+};
+function renderFlow(k){
+  document.querySelectorAll('#flowsList button').forEach(b=>b.setAttribute('aria-selected',b.dataset.wf===k));
+  const d=wf[k];
+  document.getElementById('flowsStage').innerHTML=`
+    <div class="shd"><span>${d.label}</span><span class="live">RUNNING</span></div>
+    <div class="body">
+      <h3>${d.title}</h3>
+      <p class="lede">${d.lede}</p>
+      <div class="route">
+        ${d.route.map(s=>`<div class="step ${s[3]}"><div class="n">${s[0]} · ${s[1]}</div><div class="l">${s[2]}</div></div>`).join('')}
+      </div>
+      <div class="receipt"><span>● <b>${d.r[0]}</b></span><span>${d.r[1]}</span></div>
+    </div>`;
+}
+document.querySelectorAll('#flowsList button').forEach(b=>b.addEventListener('click',()=>renderFlow(b.dataset.wf)));
+renderFlow('intake');
+
+// STATIONS
+const stations=[
+  ['ST.01','Brightree','DME billing'],['ST.02','Niko Health','DME platform'],
+  ['ST.03','Epic Systems','EMR'],['ST.04','athenahealth','EMR · practice mgmt'],
+  ['ST.05','eClinicalWorks','EMR'],['ST.06','UnitedHealthcare','Payer'],
+  ['ST.07','Aetna','Payer'],['ST.08','Cigna','Payer'],
+  ['ST.09','Humana','Medicare Advantage'],['ST.10','eMedNY','Medicaid (NY)'],
+  ['ST.11','Noridian Medicare','MAC'],['ST.12','myCGS DME MAC','Jurisdiction B'],
+  ['ST.13','EviCore','Benefit management'],['ST.14','Faxage','Cloud fax'],
+  ['ST.15','RingCentral','Voice'],['ST.16','Gmail · Outlook','Email'],
+];
+document.getElementById('stations').innerHTML=stations.map(s=>`<div class="station"><span class="code">${s[0]}</span><span class="nm">${s[1]}<span>${s[2]}</span></span><span class="st">● ONLINE</span></div>`).join('');
+
+// STATS
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  const el=e.target,t=+el.dataset.counter,s=el.dataset.suffix||'';
+  const start=performance.now(),dur=1400;
+  function tick(ts){const p=Math.min(1,(ts-start)/dur),ea=1-Math.pow(1-p,3);el.innerHTML=`${Math.round(ea*t)}<em>${s}</em>`;if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick);io.unobserve(el);
+}),{threshold:.3});
+document.querySelectorAll('[data-counter]').forEach(c=>io.observe(c));
+</script>
+</body>
+</html>

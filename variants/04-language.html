@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>GenHealth — Fluent in the language of the work.</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4F1EA;
+    --paper-2:#EDE9DE;
+    --paper-3:#E3DDCE;
+    --ink:#18110F;
+    --ink-2:#2E2220;
+    --graphite:#5F514D;
+    --mist:#D6CEBF;
+    --oxblood:#6B2A28;
+    --oxblood-deep:#4F1C1B;
+    --oxblood-tint:#E7D2CF;
+    --rule:#C3B9A6;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased}
+  body{font-size:17px;line-height:1.55;overflow-x:hidden}
+  a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .serif{font-family:'Instrument Serif',serif}
+  .serif-i{font-family:'Instrument Serif',serif;font-style:italic}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace;letter-spacing:-.01em}
+  .eyebrow{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.02em;color:var(--graphite);text-transform:uppercase}
+  .container{max-width:1280px;margin:0 auto;padding:0 40px}
+  @media (max-width:720px){.container{padding:0 24px}}
+  .rule{height:1px;background:var(--rule);opacity:.6}
+
+  /* Nav */
+  nav.top{position:sticky;top:0;z-index:50;background:color-mix(in oklab, var(--paper) 84%, transparent);backdrop-filter:blur(14px);border-bottom:1px solid transparent;transition:border-color .3s}
+  nav.top.scrolled{border-bottom-color:var(--mist)}
+  nav.top .inner{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:baseline;gap:10px;font-family:'Instrument Serif',serif;font-size:22px;letter-spacing:-.01em}
+  .brand sup{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--oxblood);letter-spacing:0}
+  .nav-links{display:flex;gap:32px;font-size:13px;color:var(--ink-2);font-family:'JetBrains Mono',monospace}
+  .nav-links a:hover{color:var(--oxblood)}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;border-radius:4px;font-size:13px;font-family:'JetBrains Mono',monospace;font-weight:500;border:1px solid transparent;cursor:pointer;transition:all .2s}
+  .btn-primary{background:var(--oxblood);color:var(--paper)}
+  .btn-primary:hover{background:var(--oxblood-deep)}
+  .btn-ghost{border-color:var(--ink);color:var(--ink)}
+  .btn-ghost:hover{background:var(--ink);color:var(--paper)}
+
+  /* HERO — vocabulary as type specimen */
+  section.hero{padding:64px 0 40px;position:relative;overflow:hidden}
+  .hero-meta{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:56px;flex-wrap:wrap;gap:12px}
+  .hero-meta .eyebrow{color:var(--oxblood);font-weight:500}
+  .hero-meta .right{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--graphite)}
+  h1.display{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(56px,9vw,160px);line-height:.88;letter-spacing:-.025em;max-width:14ch}
+  h1.display .i{font-style:italic;color:var(--oxblood)}
+  .hero-row{display:grid;grid-template-columns:6fr 6fr;gap:56px;margin-top:56px;padding-top:32px;border-top:1px solid var(--rule);align-items:start}
+  @media (max-width:820px){.hero-row{grid-template-columns:1fr;gap:32px}}
+  .hero-row .lede{font-size:19px;line-height:1.5;color:var(--ink-2);max-width:500px}
+  .hero-row .lede p+p{margin-top:14px}
+  .hero-cta{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+
+  /* TOKEN EXPLORER — signature interactive */
+  .token-card{background:var(--paper-2);border:1px solid var(--mist);border-radius:6px;padding:24px;font-family:'JetBrains Mono',monospace}
+  .token-card .head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px;font-size:11px;color:var(--graphite);letter-spacing:.04em}
+  .token-card .head .run{color:var(--oxblood)}
+  .token-viz{position:relative;min-height:220px;background:var(--paper);border:1px solid var(--mist);border-radius:4px;padding:18px;overflow:hidden}
+  .token-raw{font-size:14px;line-height:1.85;color:var(--ink-2)}
+  .token{display:inline-block;padding:1px 6px;margin:1px 2px;border-radius:3px;background:var(--paper-2);border:1px solid var(--mist);font-size:13px;transition:all .25s}
+  .token.code{background:var(--oxblood-tint);color:var(--oxblood-deep);border-color:#D4B6B3}
+  .token.dx{background:#E8E2C8;border-color:#CCC19B;color:#5F4F17}
+  .token.drug{background:#D9E5DC;border-color:#B2C7B7;color:#2E4D37}
+  .token.amt{background:#DDE2EC;border-color:#B4BDD0;color:#2D3B56}
+  .token-card .foot{margin-top:16px;display:flex;justify-content:space-between;font-size:11px;color:var(--graphite)}
+  .token-card .foot span:last-child{color:var(--ink)}
+  .pulse-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--oxblood);animation:blink 1.6s infinite;margin-right:4px;vertical-align:middle}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+  /* SECTIONS generic */
+  section{position:relative}
+  .sec-head{display:grid;grid-template-columns:4fr 8fr;gap:48px;margin-bottom:64px;align-items:end}
+  @media (max-width:820px){.sec-head{grid-template-columns:1fr;gap:24px}}
+  .sec-head h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(36px,5vw,64px);line-height:.98;letter-spacing:-.025em}
+  .sec-head h2 .i{font-style:italic}
+  .sec-head p{color:var(--ink-2);font-size:16px;max-width:480px}
+
+  /* TRINITY — specimen table */
+  section.trinity{padding:120px 0}
+  .trinity-grid{border:1px solid var(--rule);border-radius:8px;overflow:hidden}
+  .trinity-row{display:grid;grid-template-columns:1fr 3fr 5fr;align-items:start;border-bottom:1px solid var(--rule)}
+  .trinity-row:last-child{border-bottom:0}
+  .trinity-row .num{padding:32px 24px;font-family:'Instrument Serif',serif;font-style:italic;font-size:40px;color:var(--oxblood);line-height:1}
+  .trinity-row .name{padding:32px 24px;font-family:'Instrument Serif',serif;font-size:48px;line-height:.95;letter-spacing:-.02em;border-left:1px solid var(--rule)}
+  .trinity-row .desc{padding:32px 24px;border-left:1px solid var(--rule);color:var(--ink-2);font-size:15px;line-height:1.55;display:flex;flex-direction:column;gap:14px}
+  .trinity-row .desc .mono{font-size:12px;color:var(--graphite);display:flex;gap:12px;flex-wrap:wrap}
+  .trinity-row .desc .mono span{padding:2px 8px;background:var(--paper-2);border-radius:3px}
+  @media (max-width:820px){.trinity-row{grid-template-columns:1fr}.trinity-row .name,.trinity-row .desc{border-left:0;border-top:1px solid var(--rule)}}
+
+  /* WORKFLOWS as policy lookup */
+  section.flows{padding:120px 0;background:var(--paper-2)}
+  .flows-wrap{display:grid;grid-template-columns:4fr 8fr;gap:48px}
+  @media (max-width:820px){.flows-wrap{grid-template-columns:1fr}}
+  .flows-list{display:flex;flex-direction:column}
+  .flows-list button{text-align:left;background:transparent;border:0;padding:22px 0;border-top:1px solid var(--rule);font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;color:var(--graphite);cursor:pointer;letter-spacing:-.02em;display:flex;justify-content:space-between;align-items:baseline;transition:color .2s}
+  .flows-list button:last-child{border-bottom:1px solid var(--rule)}
+  .flows-list button .idx{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--graphite);letter-spacing:.04em}
+  .flows-list button[aria-selected="true"]{color:var(--oxblood)}
+  .flows-list button[aria-selected="true"] .idx{color:var(--oxblood)}
+  .flows-stage{background:var(--paper);border:1px solid var(--rule);border-radius:6px;min-height:520px;display:flex;flex-direction:column}
+  .flows-stage .bar{padding:14px 24px;border-bottom:1px solid var(--rule);display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--graphite)}
+  .flows-stage .bar .state{color:var(--oxblood)}
+  .flows-stage .body{padding:36px;flex:1}
+  .flows-stage h3{font-family:'Instrument Serif',serif;font-size:42px;letter-spacing:-.02em;line-height:1;margin-bottom:16px}
+  .flows-stage h3 .i{font-style:italic}
+  .flows-stage .lede{color:var(--ink-2);max-width:520px;margin-bottom:28px}
+  .flows-stage .policy{border:1px solid var(--rule);border-radius:4px;padding:20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink-2);background:var(--paper-2)}
+  .flows-stage .policy .line{display:flex;gap:14px;padding:4px 0}
+  .flows-stage .policy .ln{color:var(--graphite);width:28px;flex-shrink:0;text-align:right}
+  .flows-stage .policy .tok-code{color:var(--oxblood);font-weight:500}
+  .flows-stage .policy .tok-key{color:#5F4F17}
+  .flows-stage .policy .tok-val{color:var(--ink)}
+  .flows-stage .policy .hl{background:var(--oxblood-tint);border-radius:2px;padding:0 2px}
+  .flows-stage .verdict{margin-top:24px;padding:16px 20px;border:1px solid var(--oxblood);border-radius:4px;color:var(--oxblood);font-family:'JetBrains Mono',monospace;font-size:13px;display:flex;justify-content:space-between;align-items:center}
+
+  /* TESTIMONIAL */
+  section.quote{padding:140px 0}
+  .quote-inner{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:3fr 9fr;gap:48px}
+  @media (max-width:820px){.quote-inner{grid-template-columns:1fr}}
+  .quote .team-avatars{display:flex;margin-bottom:16px}
+  .quote .team-avatars img{width:48px;height:48px;border-radius:50%;object-fit:cover;border:3px solid var(--paper);margin-left:-14px}
+  .quote .team-avatars img:first-child{margin-left:0}
+  .quote blockquote{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(26px,3.2vw,40px);line-height:1.22;letter-spacing:-.015em;color:var(--ink);text-wrap:balance}
+  .quote blockquote .i{font-style:italic;color:var(--oxblood)}
+  .quote .by{display:flex;align-items:center;gap:16px;margin-top:40px;padding-top:24px;border-top:1px solid var(--rule)}
+  .quote .by img{width:44px;height:44px;border-radius:4px;object-fit:contain;background:#fff;padding:4px;border:1px solid var(--mist)}
+  .quote .by .who{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--graphite)}
+  .quote .by .who b{display:block;color:var(--ink);font-weight:500;font-family:'Inter',sans-serif;font-size:15px;margin-bottom:2px}
+
+  /* INTEGRATIONS — dense specimen list */
+  section.integrations{padding:96px 0;background:var(--paper-2);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+  .int-list{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--paper)}
+  @media (max-width:820px){.int-list{grid-template-columns:1fr 1fr}}
+  .int-row{padding:18px 20px;border-bottom:1px solid var(--rule);border-right:1px solid var(--rule);display:flex;justify-content:space-between;align-items:baseline;font-family:'JetBrains Mono',monospace;font-size:13px;transition:background .2s}
+  .int-row:hover{background:var(--paper-2)}
+  .int-row:nth-child(3n){border-right:0}
+  .int-row .name{color:var(--ink)}
+  .int-row .type{color:var(--graphite);font-size:11px}
+
+  /* ONBOARDING — numbered doc */
+  section.onboard{padding:120px 0}
+  .ob-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:32px;border-top:1px solid var(--ink);padding-top:32px}
+  @media (max-width:820px){.ob-grid{grid-template-columns:1fr 1fr;gap:24px}}
+  @media (max-width:520px){.ob-grid{grid-template-columns:1fr}}
+  .ob-step .n{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--oxblood);letter-spacing:.05em}
+  .ob-step h4{font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;letter-spacing:-.02em;line-height:1;margin:10px 0 12px}
+  .ob-step p{color:var(--graphite);font-size:14px;max-width:240px}
+
+  /* PRODUCTS — catalog */
+  section.products{padding:120px 0;background:var(--paper-2)}
+  .prod-catalog{border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--paper)}
+  .prod-row{display:grid;grid-template-columns:1fr 2fr 4fr 2fr;align-items:center;padding:28px 32px;border-bottom:1px solid var(--rule);gap:32px;transition:background .2s}
+  .prod-row:last-child{border-bottom:0}
+  .prod-row:hover{background:var(--paper-2)}
+  .prod-row .idx{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--oxblood);letter-spacing:.05em}
+  .prod-row .name{font-family:'Instrument Serif',serif;font-size:32px;letter-spacing:-.015em;line-height:1}
+  .prod-row .desc{color:var(--graphite);font-size:14px}
+  .prod-row .act{text-align:right}
+  .prod-row .act a{font-family:'JetBrains Mono',monospace;font-size:12px;padding-bottom:2px;border-bottom:1px solid var(--ink)}
+  .prod-row .act a:hover{color:var(--oxblood);border-color:var(--oxblood)}
+  @media (max-width:820px){.prod-row{grid-template-columns:1fr;gap:8px}.prod-row .act{text-align:left}}
+
+  /* STATS — tabular figures */
+  section.stats{padding:140px 0}
+  .stats-table{border-top:1px solid var(--ink);border-bottom:1px solid var(--ink)}
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+  @media (max-width:820px){.stats-grid{grid-template-columns:1fr}}
+  .stat{padding:56px 40px;border-right:1px solid var(--rule);position:relative}
+  .stat:last-child{border-right:0}
+  .stat .lbl-top{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--graphite);letter-spacing:.04em;margin-bottom:24px}
+  .stat .num{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(84px,10vw,140px);line-height:.92;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+  .stat .num .suf{color:var(--oxblood);font-style:italic}
+  .stat .lbl{margin-top:24px;color:var(--ink-2);font-size:14px;max-width:260px}
+  @media (max-width:820px){.stat{border-right:0;border-bottom:1px solid var(--rule)}.stat:last-child{border-bottom:0}}
+
+  /* MISSION */
+  section.mission{padding:140px 0;background:var(--ink);color:var(--paper)}
+  .mission-body{max-width:860px;margin:0 auto}
+  .mission-body .eyebrow{color:#C3B9A6;margin-bottom:24px}
+  .mission-body h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(28px,3.2vw,40px);line-height:1.28;letter-spacing:-.01em;color:var(--paper);text-wrap:pretty}
+  .mission-body h2 em{font-style:italic;color:#D4B6B3}
+  .mission-body h2 b{font-weight:400;color:#fff}
+
+  /* CONTACT */
+  section.contact{padding:120px 0}
+  .contact h2{font-family:'Instrument Serif',serif;font-weight:400;font-size:clamp(34px,4.4vw,56px);line-height:1;letter-spacing:-.03em;margin-bottom:48px;max-width:800px}
+  .contact h2 .i{font-style:italic;color:var(--oxblood)}
+  .c-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule);border-radius:6px;overflow:hidden}
+  @media (max-width:820px){.c-grid{grid-template-columns:1fr}}
+  .c-col{padding:32px;display:flex;flex-direction:column;gap:12px;border-right:1px solid var(--rule)}
+  .c-col:last-child{border-right:0}
+  @media (max-width:820px){.c-col{border-right:0;border-bottom:1px solid var(--rule)}}
+  .c-col h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:28px;letter-spacing:-.02em;line-height:1}
+  .c-col p{color:var(--graphite);font-size:14px}
+  .c-form{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  .c-form .field{display:flex;flex-direction:column;gap:4px}
+  .c-form label{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--graphite);letter-spacing:.05em}
+  .c-form input,.c-form select,.c-form textarea{background:transparent;border:0;border-bottom:1px solid var(--rule);padding:8px 0;font-family:inherit;font-size:14px;outline:none;color:var(--ink)}
+  .c-form input:focus,.c-form textarea:focus,.c-form select:focus{border-color:var(--oxblood)}
+  .c-form textarea{resize:vertical;min-height:60px}
+  .c-col .btn{align-self:flex-start;margin-top:auto}
+
+  /* FOOTER */
+  footer{background:var(--paper);color:var(--ink);padding:72px 0 32px;border-top:1px solid var(--rule)}
+  .foot-colophon{display:grid;grid-template-columns:2.5fr 1fr 1fr 1fr;gap:48px;align-items:start}
+  @media (max-width:820px){.foot-colophon{grid-template-columns:1fr 1fr}}
+  .foot-brand .tag{color:var(--graphite);font-size:14px;max-width:320px;margin:14px 0 20px}
+  .foot-brand h5{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--graphite);margin-bottom:10px;text-transform:uppercase}
+  .foot-brand .seals{display:flex;gap:10px;margin-top:16px}
+  .foot-brand .seals img{height:44px;background:#fff;border:1px solid var(--mist);border-radius:4px;padding:4px 6px}
+  footer h5{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--graphite);margin-bottom:16px;text-transform:uppercase}
+  footer ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+  footer ul a{color:var(--ink-2);font-size:13px}
+  footer ul a:hover{color:var(--oxblood)}
+  .foot-bottom{margin-top:64px;padding-top:24px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--graphite)}
+  .foot-bottom em{color:var(--oxblood);font-family:'Instrument Serif',serif;font-size:16px;font-style:italic}
+</style>
+</head>
+<body>
+
+<nav class="top" id="topnav">
+  <div class="container inner">
+    <a class="brand" href="#"><span>GenHealth</span><sup>(v4 · foundation)</sup></a>
+    <div class="nav-links">
+      <a href="#platform">Platform</a>
+      <a href="#flows">Workflows</a>
+      <a href="#products">Products</a>
+      <a href="#company">Company</a>
+    </div>
+    <a class="btn btn-primary" href="#contact">Get a demo →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="container">
+    <div class="hero-meta">
+      <div class="eyebrow">Generative healthcare AI · est. 2023 · Durham NC</div>
+      <div class="right">12+ workflows · 4× productivity · 10× ROI</div>
+    </div>
+    <h1 class="display">Fluent in<br/>the language<br/>of <span class="i">the work.</span></h1>
+    <div class="hero-row">
+      <div>
+        <p class="lede">
+          Healthcare ops has its own language — CPT and HCPCS, ICD-10, LCD policy, chart narrative, payer logic. GenHealth's AI employees read and write in it fluently.
+        </p>
+        <p class="lede">
+          Across web, fax, and phone, they automate intake, eligibility, prior auth, claims, denials, and posting — inside the systems your team already uses, with every action logged and every decision cited.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary" href="#contact">Get a demo →</a>
+          <a class="btn btn-ghost" href="https://umpa.genhealth.ai">Try GenHealth free</a>
+        </div>
+      </div>
+      <div class="token-card">
+        <div class="head">
+          <span>specimen · chart.live</span>
+          <span class="run"><span class="pulse-dot"></span>parsing</span>
+        </div>
+        <div class="token-viz">
+          <div class="token-raw" id="tokenStream"></div>
+        </div>
+        <div class="foot">
+          <span id="tokenCount">0 tokens</span>
+          <span id="tokenDoc">— chart excerpt —</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRINITY — specimen -->
+<section class="trinity" id="platform">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Three <span class="i">channels.</span></h2>
+      <p>A single model that moves between browser, fax, and phone — the surfaces health operations actually live on.</p>
+    </div>
+    <div class="trinity-grid">
+      <div class="trinity-row">
+        <div class="num">i.</div>
+        <div class="name">Web</div>
+        <div class="desc">
+          <span>Automates tasks on websites, portals, EMRs, and billing systems — the way a teammate would, click by click.</span>
+          <div class="mono"><span>Brightree</span><span>Epic</span><span>athenahealth</span><span>payer portals</span></div>
+        </div>
+      </div>
+      <div class="trinity-row">
+        <div class="num">ii.</div>
+        <div class="name">Fax</div>
+        <div class="desc">
+          <span>Receives, reads, classifies, and files faxed documents — OCR with field extraction handed cleanly into your workflows.</span>
+          <div class="mono"><span>Faxage</span><span>CMN</span><span>Rx</span><span>sleep studies</span></div>
+        </div>
+      </div>
+      <div class="trinity-row">
+        <div class="num">iii.</div>
+        <div class="name">Phone</div>
+        <div class="desc">
+          <span>Calls patients and providers for the information only a voice can collect — verification, consent, the missing detail.</span>
+          <div class="mono"><span>RingCentral</span><span>IVR nav</span><span>live transcripts</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOWS — policy-backed workflows -->
+<section class="flows" id="flows">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Workflows, reasoned <span class="i">from policy.</span></h2>
+      <p>GenHealth's agents move across multiple applications to transfer information, apply complex medical-necessity logic, and make decisions — using context from provider actions, plan policies, and patient charts.</p>
+    </div>
+    <div class="flows-wrap">
+      <div class="flows-list" id="flowsList">
+        <button aria-selected="true" data-wf="intake"><span>Intake & data entry</span><span class="idx">01</span></button>
+        <button data-wf="eligibility"><span>Eligibility</span><span class="idx">02</span></button>
+        <button data-wf="pa"><span>Prior authorization</span><span class="idx">03</span></button>
+        <button data-wf="resupplies"><span>DME resupplies</span><span class="idx">04</span></button>
+        <button data-wf="appeals"><span>Denials & appeals</span><span class="idx">05</span></button>
+        <button data-wf="medneed"><span>Medical necessity</span><span class="idx">06</span></button>
+        <button data-wf="referrals"><span>Referrals</span><span class="idx">07</span></button>
+      </div>
+      <div class="flows-stage" id="flowsStage"></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="quote">
+  <div class="container quote-inner">
+    <div>
+      <div class="team-avatars">
+        <img src="assets/jack.png" alt=""><img src="assets/sanjay.png" alt=""><img src="assets/chris.png" alt=""><img src="assets/patti.png" alt="">
+      </div>
+      <div class="eyebrow">Piedmont Medical Solutions</div>
+      <div class="eyebrow" style="color:var(--oxblood);margin-top:8px">DME supplier · full-service partner</div>
+    </div>
+    <div>
+      <blockquote>
+        We transitioned to GenHealth for full-service intake and billing and couldn't be happier. By leveraging AI, they've automated <span class="i">more work with better results</span> than our previous outsourced team — which was five times their size. As a true partner, they catch problems sooner and offer a level of transparency we never had before.
+      </blockquote>
+      <div class="by">
+        <img src="assets/piedmont.jpg" alt="">
+        <div class="who"><b>Jack Bachman</b>CEO & Owner, Piedmont Medical Solutions</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section class="integrations">
+  <div class="container">
+    <div class="sec-head" style="margin-bottom:40px">
+      <h2>Pre-built <span class="i">agents.</span></h2>
+      <p>Interacts with the plans, EMRs, billing systems, fax lines, and phone trees you already use.</p>
+    </div>
+    <div class="int-list" id="intList"></div>
+  </div>
+</section>
+
+<!-- ONBOARDING -->
+<section class="onboard">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Starting GenHealth<br/>is like bringing on<br/><span class="i">a new team member.</span></h2>
+      <p>Four steps. No rip-and-replace. No new systems for your team to learn.</p>
+    </div>
+    <div class="ob-grid">
+      <div class="ob-step"><span class="n">step 01 / 04</span><h4>Share workflows</h4><p>Record your screen. Step through the flows you want to automate. Narrate context.</p></div>
+      <div class="ob-step"><span class="n">step 02 / 04</span><h4>Grant access</h4><p>Create accounts for the apps and systems. Share credentials with GenHealth's agent.</p></div>
+      <div class="ob-step"><span class="n">step 03 / 04</span><h4>Let GenHealth learn</h4><p>The agent builds deterministic flows and tests executions in batches for your approval.</p></div>
+      <div class="ob-step"><span class="n">step 04 / 04</span><h4>Set it loose</h4><p>Flows operate autonomously — every execution tracked inside GenHealth's app.</p></div>
+    </div>
+    <div style="margin-top:48px"><a class="btn btn-ghost" href="#contact">Schedule workflow review →</a></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="container">
+    <div class="sec-head">
+      <h2>The <span class="i">catalogue.</span></h2>
+      <p>Purpose-built agents for the specific rooms of your operation.</p>
+    </div>
+    <div class="prod-catalog">
+      <div class="prod-row">
+        <div class="idx">P.01 · Processing</div>
+        <div class="name">Intake & Data Entry</div>
+        <div class="desc">Connect to fax or upload documents. GenHealth extracts every field and enters data into your EMR and billing systems.</div>
+        <div class="act"><a href="#">Explore →</a></div>
+      </div>
+      <div class="prod-row">
+        <div class="idx">P.02 · Utilization</div>
+        <div class="name">Prior Authorization</div>
+        <div class="desc">Submit or adjudicate PAs with AI that reads plan policy against patient chart — and explains its reasoning.</div>
+        <div class="act"><a href="#">Explore →</a></div>
+      </div>
+      <div class="prod-row">
+        <div class="idx">P.03 · Verification</div>
+        <div class="name">Eligibility</div>
+        <div class="desc">Run eligibility checks without running eligibility checks. GenHealth logs in, verifies, and closes the loop.</div>
+        <div class="act"><a href="#">Explore →</a></div>
+      </div>
+      <div class="prod-row">
+        <div class="idx">P.04 · Orders</div>
+        <div class="name">DME Resupplies</div>
+        <div class="desc">Patient outreach, data entry, provider fax fulfillment — every step handled end to end.</div>
+        <div class="act"><a href="#">Explore →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+  <div class="container">
+    <div class="sec-head">
+      <h2>Measured, not <span class="i">marketed.</span></h2>
+      <p>Trailing 30-day performance across deployed customers.</p>
+    </div>
+    <div class="stats-table">
+      <div class="stats-grid">
+        <div class="stat"><div class="lbl-top">fig. 01 — PA accuracy</div><div class="num" data-counter="95" data-suffix="%">0<span class="suf">%</span></div><div class="lbl">AI accuracy adjudicating prior auth cases.</div></div>
+        <div class="stat"><div class="lbl-top">fig. 02 — productivity</div><div class="num" data-counter="4" data-suffix="×">0<span class="suf">×</span></div><div class="lbl">More efficient administrative productivity, measured against baseline.</div></div>
+        <div class="stat"><div class="lbl-top">fig. 03 — ROI</div><div class="num" data-counter="10" data-suffix="×">0<span class="suf">×</span></div><div class="lbl">ROI of cost savings relative to OpEx, first year.</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MISSION -->
+<section class="mission" id="company">
+  <div class="container mission-body">
+    <div class="eyebrow">Generative Healthcare AI</div>
+    <h2>GenHealth automates administrative burden for providers, health plans, and DME suppliers. We deploy <b>AI employees</b> that navigate the internal and external applications, portals, fax, and phone systems your teams use every day. <em>They read the codes, follow the policy, and cite the chart.</em> Agents execute intake, eligibility, prior authorization, claims, denials, and posting the way your operators do — inside the tools they already use.</h2>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="container">
+    <h2>Choose how you'd like to <span class="i">learn more.</span></h2>
+    <div class="c-grid">
+      <div class="c-col">
+        <div class="eyebrow" style="color:var(--oxblood)">01 · Email</div>
+        <h3>Send a message</h3>
+        <p>Ask a question, share a workflow, or request a security packet.</p>
+        <form class="c-form" onsubmit="event.preventDefault()">
+          <div class="field"><label>EMAIL</label><input type="email" placeholder="you@clinic.com"></div>
+          <div class="field"><label>ORGANIZATION</label><select><option>Select…</option><option>Provider</option><option>DME</option><option>Health plan</option><option>Patient</option><option>Other</option></select></div>
+          <div class="field"><label>MESSAGE</label><textarea placeholder="Tell us about a workflow."></textarea></div>
+          <button class="btn btn-primary" type="submit">Send →</button>
+        </form>
+      </div>
+      <div class="c-col">
+        <div class="eyebrow" style="color:var(--oxblood)">02 · Meet</div>
+        <h3>Book a call</h3>
+        <p>30 minutes. We'll walk a live agent through your workflow and leave you with a deployment plan.</p>
+        <div style="margin-top:14px;border:1px solid var(--rule);border-radius:4px;padding:16px;background:var(--paper-2)">
+          <div class="mono" style="font-size:10px;color:var(--graphite);letter-spacing:.05em;margin-bottom:12px">APRIL / NEXT AVAILABLE</div>
+          <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;font-size:13px;font-family:'JetBrains Mono',monospace">
+            <div style="padding:8px;text-align:center;background:var(--paper)">22</div>
+            <div style="padding:8px;text-align:center;background:var(--oxblood);color:var(--paper)">23</div>
+            <div style="padding:8px;text-align:center;background:var(--paper)">24</div>
+            <div style="padding:8px;text-align:center;background:var(--paper)">25</div>
+          </div>
+        </div>
+        <a class="btn btn-ghost" href="#" style="margin-top:auto">Open calendar →</a>
+      </div>
+      <div class="c-col">
+        <div class="eyebrow" style="color:var(--oxblood)">03 · Sign up free</div>
+        <h3>See the product</h3>
+        <p>Create a free account. Automate intake, eligibility, and prior auth with agents inside your EMR.</p>
+        <a class="btn btn-primary" href="https://umpa.genhealth.ai" style="margin-top:auto">Create free account →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="foot-colophon">
+      <div class="foot-brand">
+        <div class="brand"><span>GenHealth</span><sup style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--oxblood)">.ai</sup></div>
+        <p class="tag">Fluent in the language of healthcare operations. Deployed as AI employees for providers, plans, and DME suppliers.</p>
+        <h5>Enterprise security</h5>
+        <ul><li><a href="https://trust.genhealth.ai">Trust Center</a></li><li><a href="https://status.genhealth.ai">Status</a></li></ul>
+        <div class="seals"><img src="assets/socII.png" alt=""><img src="assets/hipaa.png" alt=""></div>
+      </div>
+      <div>
+        <h5>Workflows</h5>
+        <ul>
+          <li><a href="#">Automate workflows</a></li>
+          <li><a href="#">Intake</a></li>
+          <li><a href="#">Prior authorization</a></li>
+          <li><a href="#">Eligibility</a></li>
+          <li><a href="#">Resupplies</a></li>
+          <li><a href="#">Medical necessity</a></li>
+          <li><a href="#">Referrals</a></li>
+          <li><a href="#">Specialties</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Support & policies</h5>
+        <ul>
+          <li><a href="#">Documentation</a></li>
+          <li><a href="mailto:support@genhealth.ai">Tech support</a></li>
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Security</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="#">BAA</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Jobs</a></li>
+          <li><a href="#">ROI calculator</a></li>
+          <li><a href="#">Medical codes</a></li>
+          <li><a href="#">Medical policies</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 GenHealth.ai · All rights reserved</span>
+      <em>Fluent in the language of the work.</em>
+    </div>
+  </div>
+</footer>
+
+<script>
+const nav=document.getElementById('topnav');
+addEventListener('scroll',()=>nav.classList.toggle('scrolled',scrollY>8));
+
+// TOKEN STREAM
+const docs = [
+  {label:'— chart excerpt —',tokens:[['Patient ',''],['complaint ',''],['',':\n'],['"',''],['CPAP ','drug'],['intolerance',''],[', ',''],['AHI ','code'],['14.2','code'],[' on home sleep study, ',''],['Dx ',''],['G47.33','dx'],[' (OSA). ',''],['Requesting ',''],['E0601','code'],[' CPAP device. ',''],['Policy ','code'],['Aetna 0004','code'],[': met."',''],]},
+  {label:'— PA request —',tokens:[['Submit ',''],['prior auth ',''],[' for ',''],['HCPCS ','code'],['K0554','code'],[' CGM, ',''],['Dx ',''],['E11.9','dx'],[', ',''],['HbA1c ','drug'],['8.4','drug'],[', coverage ',''],['CMS LCD ','code'],['L33822','code'],[', patient ',''],['MBI ','code'],['1AB2-C3D4-E5F6','code'],[', plan ',''],['Humana ','amt'],['Choice PPO','amt']]},
+  {label:'— fax classification —',tokens:[['CMN ','code'],['form received ',''],['(',''],['4pp','amt'],[')',''],[', ',''],['classifier ',''],['→ ',''],['"resupply"','drug'],[', ',''],['patient ',''],['match ',''],['confidence ',''],['0.96','amt'],[', ',''],['routing ',''],['→ ',''],['Brightree','dx'],[', ',''],['payer ',''],['Cigna','dx'],[', ',''],['action ',''],['→ ',''],['enqueue','drug']]},
+];
+let docIdx=0, tokenIdx=0, tokenHost=document.getElementById('tokenStream'), tokenCount=document.getElementById('tokenCount'), tokenDoc=document.getElementById('tokenDoc');
+function tickToken(){
+  const d=docs[docIdx];
+  if(tokenIdx===0){ tokenHost.innerHTML=''; tokenDoc.textContent=d.label; }
+  const [text,cls]=d.tokens[tokenIdx];
+  const s=document.createElement('span');
+  s.className='token '+(cls?cls:'');
+  s.textContent=text;
+  tokenHost.appendChild(s);
+  tokenCount.textContent=(tokenIdx+1)+' tokens';
+  tokenIdx++;
+  if(tokenIdx>=d.tokens.length){ 
+    setTimeout(()=>{ docIdx=(docIdx+1)%docs.length; tokenIdx=0; tickToken(); }, 2200);
+  } else {
+    setTimeout(tickToken, 180+Math.random()*120);
+  }
+}
+tickToken();
+
+// WORKFLOWS
+const wf = {
+  intake:{eyebrow:'01 · Processing',title:'Intake & data entry.',lede:'Connect to fax or upload documents. Every field extracted, entered cleanly.',policy:[
+    ['01','DOC <span class="tok-code">CMN · CPAP</span> · 4pp received'],
+    ['02','OCR complete · 46 fields detected'],
+    ['03','PATIENT <span class="tok-key">match</span>=<span class="tok-val">Doe, Jane · 1962-03-14</span>'],
+    ['04','WRITE <span class="tok-code">Brightree.IntakeQueue</span>'],
+    ['05','STATUS=<span class="hl">closed</span> elapsed=1m06s'],
+  ],verdict:['intake closed','Brightree · queue #4421']},
+  eligibility:{eyebrow:'02 · Verification',title:'Eligibility.',lede:'Agent logs in, verifies coverage, writes back to your system.',policy:[
+    ['01','LOGIN <span class="tok-code">uhc.com/provider</span>'],
+    ['02','QUERY member=<span class="tok-val">****-82019</span>'],
+    ['03','PLAN=<span class="tok-val">UHC Choice Plus PPO</span>'],
+    ['04','DEDUCTIBLE <span class="tok-key">ytd</span>=<span class="tok-val">1200 / 2400</span>'],
+    ['05','RESULT=<span class="hl">active · in-network</span>'],
+  ],verdict:['verified','written back to EMR']},
+  pa:{eyebrow:'03 · Utilization',title:'Prior authorization.',lede:'Reads plan policy against patient chart. Cites its reasoning.',policy:[
+    ['01','REQUEST <span class="tok-code">E0601</span> · CPAP device'],
+    ['02','POLICY <span class="tok-code">Aetna 0004 v2024.3</span>'],
+    ['03','CHART <span class="tok-key">AHI</span>=<span class="tok-val">14.2</span> · <span class="tok-key">Dx</span>=<span class="tok-val">G47.33</span>'],
+    ['04','NECESSITY <span class="hl">met</span> · 3 citations'],
+    ['05','SUBMIT · response=<span class="hl">approved</span>'],
+  ],verdict:['approved','reference #PA-77431']},
+  resupplies:{eyebrow:'04 · Orders',title:'DME resupplies.',lede:'From outreach to fulfillment, every step carried.',policy:[
+    ['01','PATIENT <span class="tok-val">Ellis, Marcus</span> · CPAP'],
+    ['02','LAST FULFILLMENT 2026-01-14'],
+    ['03','CYCLE <span class="tok-key">next</span>=<span class="tok-val">2026-02-14</span>'],
+    ['04','SMS <span class="hl">confirmed</span>'],
+    ['05','ENQUEUE <span class="tok-code">Brightree.FulfillmentQueue</span>'],
+  ],verdict:['scheduled','ship date 2026-02-14']},
+  appeals:{eyebrow:'05 · Denials',title:'Appeals.',lede:'Drafts with policy language, chart evidence, prior decisions.',policy:[
+    ['01','CLAIM #CMS-77431 · DENIAL <span class="tok-code">CO-50</span>'],
+    ['02','RETRIEVE policy · 3 chart notes'],
+    ['03','DRAFT letter · 1p · tone=formal'],
+    ['04','CITE <span class="tok-val">§2.1.a</span>, <span class="tok-val">§3.2.c</span>'],
+    ['05','CONFIDENCE=<span class="hl">high</span> ready for review'],
+  ],verdict:['appeal drafted','ready · 1 page · 3 cites']},
+  medneed:{eyebrow:'06 · Clinical',title:'Medical necessity.',lede:'Every decision tied to the exact chart evidence that drove it.',policy:[
+    ['01','SERVICE <span class="tok-code">K0554</span> · CGM'],
+    ['02','POLICY <span class="tok-code">CMS LCD L33822</span>'],
+    ['03','EVIDENCE <span class="tok-key">HbA1c</span>=<span class="tok-val">8.4%</span> · 4 chart refs'],
+    ['04','NECESSITY <span class="hl">met</span>'],
+    ['05','AUTO-DRAFTED rationale · ready'],
+  ],verdict:['met','auto-rationale attached']},
+  referrals:{eyebrow:'07 · Coordination',title:'Referrals.',lede:'Sends, tracks, and confirms referrals across providers.',policy:[
+    ['01','REFERRAL cardiology · from <span class="tok-val">Dr. Chen</span>'],
+    ['02','TO <span class="tok-val">Novant Heart & Vascular</span>'],
+    ['03','TRANSMIT fax + portal'],
+    ['04','SCHEDULED 2026-04-29'],
+    ['05','FEEDBACK <span class="hl">pending</span>'],
+  ],verdict:['loop open','followup 2026-05-02']},
+};
+function renderFlow(key){
+  document.querySelectorAll('#flowsList button').forEach(b=>b.setAttribute('aria-selected', b.dataset.wf===key));
+  const d=wf[key];
+  document.getElementById('flowsStage').innerHTML=`
+    <div class="bar">
+      <span>${d.eyebrow}</span>
+      <span class="state">● running</span>
+    </div>
+    <div class="body">
+      <h3>${d.title}</h3>
+      <p class="lede">${d.lede}</p>
+      <div class="policy">
+        ${d.policy.map(([n,t])=>`<div class="line"><span class="ln">${n}</span><span>${t}</span></div>`).join('')}
+      </div>
+      <div class="verdict"><span>● ${d.verdict[0]}</span><span>${d.verdict[1]}</span></div>
+    </div>
+  `;
+}
+document.querySelectorAll('#flowsList button').forEach(b=>b.addEventListener('click',()=>renderFlow(b.dataset.wf)));
+renderFlow('intake');
+
+// INTEGRATIONS
+const ints = [
+  ['Brightree','DME billing'],['UnitedHealthcare','Payer'],['Cigna','Payer'],
+  ['Aetna','Payer'],['Niko Health','DME'],['Epic Systems','EMR'],
+  ['eClinicalWorks','EMR'],['athenahealth','EMR'],['eMedNY','Medicaid'],
+  ['myCGS DME MAC','MAC'],['Noridian Medicare','MAC'],['CMS','Federal'],
+  ['EviCore','Benefit mgmt'],['Gmail','Email'],['Outlook','Email'],
+  ['RingCentral','Voice'],['Faxage','Fax'],['Humana','Payer'],
+];
+document.getElementById('intList').innerHTML=ints.map(([n,t])=>`<div class="int-row"><span class="name">${n}</span><span class="type">${t}</span></div>`).join('');
+
+// STATS
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting) return;
+  const el=e.target, t=parseInt(el.dataset.counter,10), s=el.dataset.suffix||'';
+  const start=performance.now(), dur=1400;
+  function tick(ts){const p=Math.min(1,(ts-start)/dur), ea=1-Math.pow(1-p,3);el.innerHTML=`${Math.round(ea*t)}<span class="suf">${s}</span>`;if(p<1)requestAnimationFrame(tick);}
+  requestAnimationFrame(tick); io.unobserve(el);
+}),{threshold:.4});
+document.querySelectorAll('[data-counter]').forEach(c=>io.observe(c));
+</script>
+</body>
+</html>

@@ -1,0 +1,1963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GenHealth — Series A Positioning</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@700,600,500,400&f[]=satoshi@700,500,400,300&f[]=jetbrains-mono@500,400&display=swap" />
+<style>
+  /* ===========================================
+     THEME TOKENS
+     Dark editorial. Obsidian + warm paper text.
+     Signal-green accent for "what we are."
+     Ember accent for "what they are."
+     =========================================== */
+  :root {
+    --bg: #0a0908;
+    --bg-2: #121110;
+    --bg-card: #17161580;
+    --ink: #f5f2ed;
+    --ink-dim: #9a958c;
+    --ink-faint: #5a554d;
+    --rule: #2b2824;
+    --signal: #00ff8a;     /* GenHealth accent */
+    --signal-soft: #00ff8a33;
+    --ember: #ff4f1f;      /* Competitor accent */
+    --ember-soft: #ff4f1f22;
+    --gold: #d4a24c;       /* Editorial accent */
+
+    --font-display: 'Clash Display', 'Times New Roman', serif;
+    --font-body: 'Satoshi', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --pad: clamp(2rem, 5vw, 5rem);
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  /* ===========================================
+     SLIDE FRAME
+     Every slide is a full-viewport snapping section.
+     A subtle vignette + grain texture gives the
+     "print magazine" feel.
+     =========================================== */
+  .slide {
+    min-height: 100vh;
+    padding: var(--pad);
+    scroll-snap-align: start;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  /* Film grain — tiny data-URI noise, subtle. */
+  .slide::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+
+  /* Editorial frame number in the corner */
+  .folio {
+    position: absolute;
+    top: 2rem;
+    right: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--ink-faint);
+    z-index: 3;
+  }
+  .marginalia {
+    position: absolute;
+    bottom: 2rem;
+    left: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    z-index: 3;
+  }
+
+  /* ===========================================
+     REVEAL ANIMATIONS
+     Triggered by IntersectionObserver adding .visible
+     =========================================== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 0.8s var(--ease), transform 0.8s var(--ease);
+  }
+  .slide.visible .reveal { opacity: 1; transform: none; }
+  .slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+  .slide.visible .reveal:nth-child(2) { transition-delay: 0.15s; }
+  .slide.visible .reveal:nth-child(3) { transition-delay: 0.25s; }
+  .slide.visible .reveal:nth-child(4) { transition-delay: 0.35s; }
+  .slide.visible .reveal:nth-child(5) { transition-delay: 0.45s; }
+  .slide.visible .reveal:nth-child(6) { transition-delay: 0.55s; }
+  .slide.visible .reveal:nth-child(7) { transition-delay: 0.65s; }
+
+  /* Blur-in variant for editorial moments */
+  .reveal-blur {
+    opacity: 0;
+    filter: blur(14px);
+    transition: opacity 1s var(--ease), filter 1s var(--ease);
+  }
+  .slide.visible .reveal-blur { opacity: 1; filter: blur(0); }
+
+  /* ===========================================
+     TYPOGRAPHY
+     Clash Display for editorial display
+     Satoshi for body / UI
+     JetBrains Mono for tags, folios, data
+     =========================================== */
+  .display {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--signal);
+  }
+  .eyebrow.ember { color: var(--ember); }
+  .eyebrow.gold { color: var(--gold); }
+  .eyebrow.dim { color: var(--ink-dim); }
+
+  .rule-h {
+    height: 1px;
+    background: var(--rule);
+    border: 0;
+    margin: 2rem 0;
+  }
+
+  /* ===========================================
+     TITLE SLIDE
+     =========================================== */
+  .title-slide {
+    background:
+      radial-gradient(ellipse at 20% 100%, rgba(0,255,138,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 0%, rgba(255,79,31,0.06) 0%, transparent 60%),
+      var(--bg);
+  }
+  .title-slide .display {
+    font-size: clamp(3.5rem, 11vw, 10rem);
+  }
+  .title-slide .display em {
+    font-style: italic;
+    color: var(--signal);
+    font-weight: 500;
+  }
+  .title-meta {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+    max-width: 1100px;
+  }
+  .title-meta div label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.5rem;
+  }
+  .title-meta div span {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    color: var(--ink);
+  }
+
+  /* ===========================================
+     COMPETITOR CARDS
+     Each has its own layout rhythm
+     =========================================== */
+  .comp-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: 4rem;
+    align-items: start;
+    max-width: 1500px;
+    width: 100%;
+  }
+  .comp-grid.flip { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+
+  .comp-name {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(3rem, 8vw, 7rem);
+    letter-spacing: -0.04em;
+    line-height: 0.9;
+    color: var(--ink);
+  }
+  .comp-tag {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+    color: var(--ink-dim);
+    margin-top: 1.25rem;
+    max-width: 40ch;
+  }
+  .comp-category {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border: 1px solid var(--ember);
+    color: var(--ember);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-top: 1.5rem;
+  }
+
+  .comp-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem 2rem;
+    margin-top: 2rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .comp-stats .cell label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 0.4rem;
+  }
+  .comp-stats .cell value,
+  .comp-stats .cell .value {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--ink);
+  }
+
+  .comp-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  .comp-block {
+    padding: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+  .comp-block h4 {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+    margin-bottom: 0.75rem;
+  }
+  .comp-block.weakness {
+    border-left: 2px solid var(--signal);
+  }
+  .comp-block.weakness h4 { color: var(--signal); }
+  .comp-block p {
+    color: var(--ink);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+
+  /* ===========================================
+     SYNTHESIS / FATIGUE MAP
+     =========================================== */
+  .fatigue {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .fatigue-item {
+    padding: 1.5rem 1.25rem;
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+    position: relative;
+  }
+  .fatigue-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--ember);
+    opacity: 0;
+    transition: opacity 0.4s;
+  }
+  .slide.visible .fatigue-item { animation: pulse 4s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { border-color: var(--rule); }
+    50% { border-color: var(--ember-soft); }
+  }
+  .fatigue-item .phrase {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+  .fatigue-item .users {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--ember);
+    text-transform: uppercase;
+  }
+
+  /* ===========================================
+     POSITIONING OPTION SLIDES
+     Numbered, big concept, then framing grid.
+     =========================================== */
+  .option-head {
+    display: flex;
+    align-items: baseline;
+    gap: 2rem;
+    margin-bottom: 1rem;
+  }
+  .option-num {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(5rem, 10vw, 9rem);
+    color: var(--signal);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+  .option-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+  .option-headline {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+    color: var(--ink);
+    max-width: 20ch;
+  }
+  .option-headline em {
+    font-style: italic;
+    font-weight: 500;
+    color: var(--signal);
+  }
+
+  .option-sub {
+    font-size: 1.15rem;
+    color: var(--ink-dim);
+    max-width: 60ch;
+    margin-top: 2rem;
+    line-height: 1.55;
+  }
+
+  .option-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    margin-top: 3rem;
+  }
+  .option-cell {
+    padding: 1.5rem;
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+  }
+  .option-cell label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 0.75rem;
+  }
+  .option-cell p {
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .option-cell.vs label { color: var(--ember); }
+
+  /* ===========================================
+     CONTRARIAN / MOONSHOT SLIDES (XI–XX)
+     Ember-red accents to signal paradigm-breaks.
+     Roman numerals. Scorched-edge headline treatment.
+     =========================================== */
+  .moonshot {
+    background:
+      radial-gradient(ellipse at 10% 0%, rgba(255,79,31,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 100% 100%, rgba(0,255,138,0.05) 0%, transparent 50%),
+      var(--bg);
+  }
+  .moonshot .option-num {
+    color: var(--ember);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: -0.05em;
+  }
+  .moonshot .option-tag {
+    color: var(--ember);
+  }
+  .moonshot .option-headline em {
+    color: var(--ember);
+    font-style: italic;
+  }
+  .moonshot .option-cell label {
+    color: var(--ember);
+  }
+  .moonshot .stamp {
+    display: inline-block;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--ember);
+    color: var(--ember);
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    transform: rotate(-1.5deg);
+    margin-left: 1rem;
+    vertical-align: middle;
+  }
+  .moonshot .kill-list {
+    margin-top: 2.5rem;
+    padding: 1.25rem 1.5rem;
+    border-left: 2px solid var(--ember);
+    background: rgba(255, 79, 31, 0.04);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.35rem;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .moonshot .kill-list strong {
+    color: var(--ember);
+    font-weight: 600;
+    font-style: normal;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ===========================================
+     CLOSING SLIDE
+     =========================================== */
+  .closing {
+    background:
+      radial-gradient(ellipse at 50% 120%, rgba(0,255,138,0.15) 0%, transparent 55%),
+      var(--bg);
+  }
+
+  /* ===========================================
+     NAV + PROGRESS
+     =========================================== */
+  .progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 2px;
+    width: 0;
+    background: var(--signal);
+    z-index: 100;
+    transition: width 0.15s linear;
+  }
+  .nav-dots {
+    position: fixed;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 99;
+  }
+  .nav-dots button {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    border: 1px solid var(--ink-faint);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s var(--ease);
+  }
+  .nav-dots button.active {
+    background: var(--signal);
+    border-color: var(--signal);
+    transform: scale(1.4);
+  }
+  .nav-dots button:hover { border-color: var(--signal); }
+
+  .hint {
+    position: fixed;
+    bottom: 1.25rem;
+    right: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-faint);
+    z-index: 99;
+  }
+
+  /* ===========================================
+     RESPONSIVE
+     =========================================== */
+  @media (max-width: 900px) {
+    .comp-grid, .comp-grid.flip { grid-template-columns: 1fr; gap: 2rem; }
+    .fatigue, .option-grid { grid-template-columns: 1fr; }
+    .title-meta { grid-template-columns: 1fr; }
+    .nav-dots, .hint { display: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal-blur {
+      transition: opacity 0.3s ease;
+      transform: none;
+      filter: none;
+    }
+    .fatigue-item { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="hint">← → / SPACE</div>
+
+<!-- ===========================================
+     SLIDE 01 — TITLE
+     =========================================== -->
+<section class="slide title-slide">
+  <span class="folio">001 / 035</span>
+  <div>
+    <p class="eyebrow reveal">GenHealth · Series A · Positioning Study</p>
+    <h1 class="display reveal" style="margin-top: 1.5rem;">
+      Standing<br/><em>apart.</em>
+    </h1>
+    <p class="reveal" style="margin-top: 2rem; font-size: 1.3rem; color: var(--ink-dim); max-width: 60ch;">
+      Eleven competitors. One category. A saturated vocabulary of
+      <em style="color: var(--ember); font-style: italic;">agents, copilots, and AI employees.</em>
+      This deck maps their positioning — and proposes ten ways GenHealth
+      can own ground none of them can reach.
+    </p>
+    <div class="title-meta reveal">
+      <div><label>Prepared for</label><span>Series A · 2026</span></div>
+      <div><label>Companies analyzed</label><span>11</span></div>
+      <div><label>Positions proposed</label><span>10 + 1 flagship</span></div>
+    </div>
+  </div>
+  <span class="marginalia">The Category Brief</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 02 — Tennr
+     =========================================== -->
+<section class="slide">
+  <span class="folio">002 / 035</span>
+  <div class="comp-grid">
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 01</p>
+      <h2 class="comp-name reveal">Tennr</h2>
+      <p class="comp-tag reveal">"Right patient. Right care setting. Every time."</p>
+      <span class="comp-category reveal">Patient Orchestration</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">$159M</span></div>
+        <div class="cell"><label>Valuation</label><span class="value">$605M</span></div>
+        <div class="cell"><label>Lead investors</label><span class="value">IVP · a16z · Lightspeed</span></div>
+        <div class="cell"><label>Model claim</label><span class="value">RaeLM (VLM)</span></div>
+      </div>
+    </div>
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>AI-native referral intake for DME, home infusion, complex rehab. Document-native ingestion of fax/portal/orders at ~10M docs/month. Sold as "patient orchestration," not RCM.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>Narrow ICP — post-acute only. Front-office wedge, doesn't own claim submission, denials, or collections. No EHR-embedded distribution. Seat-based SaaS inside budgets that reward services ROI.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Tennr</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 03 — Prochant
+     =========================================== -->
+<section class="slide">
+  <span class="folio">003 / 035</span>
+  <div class="comp-grid flip">
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>Outsourced RCM BPO for home-based care — intake, billing, collections — delivered as "tech + team." Proprietary Pulse / PulseIQ platform retrofitted with AI language.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>3,000+ offshore FTE base is exactly the cost structure an AI-native entrant undercuts. Tech is bolted onto services, not the product. Founder-held — slower reinvestment velocity than VC peers.</p>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 02</p>
+      <h2 class="comp-name reveal">Prochant</h2>
+      <p class="comp-tag reveal">"You work hard to earn your revenue; count on us to bring it home."</p>
+      <span class="comp-category reveal">HME/DME BPO · Services-led</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Ownership</label><span class="value">Founder-held</span></div>
+        <div class="cell"><label>Scale</label><span class="value">3,000+ FTE</span></div>
+        <div class="cell"><label>Since</label><span class="value">1999</span></div>
+        <div class="cell"><label>Geographies</label><span class="value">US · India · Guyana</span></div>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Prochant</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 04 — ACU-Serve
+     =========================================== -->
+<section class="slide">
+  <span class="folio">004 / 035</span>
+  <div class="comp-grid">
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 03</p>
+      <h2 class="comp-name reveal">ACU-Serve</h2>
+      <p class="comp-tag reveal">"Results matter."</p>
+      <span class="comp-category reveal">HME/DME RCM · PE Rollup</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Ownership</label><span class="value">Lovell Minnick (PE)</span></div>
+        <div class="cell"><label>Revenue</label><span class="value">~$58M</span></div>
+        <div class="cell"><label>Headcount</label><span class="value">~300</span></div>
+        <div class="cell"><label>Recent M&amp;A</label><span class="value">TANYR · Pinnacle</span></div>
+      </div>
+    </div>
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>30-year outsourced RCM — intake, billing, A/R, denial management, resupply — for HME/DME, infusion pharmacy, complex rehab. ACU-Insight analytics bolted on top of services.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>No native AI, no LLMs — still "advanced workflow tools." Pricing scales with headcount, not margin. No self-serve product. PE pressure on margin over innovation velocity.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · ACU-Serve</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 05 — Mandolin
+     =========================================== -->
+<section class="slide">
+  <span class="folio">005 / 035</span>
+  <div class="comp-grid flip">
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>AI agents for the specialty-drug back office — benefits verification, prior auth, patient cost estimation, appeals. Agents operate portals, faxes, and phone without API integrations.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>Single-vertical — specialty infusion only. Founded 2024 — limited track record. "No APIs" is fragile: portal scraping breaks when payers redesign UI. No payer-facing product.</p>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 04</p>
+      <h2 class="comp-name reveal">Mandolin</h2>
+      <p class="comp-tag reveal">"Precision automation for specialty drugs."</p>
+      <span class="comp-category reveal">Specialty Drug Agents</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">~$57M</span></div>
+        <div class="cell"><label>Series A</label><span class="value">$40M · Greylock</span></div>
+        <div class="cell"><label>Founded</label><span class="value">2024</span></div>
+        <div class="cell"><label>Clinic reach</label><span class="value">700+ locations</span></div>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Mandolin</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 06 — SuperDial
+     =========================================== -->
+<section class="slide">
+  <span class="folio">006 / 035</span>
+  <div class="comp-grid">
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 05</p>
+      <h2 class="comp-name reveal">SuperDial</h2>
+      <p class="comp-tag reveal">"The #1 voice AI platform for RCM teams."</p>
+      <span class="comp-category reveal">Voice Agents · Outbound</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">~$20M</span></div>
+        <div class="cell"><label>Series A</label><span class="value">$15M · SignalFire</span></div>
+        <div class="cell"><label>Modality</label><span class="value">Voice-only</span></div>
+        <div class="cell"><label>Productivity claim</label><span class="value">4×</span></div>
+      </div>
+    </div>
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>Outbound AI callers that navigate payer IVRs and conduct live benefits / PA / claim-status conversations with reps, writing results back into EHR. Per-call usage pricing.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>Single channel — phone only. CMS-0057-F mandates electronic PA APIs by 2027 — the exact problem shrinks. Commoditization risk: Vapi, Retell, Deepgram, Infinitus all in the same stack.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · SuperDial</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 07 — Anterior
+     =========================================== -->
+<section class="slide">
+  <span class="folio">007 / 035</span>
+  <div class="comp-grid flip">
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>Clinical AI for health plans — flagship "Florence" reviews medical records against clinical guidelines to render PA determinations. Claims 99.24% accuracy, 85% admin cost cut.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>Payer-only — providers view payer-side PA automation as adversarial. CMS-0057-F could standardize PA via FHIR APIs, compressing the problem. "Actions" expansion still nascent.</p>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 06</p>
+      <h2 class="comp-name reveal">Anterior</h2>
+      <p class="comp-tag reveal">"Clinical AI that's ready to deploy."</p>
+      <span class="comp-category reveal">Payer-side Clinical AI</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">$64M</span></div>
+        <div class="cell"><label>Lead investors</label><span class="value">NEA · Sequoia</span></div>
+        <div class="cell"><label>Lives covered</label><span class="value">~50M</span></div>
+        <div class="cell"><label>Most recent</label><span class="value">$40M · Feb 2026</span></div>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Anterior</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 08 — Cohere Health
+     =========================================== -->
+<section class="slide">
+  <span class="folio">008 / 035</span>
+  <div class="comp-grid">
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 07</p>
+      <h2 class="comp-name reveal">Cohere<br/>Health</h2>
+      <p class="comp-tag reveal">"Clinical intelligence."</p>
+      <span class="comp-category reveal">Payer UM Platform</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">~$200M</span></div>
+        <div class="cell"><label>Series C</label><span class="value">$90M · Temasek · 2025</span></div>
+        <div class="cell"><label>Anchor payer</label><span class="value">Humana</span></div>
+        <div class="cell"><label>PA volume</label><span class="value">12M+/yr</span></div>
+      </div>
+    </div>
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>AI PA &amp; utilization management to health plans — Cohere Align (gold-carding), Review Assist, Policy Studio. PMPM + transaction + shared savings pricing.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>Built on pre-LLM ML stack — "agentic" is recent retrofit, not architecture. Provider UX is secondary — docs still submit through Cohere's portal. 12–24 month payer sales cycles. Humana concentration risk.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Cohere Health</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 09 — Availity
+     =========================================== -->
+<section class="slide">
+  <span class="folio">009 / 035</span>
+  <div class="comp-grid flip">
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>The dominant US clearinghouse. 13B+ transactions/year between 95% of payers and 3.4M providers. Essentials portal, AuthAI, Fusion (FHIR), Abridge partnership for conversational PA.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>Legacy batch EDI core with AI/FHIR layered on top — not rebuilt. Essentials portal is form-heavy, provider-hated. <em>Renting</em> conversational AI from Abridge. Governance-heavy payer-consortium DNA = slow ship velocity.</p>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 08</p>
+      <h2 class="comp-name reveal">Availity</h2>
+      <p class="comp-tag reveal">"Nation's leading healthcare intelligence network."</p>
+      <span class="comp-category reveal">Clearinghouse · PE-owned</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Ownership</label><span class="value">Francisco · Novo Holdings</span></div>
+        <div class="cell"><label>Revenue estimate</label><span class="value">~$326M–500M</span></div>
+        <div class="cell"><label>Payer coverage</label><span class="value">95%</span></div>
+        <div class="cell"><label>Transactions</label><span class="value">13B / yr</span></div>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Availity</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 10 — Valerie Health
+     =========================================== -->
+<section class="slide">
+  <span class="folio">010 / 035</span>
+  <div class="comp-grid">
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 09</p>
+      <h2 class="comp-name reveal">Valerie<br/>Health</h2>
+      <p class="comp-tag reveal">"The AI front office for independent provider groups."</p>
+      <span class="comp-category reveal">Front-Office Agents</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">$39M</span></div>
+        <div class="cell"><label>Series A</label><span class="value">$30M · Redpoint · Dec 2025</span></div>
+        <div class="cell"><label>Founded</label><span class="value">2023</span></div>
+        <div class="cell"><label>Growth signal</label><span class="value">5× revenue / 6 mo</span></div>
+      </div>
+    </div>
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>AI agents + human-in-loop layer for independent physician groups — referrals, fax intake, scheduling. Marketed as "near-100% accuracy." athenahealth Marketplace integration.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>No RCM / claims / denials / coding. No payer-side tooling. No hospital or health-system footprint. Young (2023) with limited third-party case studies. Story stops at the front desk.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Valerie Health</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 11 — Thoughtful AI
+     =========================================== -->
+<section class="slide">
+  <span class="folio">011 / 035</span>
+  <div class="comp-grid flip">
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sold</h4>
+        <p>Named "AI employees" for RCM — EVA, PAULA, CODY, CAM, DAN, PHIL. ROI-guaranteed contracts, at-risk on AR-day compression. Heavy marketing on the "AI workforce" metaphor.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they went</h4>
+        <p>May 2025: rolled into <strong>Smarter Technologies</strong> with SmarterDx + Access Healthcare under New Mountain Capital. Brand dissolving — thoughtful.ai now redirects. Glassdoor complaints, RPA-rebranded-agents criticism. <em>A cautionary tale.</em></p>
+      </div>
+    </div>
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 10</p>
+      <h2 class="comp-name reveal">Thoughtful<br/>AI</h2>
+      <p class="comp-tag reveal">"Human-capable AI agents for healthcare." <span style="color: var(--gold);">→ absorbed.</span></p>
+      <span class="comp-category reveal">RCM Agents · now Smarter Technologies</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">~$35M</span></div>
+        <div class="cell"><label>Status</label><span class="value">Rolled up · 2025</span></div>
+        <div class="cell"><label>Rollup parent</label><span class="value">New Mountain Capital</span></div>
+        <div class="cell"><label>Combined revenue</label><span class="value">$800M+</span></div>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Thoughtful AI</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 12 — Notable Health
+     =========================================== -->
+<section class="slide">
+  <span class="folio">012 / 035</span>
+  <div class="comp-grid">
+    <div>
+      <p class="eyebrow ember reveal">Competitor · 11</p>
+      <h2 class="comp-name reveal">Notable</h2>
+      <p class="comp-tag reveal">"The AI platform purpose-built for healthcare."</p>
+      <span class="comp-category reveal">Health-System Admin Platform</span>
+      <div class="comp-stats reveal">
+        <div class="cell"><label>Total raised</label><span class="value">~$119M</span></div>
+        <div class="cell"><label>Valuation (2021)</label><span class="value">$600M</span></div>
+        <div class="cell"><label>Lead investors</label><span class="value">ICONIQ · Greylock · Oak HC/FT</span></div>
+        <div class="cell"><label>Tasks / day</label><span class="value">1.5M</span></div>
+      </div>
+    </div>
+    <div class="comp-side">
+      <div class="comp-block reveal">
+        <h4>What they sell</h4>
+        <p>AI Agents + Flow Builder + Sidekick for health systems — scheduling, intake, PA, copay, care-gap closure. Repositioned from RPA (2017) to "agentic AI" in 2024. Named logos: MUSC, CommonSpirit, Inova.</p>
+      </div>
+      <div class="comp-block weakness reveal">
+        <h4>Where they're exposed</h4>
+        <p>Explicitly non-clinical — cedes the hottest category (ambient) to Abridge / Ambience. RPA heritage — critics call it "repackaged RPA with an LLM sticker." Valuation flat since 2021 while ambient peers raise at multi-B.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Reference · Notable Health</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 13 — SYNTHESIS / CATEGORY FATIGUE MAP
+     =========================================== -->
+<section class="slide">
+  <span class="folio">013 / 035</span>
+  <div style="max-width: 1500px;">
+    <p class="eyebrow gold reveal">Synthesis</p>
+    <h2 class="display reveal" style="font-size: clamp(2.5rem, 6vw, 5rem); margin-top: 1rem;">
+      They all<br/>sound <em style="color: var(--ember); font-style: italic;">the same.</em>
+    </h2>
+    <p class="reveal" style="margin-top: 1.5rem; color: var(--ink-dim); font-size: 1.1rem; max-width: 70ch;">
+      Strip off the logos and the pitches become interchangeable. Eleven companies, one vocabulary.
+      Investors call it category fatigue. Stanford calls it "supercharged flaws." <br/>
+      Becker's reports <strong style="color: var(--ink);">95% of healthcare AI projects show no measurable ROI.</strong>
+    </p>
+    <div class="fatigue">
+      <div class="fatigue-item reveal">
+        <div class="phrase">"AI agents"</div>
+        <div class="users">Notable · Thoughtful · Mandolin · Valerie · Cohere</div>
+      </div>
+      <div class="fatigue-item reveal">
+        <div class="phrase">"Purpose-built<br/>for healthcare"</div>
+        <div class="users">Notable · Anterior · Cohere</div>
+      </div>
+      <div class="fatigue-item reveal">
+        <div class="phrase">"End-to-end<br/>automation"</div>
+        <div class="users">Mandolin · Thoughtful · ACU-Serve · Tennr</div>
+      </div>
+      <div class="fatigue-item reveal">
+        <div class="phrase">"Autonomous / agentic"</div>
+        <div class="users">Every single one</div>
+      </div>
+      <div class="fatigue-item reveal">
+        <div class="phrase">"AI employees"</div>
+        <div class="users">Thoughtful · Notable · Valerie (H-I-L)</div>
+      </div>
+      <div class="fatigue-item reveal">
+        <div class="phrase">"Clinical intelligence"</div>
+        <div class="users">Cohere · Anterior · Availity</div>
+      </div>
+    </div>
+    <hr class="rule-h reveal" />
+    <p class="reveal" style="color: var(--ink); font-size: 1.1rem; max-width: 80ch;">
+      And structurally, every one of them picks a <em style="color: var(--signal); font-style: italic;">slice:</em>
+      provider <strong>or</strong> payer · voice <strong>or</strong> document <strong>or</strong> portal ·
+      SaaS <strong>or</strong> BPO · admin <strong>or</strong> clinical. Nobody owns the substrate.
+    </p>
+  </div>
+  <span class="marginalia">The Vocabulary is Saturated</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 14 — OPTION INTRO (trillion-dollar framing)
+     =========================================== -->
+<section class="slide">
+  <span class="folio">014 / 035</span>
+  <div style="max-width: 1400px;">
+    <p class="eyebrow reveal">Ten positions sized to the <em>ten-trillion-dollar</em> AI economy</p>
+    <h2 class="display reveal" style="font-size: clamp(3rem, 8vw, 8rem); margin-top: 2rem;">
+      What GenHealth<br/>could <em>be.</em>
+    </h2>
+    <p class="reveal" style="margin-top: 2.5rem; color: var(--ink-dim); font-size: 1.15rem; max-width: 72ch; line-height: 1.55;">
+      Goldman says AI exposes <strong style="color: var(--ink);">300M jobs globally</strong>. McKinsey puts gen-AI at
+      <strong style="color: var(--ink);">$4.4T/year</strong> in annual economic value. Foundation Capital's thesis:
+      the SaaS ceiling was $650B — the <strong style="color: var(--signal);">services TAM is $13T.</strong>
+      General Catalyst's Hemant Taneja: <em>"the first $1T vertical AI company will be in healthcare."</em>
+    </p>
+    <p class="reveal" style="margin-top: 1.5rem; color: var(--ink); font-size: 1.15rem; max-width: 72ch; line-height: 1.55;">
+      US healthcare is <strong style="color: var(--signal);">$4.9T</strong> — 17.6% of GDP. Admin waste alone is
+      <strong style="color: var(--signal);">$1T</strong>. The healthcare BPO market reaches
+      <strong style="color: var(--signal);">$626B by 2032</strong>. 2.7M US back-office FTEs earn
+      <strong style="color: var(--signal);">$212B/year</strong>.
+      Every position below points at a different slice of that wallet.
+    </p>
+    <p class="reveal" style="margin-top: 2rem; font-family: var(--font-mono); font-size: 0.85rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--signal);">
+      01 · 02 · 03 · 04 · 05 · 06 · 07 · 08 · 09 · 10
+    </p>
+  </div>
+  <span class="marginalia">Ten Futures · Trillion-Dollar Scale</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 15 — POSITION 01 · Services-as-Software
+     =========================================== -->
+<section class="slide">
+  <span class="folio">015 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">01</span>
+      <span class="option-tag">Services-as-Software · The Thesis</span>
+    </div>
+    <h2 class="option-headline reveal">We're not selling<br/><em>software.</em> We're selling <em>labor.</em></h2>
+    <p class="option-sub reveal">
+      The SaaS ceiling was <strong>$650B</strong>. The services TAM is <strong>$13T</strong> (Foundation Capital).
+      Every SaaS comp set — per-seat, per-feature, annual contract — was built for a smaller market than the
+      one GenHealth plays in. Our line item isn't IT software. It's the
+      <em style="color: var(--signal);">healthcare wage bill.</em> $212B/year in back-office wages, $1T in
+      admin waste, $4.9T in total healthcare flow. <strong>Price like labor. TAM like labor. Win the wallet that matters.</strong>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The reframe</label>
+        <p>Casado (a16z): "Every $1 of software replaces $10 of services." Our budget fight isn't vs. Epic or Salesforce — it's vs. payroll.</p>
+      </div>
+      <div class="option-cell">
+        <label>The comp set</label>
+        <p>Sierra, Harvey, Hippocratic, Decagon — all valued on labor displacement, not seat count. $5B–$10B on Series B.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Every "AI-enabled SaaS" pitch. The $100/seat/month ceiling. The "software TAM" slide every competitor shows.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 01 · Thesis</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 16 — POSITION 02 · Hire AI, by the Hour
+     =========================================== -->
+<section class="slide">
+  <span class="folio">016 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">02</span>
+      <span class="option-tag">Labor Marketplace · Hire AI by the Hour</span>
+    </div>
+    <h2 class="option-headline reveal">Hire an AI <em>biller</em> for $5/hr.<br/>Hire an AI <em>UM reviewer</em> for $15/hr.</h2>
+    <p class="option-sub reveal">
+      Hippocratic AI lists a nurse at <strong>$9/hr</strong>. It's the loudest signal in AI pricing.
+      GenHealth ships an entire
+      <em style="color: var(--signal);">catalog of AI workers</em> — biller, coder, PA specialist, eligibility clerk,
+      UM nurse, appeals writer — each with loaded cost, SLA, and a "hire" button.
+      Fully loaded offshore FTE: $35/hr. Onshore: $60/hr. <strong>GenHealth: $5–$15. Always on. Never attrits.</strong>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The GTM</label>
+        <p>CFOs don't sign software contracts — they approve headcount. We land as a req, not a PO. Zero procurement friction.</p>
+      </div>
+      <div class="option-cell">
+        <label>The TAM</label>
+        <p>2.7M US healthcare back-office FTEs. $212B in wages. Plus the $626B global healthcare BPO market those wages feed.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Prochant, Access Healthcare, ACU-Serve. Every offshore BPO's labor-arbitrage P&amp;L. The whole "AI employee" naming-theater category.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 02 · Labor Marketplace</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 17 — POSITION 03 · Outcomes Pricing
+     =========================================== -->
+<section class="slide">
+  <span class="folio">017 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">03</span>
+      <span class="option-tag">Outcomes-Denominated</span>
+    </div>
+    <h2 class="option-headline reveal">No seats. <em>No subscriptions.</em><br/>We get paid when healthcare works.</h2>
+    <p class="option-sub reveal">
+      Charge per approved auth, per paid claim, per filled appointment — never per seat. The entire SaaS category
+      is built on <em>hope</em>; our pricing is built on <em>proof</em>. Take a <strong>percentage of recovered
+      revenue</strong>, every dollar we collect on behalf of a provider, every premium dollar we protect for a payer.
+      The biggest line item in US healthcare is claims paid — <strong style="color: var(--signal);">$4.9T/year</strong>.
+      Take 50 basis points and that's a <em>$25B annual revenue company</em>.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The budget fight</label>
+        <p>CFOs approve us from contingency AR-recovery budget — not new software capex. We literally pay for ourselves before we invoice.</p>
+      </div>
+      <div class="option-cell">
+        <label>The wedge</label>
+        <p>Outcomes-based pricing is how trillion-dollar AI companies get born. Every GPT-wrapper's gross margin forbids it.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Cohere's PMPM. Tennr's seat SaaS. Thoughtful's "ROI guarantee" theater. We don't promise outcomes — we price on them.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 03</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 18 — POSITION 04 · BPO Killer
+     =========================================== -->
+<section class="slide">
+  <span class="folio">018 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">04</span>
+      <span class="option-tag">The BPO Killer</span>
+    </div>
+    <h2 class="option-headline reveal"><em>2.7 million</em> back-office FTEs.<br/>Absorbed.</h2>
+    <p class="option-sub reveal">
+      The TAM is the <strong>$626B global healthcare BPO market</strong> (Fortune BI) and the
+      <strong>$212B of US back-office wages</strong> (BLS) those BPOs feed on. Prochant, ACU-Serve,
+      Access Healthcare, R1, Cognizant — all labor-arbitrage businesses structurally incapable of competing
+      with our margin. Piedmont replaced an outsourced team <em style="color: var(--signal);">5× larger than
+      GenHealth's deployment</em> with better results. That's one customer. Scale it to every provider in America.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The claim</label>
+        <p>We're not a software vendor — we're a labor substitute. Priced vs. FTE cost. Approved in CFO headcount reviews, not IT budget.</p>
+      </div>
+      <div class="option-cell">
+        <label>The moat</label>
+        <p>BPOs can't catch up — their P&amp;L <em>is</em> the labor. Their "AI" is a marketing overlay on the same FTE stack.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Prochant. ACU-Serve. Thoughtful's new parent (Access Healthcare). Cognizant. The entire offshore-BPO category.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 04</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 19 — POSITION 05 · The Agent Economy for Healthcare
+     =========================================== -->
+<section class="slide">
+  <span class="folio">019 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">05</span>
+      <span class="option-tag">Agent Economy · Platform Endgame</span>
+    </div>
+    <h2 class="option-headline reveal">Every hospital and health plan<br/>runs on a <em>fleet of our agents.</em></h2>
+    <p class="option-sub reveal">
+      Bret Taylor's Sierra thesis — <em>"the agent economy"</em> — but vertical to healthcare, where it matters most.
+      Every health system becomes a manager of agents: claims agents, PA agents, care-coordination agents, intake
+      agents, appeals agents. GenHealth ships the agents, the control plane, the observability, the governance,
+      the compliance. <strong>The way every company runs on Salesforce today — every health system runs on GenHealth
+      tomorrow.</strong>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The platform</label>
+        <p>Agent orchestration + human-in-loop escalation + HIPAA-grade audit trails + policy guardrails. The boring plumbing that makes agents deployable in regulated settings.</p>
+      </div>
+      <div class="option-cell">
+        <label>The unit economics</label>
+        <p>Platform SaaS + per-agent-hour + marketplace take-rate on third-party agents built on our runtime. Three revenue streams, trillion-dollar ceiling.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Sierra's enterprise wedge can't touch healthcare compliance. Notable is non-clinical. Epic's "App Orchard" was never an agent platform. Green field.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 05 · The Agent Economy</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 20 — POSITION 06 · Workflow-Native System of Record
+     =========================================== -->
+<section class="slide">
+  <span class="folio">020 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">06</span>
+      <span class="option-tag">Vertical AI · System of Record</span>
+    </div>
+    <h2 class="option-headline reveal">Not a tool next to the EHR.<br/>The <em>place the work happens.</em></h2>
+    <p class="option-sub reveal">
+      Elad Gil's vertical-AI thesis: "Horizontal wrappers commoditize. Vertical AI owns the workflow, the data,
+      and the compliance moat." Every trillion-dollar vertical AI company wins the <strong>habit</strong> — the
+      inbox the biller opens first, the queue the UM nurse works from, the dashboard the practice manager lives in.
+      Harvey did this in law. Abridge did it in exam rooms. GenHealth does it for
+      <em style="color: var(--signal);">every non-clinical moment in healthcare.</em>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The habit</label>
+        <p>The daily, hourly, minute-by-minute work surface. Once a health-system operator lives here, switching cost is measured in re-training an entire back office.</p>
+      </div>
+      <div class="option-cell">
+        <label>The data</label>
+        <p>Every keystroke feeds the feedback loop. The longer customers use us, the more defensible we get — the classic system-of-record compounding.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Notable's bolt-on agents. Availity's portal. The "screen we open sometimes" category. Anyone still pitching an "app" in an EHR marketplace.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 06 · System of Record</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 21 — POSITION 07 · The Stripe of Healthcare Claims
+     =========================================== -->
+<section class="slide">
+  <span class="folio">021 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">07</span>
+      <span class="option-tag">Payment Rails · The Stripe of Healthcare</span>
+    </div>
+    <h2 class="option-headline reveal">Healthcare has <em>no Stripe.</em><br/>We build it.</h2>
+    <p class="option-sub reveal">
+      <strong>$4.9T of US healthcare</strong> flows across claims rails owned by a 40-year-old batch-EDI clearinghouse
+      (Availity) and its monopolist rival (Optum/Change Healthcare — just breached). The CMS-0057-F mandate forces
+      electronic PA APIs by 2027 — a once-in-a-generation reset. GenHealth's DaVinci-native UMPA is already the rail.
+      <strong style="color: var(--signal);">Take a take-rate on every transaction we route, adjudicate, or settle.</strong>
+      Stripe did this for internet commerce and is worth $70B. Healthcare is 10x bigger.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The TAM math</label>
+        <p>50B admin transactions/year at $0.25–$14 each (CAQH). Even 10bps of the $4.9T flow is <strong>$4.9B/year in take-rate revenue</strong>.</p>
+      </div>
+      <div class="option-cell">
+        <label>The timing</label>
+        <p>Availity's Change breach + CMS-0057-F mandate = the clearinghouse category is structurally unstable for the first time since 1996.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Availity's batch-EDI moat. Optum's post-breach grip. SuperDial's voice-only wedge. Every "we integrate with clearinghouses" pitch.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 07 · Payment Rails</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 22 — POSITION 08 · Risk-Bearing
+     =========================================== -->
+<section class="slide">
+  <span class="folio">022 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">08</span>
+      <span class="option-tag">Risk-Bearing AI</span>
+    </div>
+    <h2 class="option-headline reveal">We <em>underwrite</em> our own output.</h2>
+    <p class="option-sub reveal">
+      AI that's accurate enough to bet capital on. Offer a <strong>clinical &amp; financial warranty</strong>:
+      if a PA is wrongly denied under our adjudication, we pay the provider the procedure revenue. If a claim
+      we process is clawed back, we eat the clawback. If an appeal we recommend loses, we refund the effort.
+      <em style="color: var(--signal);">Nobody in this category can match it.</em>
+      <strong>The insurance wrapper is the moat no GPT-wrapper can price.</strong>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The differentiator</label>
+        <p>Every competitor ships ROI dashboards. We ship a check. The category's first AI with actual skin in the game.</p>
+      </div>
+      <div class="option-cell">
+        <label>The capital</label>
+        <p>Structured as a reinsured warranty product — capital-efficient. Series A partially funds the reserve. Turns the raise into a flywheel.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Thoughtful's "outcomes guarantee" marketing. Anterior's "99.24% accuracy" abstraction. Every vendor who won't stand behind their own work.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 08</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 23 — POSITION 09 · The AI-Native Payer
+     =========================================== -->
+<section class="slide">
+  <span class="folio">023 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">09</span>
+      <span class="option-tag">Forward-Integration · Launch a Plan</span>
+    </div>
+    <h2 class="option-headline reveal">Don't just sell to payers.<br/><em>Become</em> one.</h2>
+    <p class="option-sub reveal">
+      Oscar and Alignment proved digital payers scale. But they were web-native, not AI-native — still running on
+      1,000-person claims-ops teams underneath a modern UI. <strong>A GenHealth-operated health plan runs on
+      agents, with &lt;1% admin overhead vs. industry's 15–30%.</strong> That delta is the entire P&amp;L.
+      The MLR arbitrage alone is transformative. Forward-integrate into the single largest dollar pool in US
+      healthcare: <strong style="color: var(--signal);">$1.5T of premium revenue.</strong>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The wedge</label>
+        <p>Start with a small MA or Medicaid MCO — the segments with highest admin ratios. Prove the agent-native op-model. Scale by vertical (DME, behavioral, specialty).</p>
+      </div>
+      <div class="option-cell">
+        <label>The TAM</label>
+        <p>MA alone: $462B today → $600B+ by 2030 (MedPAC). Medicaid managed care: $450B. Commercial: $1.3T. The largest TAM any AI startup can claim.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>The "sell to payers" sales cycle (12–24 months). Cohere's dependency on Humana. The entire "payer-tech vendor" category — because <em>we are the payer.</em></p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 09 · Forward Integration</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 24 — POSITION 10 · The Healthcare Worker API
+     =========================================== -->
+<section class="slide">
+  <span class="folio">024 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">10</span>
+      <span class="option-tag">Developer Platform · The AWS of Healthcare Labor</span>
+    </div>
+    <h2 class="option-headline reveal"><code style="font-family: var(--font-mono); font-size: 0.85em; color: var(--signal);">POST /workers/biller</code><br/>An AI, <em>on the payroll,</em> in a single API call.</h2>
+    <p class="option-sub reveal">
+      AWS turned compute into an API call. Stripe turned payments into an API call. Twilio turned telecom into an
+      API call. <strong>GenHealth turns healthcare labor into an API call.</strong> Every EHR integrator, every
+      digital-health startup, every health-system engineering team spins up AI billers, AI PA specialists, AI
+      schedulers, AI UM nurses — on demand, billed by the hour, with built-in HIPAA, audit, and guardrails.
+      <em style="color: var(--signal);">Every app built on top is a customer. Every workflow extended on top is lock-in.</em>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The platform</label>
+        <p>SDK + console + marketplace. Others build verticals on top of us (behavioral, dental, DME, infusion). We take a margin on every worker-hour + marketplace transaction.</p>
+      </div>
+      <div class="option-cell">
+        <label>The comp</label>
+        <p>AWS, Stripe, Twilio, Databricks — all platform-layer companies at $100B+ valuations because the ecosystem builds the TAM for them.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>What it kills</label>
+        <p>Thoughtful's named-personas brand (rolled up in '25). Notable's pre-built Sidekick. The closed "AI workforce" frame. Every solo-vendor who thought they could win on their own.</p>
+      </div>
+    </div>
+  </div>
+  <span class="marginalia">Position · 10 · The Platform</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 25 — POSITION XI · Delete the Insurance Company
+     Contrarian Moonshot #1 of 10
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">025 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XI</span>
+      <span class="option-tag">Contrarian · The End of Insurance <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Insurance exists because healthcare is<br/><em>unpredictable.</em> AI ends that.</h2>
+    <p class="option-sub reveal">
+      Private health insurance is a <strong>$1.5T industry</strong> solving exactly one problem: cost uncertainty.
+      When AI can forecast any individual's 12-month medical cost with <strong>&lt; 5% error</strong>, the actuarial
+      pool is no longer load-bearing. Insurance collapses into a <em>monthly payment plan</em>. GenHealth replaces
+      every insurer with <strong style="color: var(--ember);">"personalized predictive capitation"</strong> — pay
+      $X/month, get the care your trajectory requires. Capture the $1.5T — not as a payer-tech vendor, as the
+      thing that <em>obsoletes</em> payers.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The thesis</label>
+        <p>Insurance = socialized uncertainty. AI = removed uncertainty. Therefore: insurance → payment plan. Zero risk pooling. Zero underwriters. Zero claims adjusters.</p>
+      </div>
+      <div class="option-cell">
+        <label>The TAM</label>
+        <p>$1.5T US private health insurance premium → re-priced, re-routed, re-captured on GenHealth rails.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>UnitedHealth. Elevance. Cigna. Humana. Aetna. The entire Big Five. $600B combined market cap on borrowed time.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That "healthcare must be insured." It doesn't. It must be <em>predicted, priced, and delivered</em> — on one rail, by one model, without 15% skim.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XI · End of Insurance</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 26 — POSITION XII · Abolish Prior Auth
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">026 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XII</span>
+      <span class="option-tag">Contrarian · The Abolitionist <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Don't <em>automate</em> prior auth.<br/>Make it <em>illegal.</em></h2>
+    <p class="option-sub reveal">
+      Every competitor is making PA faster. Cohere, Anterior, Availity all depend on PA <em>existing</em>.
+      Contrarian: run a public campaign to <strong style="color: var(--ember);">abolish prior authorization</strong>
+      — the way the CFPB abolished junk fees. Publish a daily dashboard showing GenHealth adjudicates the same
+      decisions in 10ms, at 0.001% of the cost, with better accuracy. Rally the AMA, AHA, 800,000+ physicians.
+      CMS-0057-F becomes the crowbar. Insurers can't defend delays that kill patients. <em>Win the category by
+      destroying it.</em>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The revenue shift</label>
+        <p>Post-abolition, claims move to <em>post-payment AI adjudication</em> — faster, cheaper, continuously monitored. We become the settlement layer that replaces PA entirely.</p>
+      </div>
+      <div class="option-cell">
+        <label>The political play</label>
+        <p>Launch a 501(c)(4), buy the narrative. AMA, AARP, AHIP's rivals all align. Congressional hearings we write the data for. GenHealth becomes a household name before Series B.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>Cohere ($5B). Anterior ($64M raised). Availity's AuthAI. Valer Health. Every prior-auth vendor dependent on the category they pitch against.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That "making the friction faster" is the business. The business is removing the friction — and owning what replaces it.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XII · Abolition</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 27 — POSITION XIII · Free for Providers
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">027 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XIII</span>
+      <span class="option-tag">Contrarian · Invert the Pricing Model <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Providers pay <em>zero.</em><br/>Forever. Pharma funds it.</h2>
+    <p class="option-sub reveal">
+      Every competitor extracts from the broke side of the market — providers with 3% margins. Contrarian: give
+      GenHealth away to <em>every provider in America</em>, free and forever. Monetize the data flywheel —
+      anonymized real-world evidence to pharma (<strong>$30B market</strong>), predictive risk models to
+      self-insured employers ($12B), synthetic control arms to biotech ($8B), population simulations to CMS/state
+      Medicaid ($4B). <strong style="color: var(--ember);">Zillow did this for real estate. LinkedIn did this for
+      recruiting. Plaid did this for banking.</strong> The provider-facing product is the distribution weapon; the
+      data exhaust is the business.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The distribution weapon</label>
+        <p>Year 1: 10k providers. Year 3: 100k. Year 5: effectively every ambulatory practice in the US. Free + better = unstoppable adoption curve.</p>
+      </div>
+      <div class="option-cell">
+        <label>The backend TAM</label>
+        <p>Pharma RWE + payer analytics + life-sciences commercial + government policy = $54B+ today, tracking to $120B+ by 2030. Higher gross margin than any point solution.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>Every priced competitor, day one. Tennr's $605M can't survive "free." Notable's six-figure enterprise deals become a joke. Thoughtful is already dead.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That the customer paying you is the customer. In data-flywheel businesses, the <em>payer</em> is who you build the moat against.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XIII · Free &amp; Inverted</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 28 — POSITION XIV · Labor Union for AI Workers
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">028 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XIV</span>
+      <span class="option-tag">Contrarian · The Trust &amp; Labor Layer <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Ten years, <em>100 million</em> AI healthcare workers.<br/>They'll all need a <em>union.</em></h2>
+    <p class="option-sub reveal">
+      SEIU represents 2M humans — it's a multi-billion-dollar political force. In a decade, healthcare will have
+      <strong>100M+ AI workers</strong> doing intake, coding, adjudication, nursing triage, claim appeals. Someone
+      must certify them, handle their credentialing, manage their liability, resolve disputes between agents and
+      humans, set the safety bar. <strong style="color: var(--ember);">GenHealth is the labor-union / standards
+      body / certification authority</strong> for every AI worker in US healthcare. We collect "dues" (rev share on
+      every worker-hour), set the quality bar, and become the trust infrastructure no competitor can dislodge —
+      because regulators, insurers, and patients all require certification through us.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The moat</label>
+        <p>Regulatory + network. Once CMS, state AGs, and payers require "GenHealth-certified" for AI clinical work, every competitor's agents must route through our validation layer.</p>
+      </div>
+      <div class="option-cell">
+        <label>The revenue</label>
+        <p>Dues (rev share per worker-hour) + certification fees + malpractice/liability float + continuing-ed marketplace. Four monopoly-adjacent revenue streams.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>Every "AI agent" startup that tried to own the agent <em>plus</em> the trust layer. They chose the harder half. We own the half that compounds forever.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That building agents is the valuable business. The valuable business is <em>who gets to say an agent is allowed to work</em> — and collecting a fee from every one that does.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XIV · AI Labor Union</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 29 — POSITION XV · Direct to Patient
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">029 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XV</span>
+      <span class="option-tag">Contrarian · Skip the System <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Skip the employer. Skip the plan.<br/>Sell directly to the <em>patient.</em></h2>
+    <p class="option-sub reveal">
+      Every healthcare AI company sells B2B or B2B2C. The single biggest contrarian bet: <strong>consumerize.</strong>
+      $29/month buys any American an AI primary-care doctor + AI benefits agent + AI specialist navigator + AI
+      prescription advocate. Mark Cuban's Cost Plus Drugs proved the consumer-bypass thesis works. Amazon Pharmacy
+      is adjacent. <strong style="color: var(--ember);">GenHealth is the consumer OS for your health</strong> —
+      50M users by year 5, a direct line to every American household, the Venmo-level distribution of healthcare.
+      Once you own the patient, every payer and provider comes to <em>you</em> for distribution.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The consumer wedge</label>
+        <p>Freemium: free AI triage + benefits chat. $29/mo for unlimited care navigation + Rx advocacy + appeals support. $99/mo for full AI concierge + price-negotiation.</p>
+      </div>
+      <div class="option-cell">
+        <label>The TAM</label>
+        <p>330M Americans × $29/mo × 30% penetration = <strong>$34B/yr consumer subscription</strong>. Plus the B2B referral/advocacy flip once we own the patient relationship.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>The entire "digital front door" category (RIP per Becker's). Every telehealth vendor. Eventually: the insurance broker, the benefits administrator, the patient advocate industry.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That patients don't buy healthcare — employers and payers buy it for them. They will, when the product is 10x better and a credit card away.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XV · D2P</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 30 — POSITION XVI · The Autonomous Clinic
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">030 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XVI</span>
+      <span class="option-tag">Contrarian · Own the Physical Layer <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Don't sell <em>to</em> clinics.<br/><em>Become</em> them.</h2>
+    <p class="option-sub reveal">
+      AI's structural advantage is <strong>labor cost</strong>. Labor is 60–70% of a physician group's P&amp;L.
+      Acquire 500 struggling independent practices (the category IS distressed — private-equity roll-ups are
+      collapsing) and reboot them as <strong style="color: var(--ember);">AI-native clinics</strong>: one
+      supervising MD per 10 sites, zero billers, zero coders, zero UM nurses, zero schedulers. <em>One Medical</em>
+      sold for $3.9B with 800 sites. GenHealth operates 5,000 sites at 80% lower opex, captures the margin
+      differential, compounds into a national care-delivery brand. Kaiser took 80 years. We take 5.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The roll-up</label>
+        <p>Target: DPC + IPA + small physician groups currently getting crushed by PE debt covenants. Buy at 2–3x EBITDA. AI-retool. Re-rate to 15x. Classic arbitrage with AI as the alpha.</p>
+      </div>
+      <div class="option-cell">
+        <label>The unit economics</label>
+        <p>Traditional primary care: ~$280 revenue / $220 cost / 21% margin. AI-native: ~$280 / $65 cost / 77% margin. 3.7x margin expansion at constant revenue.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>Every PE-backed physician roll-up. One Medical's Amazon successor. Village MD. Oak Street. All carrying labor cost we don't carry.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That software companies shouldn't own physical assets. When labor is the constraint and you've removed it, physical integration is the highest-ROI move you can make.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XVI · Physical Layer</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 31 — POSITION XVII · The Healthcare Bank
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">031 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XVII</span>
+      <span class="option-tag">Contrarian · Financial Infrastructure <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Healthcare is <em>payments</em><br/>in a <em>trench coat.</em></h2>
+    <p class="option-sub reveal">
+      $4.9T of US healthcare is money moving — premiums, claims, PBM rebates, patient balances, factoring lines.
+      Banks haven't touched it because the plumbing is grotesque. GenHealth already owns the plumbing (Position
+      07). Add a banking charter or sponsor-bank partnership and become <strong style="color: var(--ember);">the
+      ledger, the float, and the lender</strong> for the entire healthcare flow. Earn on: deposit float on
+      premiums, interest on claims-in-progress, factoring on provider AR, interchange on patient-pay, lending
+      collateralized by receivables. <em>Square took a bps on commerce and is worth $40B. We take a bps on
+      care.</em>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The revenue stack</label>
+        <p>Take-rate (10bps × $4.9T = $4.9B) + float (2% × $500B in transit = $10B) + factoring + lending + interchange. Five monoline fintechs worth $1B+ each, stacked.</p>
+      </div>
+      <div class="option-cell">
+        <label>The comp set</label>
+        <p>Stripe ($70B). Square ($40B). Adyen ($40B). Wise ($10B). All built on flow. Healthcare flow is 10x internet commerce.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>Clearinghouses (Availity, Optum). Factoring firms (Optum Pay, Waystar). Healthcare lending (ProMed, HealthEquity). Every patient-pay BaaS (Cedar, Collectly). Bank-Of-America's health division.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That software and banking are different businesses. In AI-eaten verticals, the same company that owns the decisions owns the money movement.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XVII · Healthcare Bank</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 32 — POSITION XVIII · Synthetic America
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">032 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XVIII</span>
+      <span class="option-tag">Contrarian · The Digital Twin of a Nation <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">A <em>simulation</em><br/>of 330 million Americans.</h2>
+    <p class="option-sub reveal">
+      Every consequential healthcare decision is currently made on <em>guesses</em>. Pharma guesses which trial
+      arms will stratify ($80B/yr wasted). Payers guess MLR to within ±8%. Employers guess benefit design. CMS
+      guesses policy impact. GenHealth sells <strong style="color: var(--ember);">"Synthetic America"</strong> —
+      a continuously-updated digital twin of every US healthcare trajectory. Run your drug launch, your benefit
+      design, your Medicaid waiver, your pharma co-pay program through our simulation before you ship it.
+      Palantir-for-healthcare. Monopoly margins. Every CFO in pharma/payer/government is a buyer.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The buyers</label>
+        <p>Top 20 pharma. Top 15 payers. Top 200 self-insured employers. CMS + state Medicaids. Biotech VCs. HEOR consultancies. All-in TAM ≈ $120B annual decisions made under uncertainty.</p>
+      </div>
+      <div class="option-cell">
+        <label>The product</label>
+        <p>API: POST a scenario → get a 12-month Monte Carlo outcome distribution across 330M simulated individuals. Per-query pricing ($1k–$1M) scaled to decision value.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>IQVIA ($40B). Flatiron. Komodo. Trilliant. Every RWE + HEOR consultancy. Milliman. Actuarial firms. A generation of "healthcare data" middlemen.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That healthcare data is <em>data</em>. It's not. It's <em>simulation</em>. The winners run the counterfactuals, not the reports.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XVIII · Synthetic America</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 33 — POSITION XIX · The Only Healthcare Company
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">033 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XIX</span>
+      <span class="option-tag">Contrarian · Total Vertical Integration <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Plan. Clinic. Pharmacy.<br/>PBM. Lab. <em>All of it.</em></h2>
+    <p class="option-sub reveal">
+      Kaiser took 80 years to build vertical integration. CVS bought Aetna for $70B. Oscar and Alignment tried it
+      without AI and stumbled on labor cost. <strong style="color: var(--ember);">AI removes the labor
+      constraint that made total vertical integration impossibly expensive.</strong> GenHealth stacks Position IX
+      (payer) + XVI (clinics) + acquire a PBM + build a pharmacy + roll out AI labs. One company, one patient
+      journey, one ledger, one brand. $500B revenue potential by year 10. <em>There is nothing between the
+      patient and their health except GenHealth.</em>
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The stack</label>
+        <p>Payer (Pos IX) + Clinics (Pos XVI) + Pharmacy + PBM + Lab + AI supply chain. Every layer currently owned by a separate rent-seeker, all re-captured.</p>
+      </div>
+      <div class="option-cell">
+        <label>Why now</label>
+        <p>Labor was 60–70% of cost at every layer. AI cuts it 80%. Vertical integration that required 50 years of capital and scale is buildable in 5.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>UnitedHealth Group ($500B market cap). CVS Health ($80B). Walgreens ($18B). Amazon Health's aspirations. Every vertical integrator that had to pay humans to run every layer.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That "stay in your lane" is strategy. The lanes exist because labor made crossing them expensive. AI erased that cost.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XIX · Total Integration</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 34 — POSITION XX · Write the Regulations
+     =========================================== -->
+<section class="slide moonshot">
+  <span class="folio">034 / 035</span>
+  <div style="max-width: 1500px;">
+    <div class="option-head reveal">
+      <span class="option-num">XX</span>
+      <span class="option-tag">Contrarian · Regulatory Capture <span class="stamp">Moonshot</span></span>
+    </div>
+    <h2 class="option-headline reveal">Don't <em>lobby</em> the rules.<br/><em>Write</em> them.</h2>
+    <p class="option-sub reveal">
+      Healthcare AI regulation is being drafted <em>right now</em> — HHS, FDA, CMS, state AGs, Joint Commission,
+      URAC. Most startups treat regulation as a threat. Contrarian: <strong style="color: var(--ember);">become
+      the standards body.</strong> Publish the technical benchmarks. Staff the advisory committees. Build the
+      open-source safety suite every regulator cites. NIST did this for cryptography. UL did it for electrical
+      safety. ISO did it for quality. In each case, the first mover became the <em>de facto</em> monopoly — every
+      product on Earth certifies through them.
+    </p>
+    <div class="option-grid reveal">
+      <div class="option-cell">
+        <label>The play</label>
+        <p>Launch "GenHealth Standards Consortium" — pre-seed it with 5 health systems, 3 payers, 2 pharma. Publish open benchmarks. Hire ex-FDA. Sponsor academic reference implementations. Become the citation.</p>
+      </div>
+      <div class="option-cell">
+        <label>The revenue</label>
+        <p>Certification fees (every AI vendor pays). Audit/validation services. Liability-insurance data. Influence-for-hire at state level. Regulated monopolies trade at premium multiples.</p>
+      </div>
+      <div class="option-cell vs">
+        <label>Who we make obsolete</label>
+        <p>KLAS (currently the "validated" stamp in healthcare tech). The Joint Commission's legacy. Every competitor's ability to ship without a GenHealth certification.</p>
+      </div>
+    </div>
+    <div class="kill-list reveal">
+      <strong>Paradigm we break</strong>
+      That regulation is what happens <em>to</em> you. In emerging categories, regulation is a product — and the first builder ships it.
+    </div>
+  </div>
+  <span class="marginalia">Moonshot · XX · The Standards Body</span>
+</section>
+
+<!-- ===========================================
+     SLIDE 35 — CLOSING / THE $1T STACK
+     =========================================== -->
+<section class="slide closing">
+  <span class="folio">035 / 035</span>
+  <div style="max-width: 1400px;">
+    <p class="eyebrow reveal">The Recommendation · Pick a lane by ambition</p>
+    <h2 class="display reveal-blur" style="font-size: clamp(2.5rem, 7vw, 6.5rem); margin-top: 1.5rem;">
+      Safe stack is <em style="color: var(--signal); font-style: italic;">$1T.</em><br/>
+      Moonshot stack is<br/>
+      <em style="color: var(--ember); font-style: italic;">$10T.</em>
+    </h2>
+    <p class="reveal" style="margin-top: 2.5rem; font-size: 1.15rem; color: var(--ink-dim); max-width: 72ch; line-height: 1.6;">
+      Twenty positions, three escalating playbooks. Pick the one that matches the size of the bet
+      you want investors to write the check for.
+    </p>
+    <hr class="rule-h reveal"/>
+    <div class="reveal" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 2rem; margin-top: 0.5rem;">
+      <div style="padding: 1.5rem; border: 1px solid var(--rule); background: var(--bg-card);">
+        <label style="font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--ink-dim); text-transform: uppercase;">Playbook A · Category Winner</label>
+        <p style="margin-top: 0.75rem; font-family: var(--font-display); font-size: 1.3rem; color: var(--signal); font-style: italic;">Stack 02 + 07 + 09</p>
+        <p style="margin-top: 0.5rem; color: var(--ink); font-size: 0.9rem; line-height: 1.5;">Hire AI by the hour · Stripe of claims · AI-native payer. <br/><strong>Target: $25B revenue run-rate by 2032. First $100B vertical AI.</strong></p>
+      </div>
+      <div style="padding: 1.5rem; border: 1px solid var(--rule); background: var(--bg-card);">
+        <label style="font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--gold); text-transform: uppercase;">Playbook B · Paradigm Breaker</label>
+        <p style="margin-top: 0.75rem; font-family: var(--font-display); font-size: 1.3rem; color: var(--gold); font-style: italic;">Stack XII + XIII + XIV</p>
+        <p style="margin-top: 0.5rem; color: var(--ink); font-size: 0.9rem; line-height: 1.5;">Abolish PA · free-for-providers · AI labor union. Win the narrative. <br/><strong>Target: $1T category creator. Household-name brand.</strong></p>
+      </div>
+      <div style="padding: 1.5rem; border: 1px solid var(--ember); background: rgba(255,79,31,0.05);">
+        <label style="font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.25em; color: var(--ember); text-transform: uppercase;">Playbook C · The Moonshot</label>
+        <p style="margin-top: 0.75rem; font-family: var(--font-display); font-size: 1.3rem; color: var(--ember); font-style: italic;">Stack XI + XVII + XIX</p>
+        <p style="margin-top: 0.5rem; color: var(--ink); font-size: 0.9rem; line-height: 1.5;">End insurance · healthcare bank · total vertical integration. <br/><strong>Target: the first <em style="color: var(--ember);">$10T</em> company in history. Replaces UnitedHealth, Stripe, and Kaiser simultaneously.</strong></p>
+      </div>
+    </div>
+    <p class="reveal" style="margin-top: 2.5rem; font-size: 1.15rem; color: var(--ink); max-width: 72ch; line-height: 1.6;">
+      Not "AI for prior auth." Not "agents for RCM." Not "a copilot for health systems."
+      <strong style="color: var(--ember);">GenHealth is what healthcare becomes when you remove the ceiling the
+      labor market put on ambition.</strong>
+    </p>
+    <p class="reveal" style="margin-top: 2rem; font-family: var(--font-display); font-style: italic; font-size: 1.1rem; color: var(--ink-dim); max-width: 72ch; line-height: 1.5;">
+      "The first $1T vertical AI company will be in healthcare." <br/>
+      <span style="font-style: normal; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-faint);">— Hemant Taneja · General Catalyst · 2024</span>
+    </p>
+    <p class="reveal" style="margin-top: 1rem; font-family: var(--font-display); font-style: italic; font-size: 1.1rem; color: var(--ink); max-width: 72ch; line-height: 1.5;">
+      "It could also be the first $10T company. And it could be GenHealth."<br/>
+      <span style="font-style: normal; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ember);">— The bet this deck is asking you to make</span>
+    </p>
+  </div>
+  <span class="marginalia">End · GenHealth · Series A · 2026</span>
+</section>
+
+<script>
+/* ===========================================
+   SLIDE PRESENTATION CONTROLLER
+   - Intersection Observer adds .visible to each slide
+     when it enters the viewport (triggers CSS reveal animations).
+   - Keyboard / wheel / touch navigation snaps between slides.
+   - Progress bar + right-rail nav dots track position.
+   =========================================== */
+class SlidePresentation {
+  constructor() {
+    this.slides = Array.from(document.querySelectorAll('.slide'));
+    this.progress = document.getElementById('progress');
+    this.navDots = document.getElementById('navDots');
+    this.current = 0;
+    this.wheelLocked = false;
+
+    this.buildNavDots();
+    this.observe();
+    this.bindKeys();
+    this.bindWheel();
+    this.bindTouch();
+    this.trackProgress();
+  }
+
+  buildNavDots() {
+    // One dot per slide; click jumps to that slide.
+    this.slides.forEach((_, i) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', `Go to slide ${i + 1}`);
+      btn.addEventListener('click', () => this.goTo(i));
+      this.navDots.appendChild(btn);
+    });
+  }
+
+  observe() {
+    // Reveal animations + active-dot tracking.
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          const idx = this.slides.indexOf(e.target);
+          if (idx >= 0) {
+            this.current = idx;
+            this.updateDots();
+          }
+        }
+      });
+    }, { threshold: 0.5 });
+    this.slides.forEach((s) => io.observe(s));
+  }
+
+  updateDots() {
+    [...this.navDots.children].forEach((d, i) => {
+      d.classList.toggle('active', i === this.current);
+    });
+  }
+
+  goTo(i) {
+    if (i < 0 || i >= this.slides.length) return;
+    this.slides[i].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  bindKeys() {
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') {
+        e.preventDefault();
+        this.goTo(this.current + 1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        e.preventDefault();
+        this.goTo(this.current - 1);
+      } else if (e.key === 'Home') {
+        this.goTo(0);
+      } else if (e.key === 'End') {
+        this.goTo(this.slides.length - 1);
+      }
+    });
+  }
+
+  bindWheel() {
+    // Debounce wheel so one scroll = one slide advance.
+    window.addEventListener('wheel', (e) => {
+      if (this.wheelLocked) return;
+      if (Math.abs(e.deltaY) < 15) return;
+      this.wheelLocked = true;
+      this.goTo(this.current + (e.deltaY > 0 ? 1 : -1));
+      setTimeout(() => { this.wheelLocked = false; }, 700);
+    }, { passive: true });
+  }
+
+  bindTouch() {
+    let startY = 0;
+    window.addEventListener('touchstart', (e) => { startY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', (e) => {
+      const dy = startY - e.changedTouches[0].clientY;
+      if (Math.abs(dy) < 40) return;
+      this.goTo(this.current + (dy > 0 ? 1 : -1));
+    }, { passive: true });
+  }
+
+  trackProgress() {
+    // Smooth progress bar keyed to scroll position.
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
+      this.progress.style.width = `${pct}%`;
+    }, { passive: true });
+  }
+}
+
+new SlidePresentation();
+</script>
+</body>
+</html>

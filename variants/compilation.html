@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>GenHealth — 9 Landing Page Studies · Compilation</title>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background:#E4DFD3; color:#141410; font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased; }
+
+  .page {
+    width: 210mm;
+    height: 297mm;
+    margin: 0 auto 12mm;
+    background:#F5F3EE;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  /* ---- COVER ---- */
+  .cover { background:#F5F3EE; padding: 28mm 22mm; }
+  .cover .eyebrow { font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:#6B6760; font-weight:500; font-family:'JetBrains Mono',monospace }
+  .cover h1 { font-family:'Newsreader',serif; font-weight:300; font-size:72pt; line-height:.92; letter-spacing:-.025em; margin-top:14mm; max-width:160mm; }
+  .cover h1 em { font-style:italic; }
+  .cover .deck { margin-top:14mm; font-family:'Newsreader',serif; font-style:italic; font-weight:300; font-size:18pt; line-height:1.35; color:#3A3833; max-width:150mm; }
+  .cover .rule { margin-top:18mm; height:1px; background:#141410; }
+  .cover .meta { margin-top:6mm; display:flex; justify-content:space-between; font-size:9.5pt; color:#3A3833; font-family:'Inter',sans-serif; }
+  .cover .meta b { color:#141410; font-weight:500 }
+  .cover .contents { margin-top:18mm; }
+  .cover .contents h3 { font-family:'JetBrains Mono',monospace; font-size:9pt; letter-spacing:.16em; text-transform:uppercase; color:#6B6760; margin-bottom:8mm; font-weight:400 }
+  .cover .toc { display:grid; grid-template-columns:1fr 1fr; gap:4mm 14mm; }
+  .cover .toc .row { display:grid; grid-template-columns:18mm 1fr auto; gap:4mm; align-items:baseline; padding-bottom:3mm; border-bottom:1px dotted #B8B2A5; font-family:'Newsreader',serif; font-size:13pt; line-height:1.2; }
+  .cover .toc .row .n { font-family:'JetBrains Mono',monospace; font-size:9pt; color:#6B6760; letter-spacing:.1em; }
+  .cover .toc .row .t em { font-style:italic; color:#6B2A28 }
+  .cover .toc .row .p { font-family:'JetBrains Mono',monospace; font-size:9pt; color:#6B6760; }
+
+  /* ---- DIVIDER ---- */
+  .divider { background:#EEECE4; padding:30mm 22mm; display:flex; flex-direction:column; justify-content:center }
+  .divider .num { font-family:'JetBrains Mono',monospace; font-size:10pt; letter-spacing:.2em; text-transform:uppercase; color:#6B2A28 }
+  .divider h2 { font-family:'Newsreader',serif; font-weight:300; font-size:52pt; line-height:.95; letter-spacing:-.025em; margin-top:10mm; max-width:160mm }
+  .divider h2 em { font-style:italic; color:#6B2A28 }
+  .divider .note { margin-top:10mm; font-family:'Newsreader',serif; font-style:italic; font-size:16pt; color:#3A3833; max-width:150mm; line-height:1.4 }
+  .divider .rule { margin-top:14mm; height:1px; background:#141410 }
+  .divider .list { margin-top:10mm; display:grid; grid-template-columns:1fr 1fr 1fr; gap:8mm }
+  .divider .list .v { }
+  .divider .list .v .vn { font-family:'JetBrains Mono',monospace; font-size:9pt; color:#6B6760; letter-spacing:.14em; text-transform:uppercase }
+  .divider .list .v .vt { font-family:'Newsreader',serif; font-size:18pt; line-height:1.05; margin-top:3mm; letter-spacing:-.01em }
+  .divider .list .v .vt em { font-style:italic; color:#6B2A28 }
+  .divider .list .v .vn2 { font-size:9.5pt; color:#3A3833; margin-top:3mm; font-family:'Inter',sans-serif; line-height:1.4 }
+
+  /* ---- VARIANT PAGE ---- */
+  .variant { background:#EEECE4; padding:12mm 12mm 8mm; }
+  .variant .head { display:flex; justify-content:space-between; align-items:baseline; padding-bottom:5mm; border-bottom:1px solid #141410; margin-bottom:6mm; }
+  .variant .head .l { display:flex; align-items:baseline; gap:6mm }
+  .variant .head .num { font-family:'JetBrains Mono',monospace; font-size:9.5pt; letter-spacing:.18em; text-transform:uppercase; color:#6B2A28; font-weight:500 }
+  .variant .head h2 { font-family:'Newsreader',serif; font-weight:300; font-size:28pt; letter-spacing:-.02em; line-height:1 }
+  .variant .head h2 em { font-style:italic }
+  .variant .head .tag { font-family:'JetBrains Mono',monospace; font-size:8.5pt; letter-spacing:.12em; text-transform:uppercase; color:#6B6760 }
+
+  .variant .frameWrap {
+    flex:1;
+    border:1px solid #141410;
+    background:#F5F3EE;
+    position:relative;
+    overflow:hidden;
+    box-shadow: 0 3mm 10mm rgba(20,20,16,.1);
+  }
+  .variant .frameWrap iframe {
+    width: 1440px;
+    height: calc(1440px * 1.85);   /* tall frame so full page renders */
+    border:0;
+    display:block;
+    transform-origin: top left;
+    background:#fff;
+  }
+
+  .variant .foot { margin-top:5mm; display:grid; grid-template-columns:2fr 3fr 1fr; gap:6mm; align-items:start; }
+  .variant .foot .l { }
+  .variant .foot .l .k { font-family:'JetBrains Mono',monospace; font-size:8pt; letter-spacing:.14em; text-transform:uppercase; color:#6B6760; margin-bottom:2mm }
+  .variant .foot .l .v { font-family:'Newsreader',serif; font-size:13pt; line-height:1.3; letter-spacing:-.01em }
+  .variant .foot .l .v em { font-style:italic; color:#6B2A28 }
+  .variant .foot .desc { font-size:9pt; line-height:1.5; color:#3A3833; }
+  .variant .foot .desc em { font-style:italic; color:#6B2A28 }
+  .variant .foot .pg { font-family:'JetBrains Mono',monospace; font-size:9pt; color:#6B6760; letter-spacing:.14em; text-transform:uppercase; text-align:right }
+  .variant .foot .pg b { display:block; color:#141410; font-family:'Newsreader',serif; font-style:italic; font-size:20pt; letter-spacing:0; text-transform:none; margin-bottom:2mm; font-weight:300 }
+
+  /* controls */
+  .bar {
+    position:fixed; top:0; left:0; right:0;
+    background:#141410; color:#F5F3EE;
+    padding:10px 18px;
+    font-family:'Inter',sans-serif; font-size:13px;
+    display:flex; justify-content:space-between; align-items:center;
+    z-index:1000;
+  }
+  .bar b { color:#F5F3EE }
+  .bar em { font-family:'Newsreader',serif; font-style:italic; color:#E8B48A }
+  .bar button {
+    background:#F5F3EE; color:#141410; border:0;
+    padding:8px 16px; font-family:'Inter',sans-serif; font-size:12px; font-weight:500;
+    cursor:pointer; letter-spacing:.02em;
+  }
+  .bar button:hover{ background:#E8B48A }
+  .pad { height:50px }
+  @media print {
+    .bar, .pad { display:none !important }
+    body { background:#fff }
+    .page { margin:0; box-shadow:none }
+    .variant .frameWrap { box-shadow:none }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <span>GenHealth · <b>9 Landing Page Studies</b> · <em>compilation</em> · 11 pages</span>
+  <button onclick="window.print()">Save as PDF →</button>
+</div>
+<div class="pad"></div>
+
+<!-- ============ COVER ============ -->
+<div class="page cover">
+  <div class="eyebrow">GenHealth × Daybreak · Series A landing page studies</div>
+  <h1>Nine landing pages,<br/><em>nine temperatures.</em></h1>
+  <div class="deck">Each variant preserves every element of the current genhealth.ai — hero, channels, workflows, testimony, integrations, onboarding, products, metrics, mission, contact — but translates the brand through a different dialectic.</div>
+  <div class="rule"></div>
+  <div class="meta">
+    <span><b>Designed for</b> Series A review · April 2026 · Rev 3</span>
+    <span><b>Prepared by</b> Design</span>
+    <span><b>Internal</b> · Confidential</span>
+  </div>
+
+  <div class="contents">
+    <h3>Contents</h3>
+    <div class="toc">
+      <div class="row"><span class="n">R1 · 01</span><span class="t">Clinical &amp; <em>aspirational</em></span><span class="p">p. 4</span></div>
+      <div class="row"><span class="n">R1 · 02</span><span class="t">Administrative <em>relief</em></span><span class="p">p. 5</span></div>
+      <div class="row"><span class="n">R1 · 03</span><span class="t">Landscape &amp; <em>labor</em></span><span class="p">p. 6</span></div>
+      <div class="row"><span class="n">R2 · 04</span><span class="t">Language of <em>the work</em></span><span class="p">p. 8</span></div>
+      <div class="row"><span class="n">R2 · 05</span><span class="t">Machine &amp; <em>human</em></span><span class="p">p. 9</span></div>
+      <div class="row"><span class="n">R2 · 06</span><span class="t">Precision &amp; <em>instrument</em></span><span class="p">p. 10</span></div>
+      <div class="row"><span class="n">R3 · 07</span><span class="t">Dispatch <em>board</em></span><span class="p">p. 12</span></div>
+      <div class="row"><span class="n">R3 · 08</span><span class="t">Case <em>file</em></span><span class="p">p. 13</span></div>
+      <div class="row"><span class="n">R3 · 09</span><span class="t">The <em>Record</em></span><span class="p">p. 14</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ROUND 1 DIVIDER ============ -->
+<div class="page divider">
+  <div class="num">Round One · pp. 4–6</div>
+  <h2>Brand <em>temperature.</em></h2>
+  <div class="note">Three starting points for the overall feeling of the brand — from the cool, clinical grade of a hospital system to the warmth of administrative relief to the grounded patience of a landscape. Same page; different weather.</div>
+  <div class="rule"></div>
+  <div class="list">
+    <div class="v"><div class="vn">01 · Steel indigo</div><div class="vt">Clinical &amp; <em>aspirational</em></div><div class="vn2">Hospital-grade trust with human warmth. Live agent widget across channels.</div></div>
+    <div class="v"><div class="vn">02 · Sunrise peach</div><div class="vt">Administrative <em>relief</em></div><div class="vn2">The paperwork, quieted. Live relief counter crossing tasks off a list.</div></div>
+    <div class="v"><div class="vn">03 · Adaline sage</div><div class="vt">Landscape &amp; <em>labor</em></div><div class="vn2">Back-office work as terrain. Topographic dividers. Day→night footer.</div></div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 01 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">01 · Steel indigo</span><h2>Clinical &amp; <em>aspirational</em></h2></div>
+    <span class="tag">Round 1 · brand temperature</span>
+  </div>
+  <div class="frameWrap"><iframe src="01-clinical.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">Hospital-grade <em>trust</em> with human warmth.</div></div>
+    <div class="desc">Quiet infrastructure treatment with a live <em>agent-at-work</em> widget running across web, fax, and phone. Indigo #3A4A6B with Instrument Serif display type. Restrained motion, deep shadows, plenty of breathing room.</div>
+    <div class="pg"><b>04</b>page</div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 02 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">02 · Sunrise peach</span><h2>Administrative <em>relief</em></h2></div>
+    <span class="tag">Round 1 · brand temperature</span>
+  </div>
+  <div class="frameWrap"><iframe src="02-relief.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">The paperwork, <em>quieted.</em></div></div>
+    <div class="desc">Editorial Fraunces serif and a sunrise-to-paper gradient anchor the page. A live <em>relief counter</em> crosses tasks off a list in real time. The emotional promise: the end of the back-office pile.</div>
+    <div class="pg"><b>05</b>page</div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 03 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">03 · Adaline sage</span><h2>Landscape &amp; <em>labor</em></h2></div>
+    <span class="tag">Round 1 · brand temperature</span>
+  </div>
+  <div class="frameWrap"><iframe src="03-landscape.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">Back-office as <em>terrain.</em></div></div>
+    <div class="desc">Sage palette with topographic dividers. Seasonal onboarding. A day-to-night footer that shifts as you scroll. The brand as a patient, rural, grounded presence — work that <em>happens continuously</em>.</div>
+    <div class="pg"><b>06</b>page</div>
+  </div>
+</div>
+
+<!-- ============ ROUND 2 DIVIDER ============ -->
+<div class="page divider">
+  <div class="num">Round Two · pp. 8–10</div>
+  <h2>Product <em>metaphor.</em></h2>
+  <div class="note">Three interpretations of what GenHealth <em>is</em>: a fluency in operational language; a team of coworkers; a precision instrument. The brand anchored to a mental model customers can carry.</div>
+  <div class="rule"></div>
+  <div class="list">
+    <div class="v"><div class="vn">04 · Oxblood</div><div class="vt">Language of <em>the work</em></div><div class="vn2">Healthcare vocabulary as type specimens. Chart fields parsed live.</div></div>
+    <div class="v"><div class="vn">05 · Warm steel blue</div><div class="vt">Machine &amp; <em>human</em></div><div class="vn2">AI coworkers rendered as new hires. Employee roster + activity logs.</div></div>
+    <div class="v"><div class="vn">06 · Superpower teal</div><div class="vt">Precision &amp; <em>instrument</em></div><div class="vn2">Laboratory schematic. Live oscilloscope, sectioned § typography.</div></div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 04 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">04 · Oxblood</span><h2>Language of <em>the work</em></h2></div>
+    <span class="tag">Round 2 · product metaphor</span>
+  </div>
+  <div class="frameWrap"><iframe src="04-language.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">Fluent in <em>the language</em> of the work.</div></div>
+    <div class="desc">Typography-forward. Healthcare vocabulary — codes, diagnoses, policy lines, chart narrative — rendered like specimens, then parsed live on screen. The story: <em>operational fluency</em> as the basis for trust.</div>
+    <div class="pg"><b>08</b>page</div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 05 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">05 · Warm steel blue</span><h2>Machine &amp; <em>human</em></h2></div>
+    <span class="tag">Round 2 · product metaphor</span>
+  </div>
+  <div class="frameWrap"><iframe src="05-team.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">AI coworkers, <em>not tools.</em></div></div>
+    <div class="desc">Employee roster in the hero, department cards, an onboarding checklist that treats agents like new hires, and Slack-style activity logs that replace the workflow carousel. The most <em>humanizing</em> of the variants.</div>
+    <div class="pg"><b>09</b>page</div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 06 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">06 · Superpower teal</span><h2>Precision &amp; <em>instrument</em></h2></div>
+    <span class="tag">Round 2 · product metaphor</span>
+  </div>
+  <div class="frameWrap"><iframe src="06-instrument.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">A laboratory <em>instrument.</em></div></div>
+    <div class="desc">IBM Plex and grid paper. Instrument panel with live oscilloscope. Spec-sheet stats. Sectioned § typography throughout. The story: <em>engineered for this</em>, measured, legible, at home with technical buyers.</div>
+    <div class="pg"><b>10</b>page</div>
+  </div>
+</div>
+
+<!-- ============ ROUND 3 DIVIDER ============ -->
+<div class="page divider">
+  <div class="num">Round Three · pp. 12–14</div>
+  <h2>Voice &amp; <em>narrative.</em></h2>
+  <div class="note">Three interpretations of <em>how the page speaks</em>: the clipped, live voice of a dispatch board; the patient, literary voice of a case file; the formal voice of a newspaper of record. Same facts; different narrator.</div>
+  <div class="rule"></div>
+  <div class="list">
+    <div class="v"><div class="vn">07 · Signal amber</div><div class="vt">Dispatch <em>board</em></div><div class="vn2">Dark ops nerve-center. Live ticker across web/fax/voice channels.</div></div>
+    <div class="v"><div class="vn">08 · Cream + stamp red</div><div class="vt">Case <em>file</em></div><div class="vn2">One patient's CPAP journey told as a four-chapter narrative.</div></div>
+    <div class="v"><div class="vn">09 · Oxblood broadsheet</div><div class="vt">The <em>Record</em></div><div class="vn2">Full editorial newspaper. Masthead, columns, bulletin, classifieds.</div></div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 07 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">07 · Signal amber</span><h2>Dispatch <em>board</em></h2></div>
+    <span class="tag">Round 3 · voice &amp; narrative</span>
+  </div>
+  <div class="frameWrap"><iframe src="07-dispatch.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">Healthcare ops, <em>live.</em></div></div>
+    <div class="desc">The nerve-center interpretation. Dark dispatch console, live channel ticker, every workflow a traceable route with timestamped legs. Ops leaders read it as <em>a tool I already wish I had</em>.</div>
+    <div class="pg"><b>12</b>page</div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 08 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">08 · Cream + stamp red</span><h2>Case <em>file</em></h2></div>
+    <span class="tag">Round 3 · voice &amp; narrative</span>
+  </div>
+  <div class="frameWrap"><iframe src="08-casefile.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">A patient's path, <em>automated.</em></div></div>
+    <div class="desc">A single patient — Jane Doe, CPAP — carries the whole site as a four-chapter story: the fax arrives, the policy applies, the phone rings, the claim is paid. The most <em>narrative</em> of the variants, and the one a clinician is most likely to read end-to-end.</div>
+    <div class="pg"><b>13</b>page</div>
+  </div>
+</div>
+
+<!-- ============ VARIANT 09 ============ -->
+<div class="page variant">
+  <div class="head">
+    <div class="l"><span class="num">09 · Oxblood broadsheet</span><h2>The <em>Record</em></h2></div>
+    <span class="tag">Round 3 · voice &amp; narrative</span>
+  </div>
+  <div class="frameWrap"><iframe src="09-broadsheet.html" loading="eager"></iframe></div>
+  <div class="foot">
+    <div class="l"><div class="k">Mood</div><div class="v">A newspaper <em>of record.</em></div></div>
+    <div class="desc">Full editorial newspaper. Masthead, three-column front page, lead story with drop cap and pull quote, bulletin ticker, classified-style onboarding, correspondence section. Says <em>serious institution</em> before it says anything else.</div>
+    <div class="pg"><b>14</b>page</div>
+  </div>
+</div>
+
+<script>
+// Scale each iframe to fit its wrapper width.
+// The iframe renders at 1440px wide; we scale down to the wrapper's px width.
+function fit() {
+  document.querySelectorAll('.frameWrap').forEach(w => {
+    const iframe = w.querySelector('iframe');
+    const wPx = w.clientWidth;
+    const hPx = w.clientHeight;
+    const srcW = 1440;
+    const scale = wPx / srcW;
+    iframe.style.transform = `scale(${scale})`;
+    // Set iframe rendered height so its scaled height >= wrapper height
+    const neededSrcH = hPx / scale;
+    iframe.style.height = neededSrcH + 'px';
+    iframe.style.width = srcW + 'px';
+  });
+}
+window.addEventListener('load', () => { fit(); setTimeout(fit, 400); setTimeout(fit, 1200); });
+window.addEventListener('resize', fit);
+window.addEventListener('beforeprint', fit);
+</script>
+</body>
+</html>

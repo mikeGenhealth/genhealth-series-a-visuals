@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>GenHealth — From Software to Operator</title>
+<link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=switzer@800,700,600,500,400,300&f[]=jetbrains-mono@600,500,400&display=swap" />
+<style>
+  /* ===========================================
+     INVESTOR-DECK AESTHETIC
+     Dark graphite · one accent (signal green) ·
+     muted grays for everything else.
+     Aledade / Privia / Oscar reference.
+     =========================================== */
+  :root {
+    --bg: #0f1419;
+    --bg-2: #171d24;
+    --bg-card: rgba(255, 255, 255, 0.025);
+    --bg-card-hover: rgba(255, 255, 255, 0.045);
+    --accent: #00c37a;
+    --accent-soft: rgba(0, 195, 122, 0.14);
+    --accent-line: rgba(0, 195, 122, 0.35);
+    --ink: #eef1f6;
+    --ink-dim: #8a939f;
+    --ink-faint: #505a66;
+    --rule: #242b35;
+    --rule-strong: #394251;
+    --warn: #d97b3b;
+
+    --font: 'Switzer', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --pad: clamp(2rem, 4.5vw, 4.5rem);
+    --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -0.005em;
+  }
+
+  /* ===========================================
+     SLIDE FRAME
+     =========================================== */
+  .slide {
+    min-height: 100vh;
+    padding: var(--pad);
+    scroll-snap-align: start;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-bottom: 1px solid var(--rule);
+  }
+  .slide-inner {
+    max-width: 1400px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  /* Editorial chrome */
+  .folio {
+    position: absolute;
+    top: 1.75rem;
+    right: 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-faint);
+  }
+  .stage-tag {
+    position: absolute;
+    top: 1.75rem;
+    left: 1.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+  .stage-tag .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 0.6rem;
+    vertical-align: middle;
+  }
+
+  /* ===========================================
+     REVEAL ANIMATION
+     =========================================== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  }
+  .slide.visible .reveal { opacity: 1; transform: none; }
+  .slide.visible .reveal:nth-child(1) { transition-delay: 0.05s; }
+  .slide.visible .reveal:nth-child(2) { transition-delay: 0.12s; }
+  .slide.visible .reveal:nth-child(3) { transition-delay: 0.19s; }
+  .slide.visible .reveal:nth-child(4) { transition-delay: 0.26s; }
+  .slide.visible .reveal:nth-child(5) { transition-delay: 0.33s; }
+  .slide.visible .reveal:nth-child(6) { transition-delay: 0.40s; }
+
+  /* ===========================================
+     TYPOGRAPHY UTILITIES
+     =========================================== */
+  .h1 {
+    font-weight: 700;
+    font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .h2 {
+    font-weight: 600;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.025em;
+  }
+  .h3 {
+    font-weight: 600;
+    font-size: clamp(1.1rem, 1.6vw, 1.45rem);
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .lead {
+    font-size: clamp(1.05rem, 1.25vw, 1.2rem);
+    line-height: 1.55;
+    color: var(--ink-dim);
+    max-width: 70ch;
+  }
+  .body-sm {
+    font-size: 0.925rem;
+    line-height: 1.55;
+    color: var(--ink-dim);
+  }
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .accent { color: var(--accent); }
+  .tbd {
+    display: inline-block;
+    padding: 0.15rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.7em;
+    color: var(--warn);
+    background: rgba(217, 123, 59, 0.08);
+    border: 1px dashed rgba(217, 123, 59, 0.5);
+    border-radius: 3px;
+    vertical-align: 2px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  /* Founder list block in title-meta */
+  .founder { display: block; margin-top: 0.4rem; }
+  .founder:first-of-type { margin-top: 0; }
+  .founder strong { display: block; font-weight: 600; font-size: 1rem; color: var(--ink); letter-spacing: -0.01em; }
+  .founder span { display: block; margin-top: 0.15rem; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); letter-spacing: 0.02em; text-transform: none; }
+  .rule-h {
+    height: 1px;
+    background: var(--rule);
+    border: 0;
+    margin: 1.75rem 0;
+  }
+
+  /* ===========================================
+     TITLE SLIDE
+     =========================================== */
+  .title-slide {
+    background:
+      radial-gradient(circle at 15% 90%, rgba(0,195,122,0.08) 0%, transparent 45%),
+      var(--bg);
+  }
+  .title-slide .h1 {
+    font-size: clamp(3rem, 8vw, 7rem);
+  }
+  .title-slide .h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+  .title-meta {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2rem;
+    margin-top: 3.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+    max-width: 1100px;
+  }
+  .title-meta > div label { display: block; margin-bottom: 0.5rem; }
+  .title-meta > div strong {
+    font-weight: 500;
+    font-size: 1rem;
+    color: var(--ink);
+  }
+
+  /* ===========================================
+     STAT GRID
+     =========================================== */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 2.25rem;
+  }
+  .stat {
+    padding: 1.1rem 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  .stat .k {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.22em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .stat .v {
+    font-size: 1.55rem;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .stat .v.accent { color: var(--accent); }
+  .stat .sub {
+    margin-top: 0.35rem;
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+    line-height: 1.3;
+  }
+
+  /* ===========================================
+     TWO-COL GENERIC
+     =========================================== */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-top: 2.25rem;
+  }
+  .two-col.wide { grid-template-columns: 1.2fr 1fr; }
+
+  /* ===========================================
+     BULLETED LIST
+     =========================================== */
+  .bullets {
+    list-style: none;
+    margin-top: 1.5rem;
+  }
+  .bullets li {
+    padding: 0.65rem 0 0.65rem 1.6rem;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+  .bullets li:last-child { border-bottom: 0; }
+  .bullets li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 1.05rem;
+    width: 10px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* ===========================================
+     EVOLUTION SLIDE (SLIDE 5) — v2
+     Explicit three-stage flow with "WHAT CHANGES"
+     transition callouts BETWEEN each stage. Designed
+     so a non-expert reader can follow stage → delta →
+     next stage in a single horizontal scan.
+     =========================================== */
+  .evo-flow {
+    margin-top: 2rem;
+    display: grid;
+    /* card · arrow · card · arrow · card */
+    grid-template-columns: 1fr 190px 1fr 190px 1fr;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+  .evo-card {
+    padding: 1.4rem 1.35rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .evo-card.c1 { /* Stage 1: filled / current */
+    border-color: var(--accent-line);
+    background: linear-gradient(180deg, rgba(0,195,122,0.03), transparent);
+  }
+  .evo-card.c3 { /* Stage 3: highlighted / goal */
+    border-color: var(--accent);
+    background: linear-gradient(180deg, rgba(0,195,122,0.08), rgba(0,195,122,0.02));
+    box-shadow: 0 0 0 1px var(--accent-line) inset;
+  }
+  .evo-card .evo-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+  .evo-card.c3 .evo-num { color: var(--accent); }
+  .evo-card .evo-when {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+  }
+  .evo-card .evo-name {
+    margin-top: 0.75rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .evo-card.c3 .evo-name { color: var(--accent); }
+  .evo-card .evo-long {
+    margin-top: 0.35rem;
+    font-size: 0.9rem;
+    color: var(--ink-dim);
+    font-style: italic;
+    line-height: 1.3;
+  }
+  .evo-card .evo-divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 1.1rem 0;
+  }
+  .evo-card .evo-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: 0.4rem 0;
+    font-size: 0.85rem;
+  }
+  .evo-card .evo-row .k {
+    color: var(--ink-dim);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding-top: 0.1rem;
+  }
+  .evo-card .evo-row .v {
+    color: var(--ink);
+    font-weight: 600;
+    text-align: right;
+  }
+  .evo-card .evo-row .v.accent { color: var(--accent); }
+  .evo-card .evo-tam {
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--rule);
+  }
+  .evo-card .evo-tam-label {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+  }
+  .evo-card .evo-tam-value {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+    line-height: 1;
+  }
+  .evo-card.c3 .evo-tam-value { color: var(--accent); }
+  .evo-card .evo-tam-sub {
+    display: block;
+    margin-top: 0.3rem;
+    font-size: 0.78rem;
+    color: var(--ink-dim);
+  }
+
+  /* Transition between stages */
+  .evo-transition {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0.5rem 0;
+    position: relative;
+  }
+  .evo-transition .evo-arrow {
+    font-size: 2rem;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+  }
+  .evo-transition .evo-what-tag {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.28em;
+    color: var(--accent);
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    background: rgba(0,195,122,0.06);
+    margin-bottom: 0.65rem;
+  }
+  .evo-transition .evo-what-text {
+    font-size: 0.88rem;
+    color: var(--ink);
+    line-height: 1.45;
+    padding: 0 0.25rem;
+  }
+  .evo-transition .evo-what-text strong { color: var(--accent); font-weight: 600; }
+
+  .evo-constant {
+    margin-top: 2rem;
+    padding: 1.1rem 1.35rem;
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .evo-constant strong {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-right: 0.5rem;
+    font-weight: 600;
+  }
+
+  @media (max-width: 1100px) {
+    .evo-flow {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    .evo-transition {
+      padding: 0.5rem 0;
+    }
+    .evo-transition .evo-arrow {
+      transform: rotate(90deg);
+    }
+  }
+
+  /* ===========================================
+     MSO vs MAO TABLE
+     =========================================== */
+  .cmp-table {
+    width: 100%;
+    margin-top: 2rem;
+    border-collapse: collapse;
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+  }
+  .cmp-table th, .cmp-table td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.9rem;
+    line-height: 1.45;
+  }
+  .cmp-table thead th {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    background: var(--bg-2);
+    font-weight: 500;
+  }
+  .cmp-table thead th.mao { color: var(--accent); }
+  .cmp-table td:first-child {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    width: 22%;
+  }
+  .cmp-table td.mao { color: var(--ink); }
+  .cmp-table td.mso { color: var(--ink-dim); }
+  .cmp-table tr:last-child td { border-bottom: 0; }
+
+  /* ===========================================
+     QUOTE (slide uses for customer love)
+     =========================================== */
+  .quotes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+  .quote {
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+  .quote .q {
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 0.75rem;
+  }
+  .quote .q::before { content: "“"; color: var(--accent); font-size: 1.4rem; vertical-align: -0.3rem; margin-right: 0.15rem; }
+  .quote .q::after { content: "”"; color: var(--accent); font-size: 1.4rem; vertical-align: -0.3rem; margin-left: 0.1rem; }
+  .quote .who {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--ink-dim);
+    letter-spacing: 0.05em;
+  }
+
+  /* ===========================================
+     ROADMAP TIMELINE
+     =========================================== */
+  .timeline {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+    position: relative;
+  }
+  .timeline::before {
+    content: "";
+    position: absolute;
+    top: 1rem;
+    left: 0; right: 0;
+    height: 1px;
+    background: var(--rule-strong);
+  }
+  .milestone {
+    padding-top: 2rem;
+    position: relative;
+  }
+  .milestone::before {
+    content: "";
+    position: absolute;
+    top: 0.55rem;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--accent);
+  }
+  .milestone[data-now="true"]::before { background: var(--accent); }
+  .milestone .year {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+  }
+  .milestone .what {
+    font-size: 0.95rem;
+    color: var(--ink);
+    font-weight: 600;
+    line-height: 1.3;
+    margin-bottom: 0.4rem;
+  }
+  .milestone .detail {
+    font-size: 0.82rem;
+    color: var(--ink-dim);
+    line-height: 1.45;
+  }
+
+  /* ===========================================
+     USE OF FUNDS BARS
+     =========================================== */
+  .uof {
+    margin-top: 2rem;
+  }
+  .uof .row {
+    display: grid;
+    grid-template-columns: 240px 1fr 80px;
+    gap: 1.25rem;
+    align-items: center;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .uof .row:last-child { border-bottom: 0; }
+  .uof .label-cell {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+  .uof .label-cell .sub {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.8rem;
+    color: var(--ink-dim);
+    font-weight: 400;
+  }
+  .uof .bar {
+    height: 10px;
+    background: var(--bg-2);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .uof .bar .fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 1px;
+  }
+  .uof .pct {
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 1rem;
+    text-align: right;
+  }
+
+  /* ===========================================
+     LOGOS ROW
+     =========================================== */
+  .logos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+  .logo {
+    padding: 1.1rem 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+  .logo .sub {
+    display: block;           /* force line break — was rendering inline */
+    margin-top: 0.5rem;
+    font-size: 0.62rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 400;
+    line-height: 1.4;
+  }
+
+  /* ===========================================
+     BEFORE/AFTER TABLE
+     =========================================== */
+  .ba {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1.75rem;
+  }
+  .ba .col {
+    padding: 1.5rem;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    background: var(--bg-card);
+  }
+  .ba .col.after {
+    border-color: var(--accent-line);
+  }
+  .ba .col .hdr {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.22em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .ba .col.after .hdr { color: var(--accent); }
+  .ba .col .line {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.55rem 0;
+    font-size: 0.9rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .ba .col .line:last-child { border-bottom: 0; }
+  .ba .col .line .k { color: var(--ink-dim); }
+  .ba .col .line .v { color: var(--ink); font-weight: 600; }
+  .ba .col.after .line .v { color: var(--accent); }
+
+  /* ===========================================
+     SCATTER MARKET MAP (proper plotted chart)
+     - Each vendor plotted at real (x,y) coordinates
+     - Bubble size = funding raised (or revenue for services firms)
+     - Color encodes category
+     - GenHealth "now" dot is highlighted, with a trajectory
+       arrow to the ghost "MAO target" position
+     =========================================== */
+  .scatter-map {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .scatter-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    font-family: var(--font);
+  }
+  /* Axis & frame text */
+  .scatter-svg .axis-title {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    fill: var(--ink-dim);
+  }
+  .scatter-svg .axis-end {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    fill: var(--ink-faint);
+  }
+  .scatter-svg .quad-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    fill: var(--ink-faint);
+  }
+  .scatter-svg .quad-label.open-zone {
+    fill: var(--accent);
+    font-weight: 600;
+  }
+
+  /* Vendor groups */
+  .scatter-svg .v text { font-family: var(--font); pointer-events: none; }
+  .scatter-svg .v .vlabel {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    fill: var(--ink);
+  }
+  .scatter-svg .v .vsub {
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.1em;
+    fill: var(--ink-faint);
+  }
+
+  /* Categories */
+  .scatter-svg .v-ai circle { fill: #ffd666; fill-opacity: 0.18; stroke: #ffd666; stroke-width: 1.5; }
+  .scatter-svg .v-ai .vlabel { fill: #ffd666; }
+
+  .scatter-svg .v-legacy circle { fill: #94a3b8; fill-opacity: 0.16; stroke: #94a3b8; stroke-width: 1.5; }
+  .scatter-svg .v-legacy .vlabel { fill: #cbd5e1; }
+
+  .scatter-svg .v-bpo circle { fill: #ff4f1f; fill-opacity: 0.18; stroke: #ff4f1f; stroke-width: 1.5; }
+  .scatter-svg .v-bpo .vlabel { fill: #ff8a5c; }
+
+  .scatter-svg .v-absorbed circle { fill: #505a66; fill-opacity: 0.15; stroke: #505a66; stroke-width: 1; stroke-dasharray: 3 3; }
+  .scatter-svg .v-absorbed .vlabel { fill: #6b7684; font-style: italic; }
+
+  /* GenHealth NOW */
+  .scatter-svg .gh-now-dot {
+    fill: var(--accent);
+    stroke: var(--bg);
+    stroke-width: 3;
+    filter: drop-shadow(0 0 12px rgba(0,195,122,0.6));
+  }
+  .scatter-svg .gh-now-ring {
+    fill: none;
+    stroke: var(--accent);
+    stroke-opacity: 0.4;
+    stroke-width: 1.5;
+  }
+  .scatter-svg .gh-now-label {
+    fill: var(--accent);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  /* GenHealth TARGET (ghost) */
+  .scatter-svg .gh-target {
+    fill: rgba(0,195,122,0.08);
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-dasharray: 6 6;
+  }
+  .scatter-svg .gh-target-label {
+    fill: var(--accent);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .scatter-svg .gh-target-sub {
+    fill: var(--accent);
+    fill-opacity: 0.7;
+    font-size: 10px;
+    font-family: var(--font-mono);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .scatter-svg .trajectory {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-dasharray: 6 5;
+    opacity: 0.9;
+  }
+
+  /* Ring pulse on GenHealth */
+  @keyframes ghPulse {
+    0%, 100% { transform: scale(1); opacity: 0.35; }
+    50% { transform: scale(1.5); opacity: 0; }
+  }
+  .scatter-svg .gh-pulse {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+  .slide.visible .scatter-svg .gh-pulse { animation: ghPulse 2.4s ease-out infinite; }
+
+  /* Legend */
+  .map-key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.25rem 1.75rem;
+    margin-top: 1.25rem;
+    padding: 0.9rem 1.15rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    align-items: center;
+  }
+  .map-key .k-item {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+  }
+  .map-key .swatch {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 1.5px solid;
+    display: inline-block;
+  }
+  .map-key .sw-ai { border-color: #ffd666; background: rgba(255,214,102,0.2); }
+  .map-key .sw-legacy { border-color: #94a3b8; background: rgba(148,163,184,0.2); }
+  .map-key .sw-bpo { border-color: #ff4f1f; background: rgba(255,79,31,0.2); }
+  .map-key .sw-gh { border-color: var(--accent); background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .map-key .sw-size {
+    width: auto; height: auto; border: 0; background: none;
+    font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint);
+  }
+
+  /* ===========================================
+     3×3 EVOLUTION MATRIX (SLIDE 9) — SVG CHART
+     Same visual language as the market map (slide 8):
+     a plotted SVG chart with vendor dots. Discrete grid
+     instead of continuous axes — 3 competitor rows ×
+     3 stage cols, plus a 4th GenHealth band at bottom
+     with a trajectory across all 3 stages.
+     =========================================== */
+  .matrix-chart {
+    width: 100%;
+    height: auto;
+    display: block;
+    font-family: var(--font);
+  }
+  .matrix-chart .col-hdr { font-size: 15px; font-weight: 600; fill: var(--ink); letter-spacing: -0.01em; }
+  .matrix-chart .col-hdr.c3 { fill: var(--accent); }
+  .matrix-chart .col-sub {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    fill: var(--ink-dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .matrix-chart .row-hdr { font-size: 14px; font-weight: 600; fill: var(--ink); letter-spacing: -0.01em; }
+  .matrix-chart .row-hdr.gh { fill: var(--accent); }
+  .matrix-chart .row-sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    fill: var(--ink-faint);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .matrix-chart .row-sub.gh { fill: var(--accent); fill-opacity: 0.85; }
+
+  .matrix-chart .block-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--ember);
+    letter-spacing: 0.22em;
+    font-weight: 600;
+  }
+  .matrix-chart .block-text {
+    font-size: 12px;
+    fill: var(--ink-dim);
+    line-height: 1.5;
+  }
+
+  /* Vendor dot styles scoped to the matrix */
+  .matrix-chart .v text { font-family: var(--font); pointer-events: none; }
+  .matrix-chart .v .vlabel { font-size: 11px; font-weight: 600; fill: var(--ink); letter-spacing: -0.01em; }
+  .matrix-chart .v .vsub { font-size: 9.5px; font-family: var(--font-mono); fill: var(--ink-faint); letter-spacing: 0.05em; }
+
+  .matrix-chart .v-ai circle { fill: #ffd666; fill-opacity: 0.2; stroke: #ffd666; stroke-width: 1.5; }
+  .matrix-chart .v-ai .vlabel { fill: #ffd666; }
+
+  .matrix-chart .v-legacy circle { fill: #94a3b8; fill-opacity: 0.18; stroke: #94a3b8; stroke-width: 1.5; }
+  .matrix-chart .v-legacy .vlabel { fill: #cbd5e1; }
+
+  .matrix-chart .v-bpo circle { fill: #ff4f1f; fill-opacity: 0.2; stroke: #ff4f1f; stroke-width: 1.5; }
+  .matrix-chart .v-bpo .vlabel { fill: #ff8a5c; }
+
+  .matrix-chart .v-narrow { opacity: 0.55; }
+  .matrix-chart .v-narrow circle { stroke-dasharray: 3 3; }
+
+  /* GenHealth trajectory styles */
+  .matrix-chart .gh-band { fill: rgba(0,195,122,0.05); stroke: var(--accent); stroke-width: 1; stroke-opacity: 0.6; }
+  .matrix-chart .gh-dot { fill: var(--accent); stroke: var(--bg); stroke-width: 3; filter: drop-shadow(0 0 10px rgba(0,195,122,0.55)); }
+  .matrix-chart .gh-dot-outer { fill: none; stroke: var(--accent); stroke-opacity: 0.4; stroke-width: 1.5; }
+  .matrix-chart .gh-trajectory { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 5; }
+  .matrix-chart .gh-stage {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--accent);
+    letter-spacing: 0.22em;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .matrix-chart .gh-desc {
+    font-size: 12px;
+    fill: var(--accent);
+    fill-opacity: 0.9;
+  }
+
+  .matrix-chart .grid-line { stroke: #242b35; stroke-dasharray: 2 4; }
+  .matrix-chart .frame-line { stroke: #394251; }
+
+  .matrix-wrap {
+    margin-top: 2rem;
+    padding: 1.25rem;
+    background: var(--bg-card);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+  }
+
+  .matrix-caption {
+    margin-top: 1.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--rule);
+    background: var(--bg-card);
+    border-radius: 4px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    align-items: center;
+  }
+  .matrix-caption .chip {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.25em;
+    color: var(--accent);
+    padding: 0.35rem 0.7rem;
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    background: rgba(0,195,122,0.06);
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .matrix-caption p {
+    font-size: 0.95rem;
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .matrix-caption p strong { color: var(--accent); }
+
+  /* ===========================================
+     NAV & PROGRESS
+     =========================================== */
+  .progress {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: var(--accent);
+    width: 0;
+    z-index: 100;
+    transition: width 0.1s linear;
+  }
+  .nav-dots {
+    position: fixed;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    z-index: 99;
+  }
+  .nav-dots button {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    border: 1px solid var(--ink-faint);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.3s var(--ease);
+  }
+  .nav-dots button.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    transform: scale(1.4);
+  }
+  .hint {
+    position: fixed;
+    bottom: 1rem;
+    right: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    color: var(--ink-faint);
+    letter-spacing: 0.2em;
+    z-index: 99;
+  }
+
+  /* ===========================================
+     RESPONSIVE
+     =========================================== */
+  @media (max-width: 900px) {
+    .two-col, .two-col.wide,
+    .evolution .panels,
+    .quotes, .ba { grid-template-columns: 1fr; }
+    .timeline { grid-template-columns: 1fr 1fr; }
+    .uof .row { grid-template-columns: 1fr; }
+    .nav-dots, .hint { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { transition: opacity 0.3s; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<nav class="nav-dots" id="navDots"></nav>
+<div class="hint">← → / SPACE</div>
+
+<!-- ===========================================
+     SLIDE 01 — TITLE
+     =========================================== -->
+<section class="slide title-slide">
+  <span class="stage-tag"><span class="dot"></span> Series A · 2026</span>
+  <span class="folio">01 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">GenHealth.ai</p>
+    <h1 class="h1 reveal" style="margin-top: 1.5rem;">From Software<br/>to <em>Operator.</em></h1>
+    <p class="lead reveal" style="margin-top: 1.5rem;">GenHealth's path to owning the healthcare administrative layer — from SaaS, to Managed Agent Provider, to Managed Agent Organization.</p>
+    <div class="title-meta reveal">
+      <div>
+        <span class="label">Founders</span>
+        <div class="founder">
+          <strong>Ricky Sahu</strong>
+          <span>ricky@genhealth.ai</span>
+        </div>
+        <div class="founder">
+          <strong>Ethan Siegel</strong>
+          <span>ethan@genhealth.ai</span>
+        </div>
+      </div>
+      <div>
+        <span class="label">Traction</span>
+        <strong>$10M CARR · 232% NRR · 40% MoM</strong>
+      </div>
+      <div>
+        <span class="label">Raising</span>
+        <strong><span class="tbd">$ TBD</span> Series A</strong>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 02 — THE PROBLEM
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> The Problem</span>
+  <span class="folio">02 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">The problem</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">Healthcare admin is a <span class="accent">$300B+</span> labor problem.</h2>
+    <p class="lead reveal" style="margin-top: 1.25rem;">20–30% of provider revenue — roughly $1T in aggregate — is consumed by the administrative layer between payers and providers. It is operated today by armies of human labor: MSOs, BPOs, and internal staff.</p>
+
+    <div class="stats reveal">
+      <div class="stat">
+        <div class="k">US healthcare admin</div>
+        <div class="v">$1T</div>
+        <div class="sub">Admin waste per JAMA (Shrank et al., 2019) — ~25% of total health expenditure.</div>
+      </div>
+      <div class="stat">
+        <div class="k">Healthcare BPO market</div>
+        <div class="v">$296B</div>
+        <div class="sub">Growing to $626B by 2032 (Fortune Business Insights). 10% CAGR.</div>
+      </div>
+      <div class="stat">
+        <div class="k">US back-office FTEs</div>
+        <div class="v">2.7M</div>
+        <div class="sub">~$212B/yr in wages across billing, coding, UM, PA, eligibility, call centers.</div>
+      </div>
+      <div class="stat">
+        <div class="k">Admin transactions / yr</div>
+        <div class="v">50B</div>
+        <div class="sub">$25B in documented electronification savings still unrealized (CAQH 2023).</div>
+      </div>
+    </div>
+
+    <hr class="rule-h reveal" />
+    <p class="body-sm reveal" style="max-width: 85ch;">Who owns it today: <span style="color: var(--ink);">MSOs</span> (30K+ practices managed under contract) · <span style="color: var(--ink);">BPOs</span> (Prochant, Access Healthcare, Cognizant Healthcare — 3,000+ FTEs each) · <span style="color: var(--ink);">internal staff</span> at every provider and payer. Every incumbent scales the same way: hire more people.</p>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 03 — WHAT CHANGED
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> What Changed</span>
+  <span class="folio">03 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">What changed</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">AI agents now do the work <span class="accent">humans did.</span></h2>
+    <p class="lead reveal" style="margin-top: 1.25rem;">Not a copilot. Not an assistant. A worker — one that reads faxes, navigates portals, makes phone calls, writes appeals, and posts back to the EHR. The same job a human does, at a fraction of the cost.</p>
+
+    <div class="ba reveal">
+      <div class="col">
+        <div class="hdr">Before · human team</div>
+        <div class="line"><span class="k">Time to complete one PA</span><span class="v">45–90 min</span></div>
+        <div class="line"><span class="k">Cost per PA (fully loaded)</span><span class="v">$11</span></div>
+        <div class="line"><span class="k">Throughput per FTE / day</span><span class="v">8–12</span></div>
+        <div class="line"><span class="k">Hours of training</span><span class="v">80+</span></div>
+        <div class="line"><span class="k">Coverage</span><span class="v">8h / 5d</span></div>
+      </div>
+      <div class="col after">
+        <div class="hdr">After · GenHealth agent</div>
+        <div class="line"><span class="k">Time to complete one PA</span><span class="v">&lt; 3 min</span></div>
+        <div class="line"><span class="k">Cost per PA</span><span class="v">$0.40</span></div>
+        <div class="line"><span class="k">Throughput per agent / day</span><span class="v">1,000+</span></div>
+        <div class="line"><span class="k">Hours of training</span><span class="v">Config-time · reusable</span></div>
+        <div class="line"><span class="k">Coverage</span><span class="v">24 / 7</span></div>
+      </div>
+    </div>
+
+    <p class="body-sm reveal" style="margin-top: 1.5rem; max-width: 85ch;">Representative result from customer deployments in intake, eligibility, prior auth, and denial management. Figures subject to workflow complexity; full case studies in appendix.</p>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 04 — WHERE WE ARE TODAY — STAGE 1
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Stage 1 · Today</span>
+  <span class="folio">04 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">Where we are today · Stage 1 — SaaS</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">We license agents.<br/>Customers operate them.</h2>
+    <p class="lead reveal" style="margin-top: 1.25rem;">Per-seat / per-workflow pricing. Software margins on software budgets. Nine workflows deployed across DME, specialty, medical groups, and health plans.</p>
+
+    <div class="stats reveal">
+      <div class="stat"><div class="k">CARR · target EOY '26</div><div class="v accent">$10M</div><div class="sub">Up 5× from $2M in April. Mostly inbound.</div></div>
+      <div class="stat"><div class="k">MoM ARR growth</div><div class="v accent">40.2%</div><div class="sub">Steady acceleration over 12 months.</div></div>
+      <div class="stat"><div class="k">Net revenue retention</div><div class="v accent">232%</div><div class="sub">Month 1 → 6 cohort analysis.</div></div>
+      <div class="stat"><div class="k">Win rate</div><div class="v accent">90%</div><div class="sub">Deals that selected a solution.</div></div>
+      <div class="stat"><div class="k">Sales cycle</div><div class="v accent">8 wks</div><div class="sub">First meeting → close.</div></div>
+      <div class="stat"><div class="k">LTV : CAC</div><div class="v accent">12 : 1</div><div class="sub">$300K : $25K.</div></div>
+    </div>
+
+    <div class="logos reveal" style="margin-top: 1.75rem;">
+      <div class="logo">MedExp<span class="sub">DME · Full intake + billing</span></div>
+      <div class="logo">Piedmont<span class="sub">DME · End-to-end RCM</span></div>
+      <div class="logo">Guidehealth<span class="sub">Medical group · PA + intake</span></div>
+      <div class="logo">Soundview<span class="sub">Specialty · Intake + auth</span></div>
+      <div class="logo"><span class="tbd">+ TBD</span><span class="sub">Late-stage pipeline</span></div>
+    </div>
+
+    <div class="quotes reveal" style="margin-top: 1.75rem;">
+      <div class="quote">
+        <p class="q">GenHealth now handles more than half of our orders fully automatically and flags issues that would prevent claims from getting paid.</p>
+        <p class="who">Chris Leonard · CEO, MedExp</p>
+      </div>
+      <div class="quote">
+        <p class="q">Since implementing GenHealth's AI across intake and PA we've seen 4× productivity, on track to save nearly $1.2M this year — and our nurses love it.</p>
+        <p class="who">Sanjay Doddamani · CEO/Founder, Guidehealth</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 05 — THE EVOLUTION (ANCHOR)
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> The Evolution · Anchor</span>
+  <span class="folio">05 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">The evolution</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">The same agents. Three business models.<br/><span class="accent">300× wallet.</span></h2>
+    <p class="lead reveal" style="margin-top: 1rem;">Read left to right. Each card is a stage. Between each pair of stages is <em>exactly what changes</em> — nothing else. The agents themselves don't change; the relationship with the customer does.</p>
+
+    <div class="evo-flow reveal">
+
+      <!-- ========== STAGE 1: SaaS ========== -->
+      <div class="evo-card c1">
+        <span class="evo-num">Stage 1</span>
+        <span class="evo-when">Today · 2026</span>
+        <div class="evo-name">SaaS</div>
+        <div class="evo-long">Software as a Service</div>
+
+        <div class="evo-divider"></div>
+
+        <div class="evo-row"><span class="k">Customer buys</span><span class="v">software</span></div>
+        <div class="evo-row"><span class="k">Who runs agents</span><span class="v">the customer</span></div>
+        <div class="evo-row"><span class="k">We're paid</span><span class="v">per seat / workflow</span></div>
+        <div class="evo-row"><span class="k">Margin</span><span class="v accent">70–80%</span></div>
+
+        <div class="evo-tam">
+          <span class="evo-tam-label">Wallet we sell into</span>
+          <span class="evo-tam-value">~$5B</span>
+          <span class="evo-tam-sub">US healthcare AI software TAM</span>
+        </div>
+      </div>
+
+      <!-- ========== TRANSITION 1 → 2 ========== -->
+      <div class="evo-transition">
+        <span class="evo-arrow">➤</span>
+        <span class="evo-what-tag">What Changes</span>
+        <p class="evo-what-text">GenHealth starts <strong>operating the agents</strong> for the customer. They stop running the software and start buying outcomes.</p>
+      </div>
+
+      <!-- ========== STAGE 2: MAP ========== -->
+      <div class="evo-card c2">
+        <span class="evo-num">Stage 2</span>
+        <span class="evo-when">Near-term · 2026–27</span>
+        <div class="evo-name">MAP</div>
+        <div class="evo-long">Managed Agent Provider</div>
+
+        <div class="evo-divider"></div>
+
+        <div class="evo-row"><span class="k">Customer buys</span><span class="v">outcomes</span></div>
+        <div class="evo-row"><span class="k">Who runs agents</span><span class="v">GenHealth</span></div>
+        <div class="evo-row"><span class="k">We're paid</span><span class="v">per transaction</span></div>
+        <div class="evo-row"><span class="k">Margin</span><span class="v accent">60–70%</span></div>
+
+        <div class="evo-tam">
+          <span class="evo-tam-label">Wallet we sell into</span>
+          <span class="evo-tam-value">$300B+</span>
+          <span class="evo-tam-sub">Healthcare BPO + internal admin labor</span>
+        </div>
+      </div>
+
+      <!-- ========== TRANSITION 2 → 3 ========== -->
+      <div class="evo-transition">
+        <span class="evo-arrow">➤</span>
+        <span class="evo-what-tag">What Changes</span>
+        <p class="evo-what-text">GenHealth contracts <strong>directly with the health plan</strong>. We stop selling to providers and start collecting on the premium dollar.</p>
+      </div>
+
+      <!-- ========== STAGE 3: MAO ========== -->
+      <div class="evo-card c3">
+        <span class="evo-num">Stage 3</span>
+        <span class="evo-when">Long-term · 2027+</span>
+        <div class="evo-name">MAO</div>
+        <div class="evo-long">Managed Agent Organization</div>
+
+        <div class="evo-divider"></div>
+
+        <div class="evo-row"><span class="k">Customer is</span><span class="v">the health plan</span></div>
+        <div class="evo-row"><span class="k">Who runs agents</span><span class="v">GenHealth</span></div>
+        <div class="evo-row"><span class="k">We're paid</span><span class="v">% of collections / at-risk</span></div>
+        <div class="evo-row"><span class="k">Margin</span><span class="v accent">50–70%</span></div>
+
+        <div class="evo-tam">
+          <span class="evo-tam-label">Wallet we sell into</span>
+          <span class="evo-tam-value">$1.5T</span>
+          <span class="evo-tam-sub">Premium + at-risk admin capitation</span>
+        </div>
+      </div>
+
+    </div>
+
+    <p class="evo-constant reveal"><strong>The constant</strong>Across all three stages, the same GenHealth agents do the work. What changes at each transition is <em>who owns the operation</em> — and that's what expands the wallet we sell into from $5B to $1.5T.</p>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 06 — STAGE 2: MAP
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Stage 2 · MAP</span>
+  <span class="folio">06 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">Stage 2 · Managed Agent Provider (MAP)</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">We operate the agents. <br/>Customers buy <span class="accent">outcomes.</span></h2>
+
+    <div class="two-col wide reveal">
+      <div>
+        <ul class="bullets">
+          <li><strong>The model.</strong> GenHealth stands up and runs the agents inside the customer's workflow. Customer sees SLAs, throughput, and outcomes — not agent configs.</li>
+          <li><strong>The pricing.</strong> Per-transaction or % of throughput (claims processed, PAs adjudicated, orders intaken). Moves the line item from software budget to operations budget.</li>
+          <li><strong>The TAM unlock.</strong> BPO/MSP spend is 5–10× the size of the software budget we sell into today — $296B and growing to $626B by 2032.</li>
+          <li><strong>What we need to stand it up.</strong> Operations layer with 24/7 coverage · SLA tooling · agent governance + observability · customer-facing ops leaders. Not a team of 3,000; a team of 30–50.</li>
+          <li><strong>First pilot.</strong> Convert <span class="tbd">TBD</span> existing customer from seat pricing to outcomes pricing. Target: same revenue at higher run-rate, expanding from <span class="tbd">TBD</span> workflows to full admin stack.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Incumbents we take share from</p>
+        <div class="stats" style="grid-template-columns: 1fr; margin-top: 1rem;">
+          <div class="stat"><div class="k">Prochant</div><div class="v">$147M revenue</div><div class="sub">HME/DME BPO · 3,000+ FTE · founder-held. Labor-arbitrage P&amp;L.</div></div>
+          <div class="stat"><div class="k">Access Healthcare</div><div class="v">27,000+ FTE</div><div class="sub">Now part of Smarter Technologies (New Mountain roll-up w/ Thoughtful + SmarterDx).</div></div>
+          <div class="stat"><div class="k">ACU-Serve</div><div class="v">~$58M revenue</div><div class="sub">PE-backed by Lovell Minnick. ~300 FTE. Services-led.</div></div>
+          <div class="stat"><div class="k">Cognizant Healthcare BPO</div><div class="v">Segment leader</div><div class="sub">Multi-billion-dollar healthcare operations division.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 07 — STAGE 3: MAO (MSO vs MAO TABLE)
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Stage 3 · MAO</span>
+  <span class="folio">07 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">Stage 3 · Managed Agent Organization (MAO)</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">The MSO playbook —<br/>rebuilt with <span class="accent">SaaS cost structure.</span></h2>
+    <p class="lead reveal" style="margin-top: 1.25rem;">Contract directly with health plans for specific admin functions: prior auth, claims, eligibility, medical-necessity review. Revenue as % of collections, outcome-based, eventually at-risk.</p>
+
+    <table class="cmp-table reveal">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th class="mso">MSO</th>
+          <th class="mao">MAO · Managed Agent Organization</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Who does the work</td>
+          <td class="mso">Large teams of billers, coders, coordinators</td>
+          <td class="mao">AI agents with a small ops team supervising</td>
+        </tr>
+        <tr>
+          <td>How you grow</td>
+          <td class="mso">Hire more people, acquire more groups</td>
+          <td class="mao">Sign more contracts, deploy more agents</td>
+        </tr>
+        <tr>
+          <td>Revenue model</td>
+          <td class="mso">10–25% management fee on practice revenue</td>
+          <td class="mao">% of collections or per-transaction on claims processed</td>
+        </tr>
+        <tr>
+          <td>Gross margins</td>
+          <td class="mso">15–30% (labor-heavy)</td>
+          <td class="mao">60–85% (software-like cost structure)</td>
+        </tr>
+        <tr>
+          <td>Onboarding speed</td>
+          <td class="mso">60–120 days to stand up a new group</td>
+          <td class="mao">Days to weeks — configure agents, connect data</td>
+        </tr>
+        <tr>
+          <td>Payer relationship</td>
+          <td class="mso">Negotiates contracts for the provider group</td>
+          <td class="mao">Contracts directly with health plans for specific functions</td>
+        </tr>
+        <tr>
+          <td>Defensibility</td>
+          <td class="mso">Payer contracts, regional density, physician ties</td>
+          <td class="mao">Proprietary agents, workflow IP, claims training data</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="body-sm reveal" style="margin-top: 1.5rem; color: var(--ink); max-width: 85ch;">An MSO scales by hiring; a MAO scales by deploying agents — <span class="accent">same revenue lines on the P&amp;L, radically different cost structure underneath.</span></p>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 08 — MARKET MAP (SCATTER CHART)
+     Each vendor plotted by:
+       X: depth of work performed (sells tools → operates the work)
+       Y: cost structure (labor-arbitrage → compute-native)
+     Bubble size: funding raised (revenue for services firms)
+     Color: category
+     GenHealth NOW is highlighted with a trajectory arrow
+     to the ghost "MAO target" in the uncontested top-right.
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Market Map</span>
+  <span class="folio">08 / 14</span>
+  <div class="slide-inner" style="max-width: 1500px;">
+    <p class="label reveal">Market map · plotted, not listed</p>
+    <h2 class="h2 reveal" style="margin-top: 0.75rem;">The competitive landscape, <span class="accent">actually measured.</span></h2>
+    <p class="lead reveal" style="margin-top: 0.75rem; max-width: 85ch;">Two axes an investor underwrites on: how deep does each vendor cut into the customer's work, and what are the unit economics when they scale. Every vendor placed by its real position, not its marketing.</p>
+
+    <div class="scatter-map reveal">
+      <svg viewBox="0 0 1400 600" class="scatter-svg" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Healthcare AI competitive scatter chart">
+        <defs>
+          <radialGradient id="ghGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00c37a" stop-opacity="0.5"/>
+            <stop offset="55%" stop-color="#00c37a" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="#00c37a" stop-opacity="0"/>
+          </radialGradient>
+          <marker id="ghArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#00c37a"/>
+          </marker>
+          <pattern id="openHatch" patternUnits="userSpaceOnUse" width="14" height="14" patternTransform="rotate(35)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke="#00c37a" stroke-opacity="0.1" stroke-width="1"/>
+          </pattern>
+        </defs>
+
+        <!-- Plot area: x=100→1340 (w=1240), y=60→480 (h=420). Bottom axis band y=480→555. -->
+
+        <!-- Quadrant tints -->
+        <rect x="100" y="60" width="620" height="210" fill="rgba(255,214,102,0.022)"/>
+        <rect x="720" y="60" width="620" height="210" fill="url(#openHatch)"/>
+        <rect x="720" y="60" width="620" height="210" fill="rgba(0,195,122,0.06)"/>
+        <rect x="100" y="270" width="620" height="210" fill="rgba(148,163,184,0.018)"/>
+        <rect x="720" y="270" width="620" height="210" fill="rgba(255,79,31,0.025)"/>
+
+        <!-- Crosshair at 50/50 -->
+        <line x1="100" y1="270" x2="1340" y2="270" stroke="#242b35" stroke-dasharray="2 5"/>
+        <line x1="720" y1="60" x2="720" y2="480" stroke="#242b35" stroke-dasharray="2 5"/>
+
+        <!-- Axis frame -->
+        <line x1="100" y1="60" x2="100" y2="480" stroke="#394251"/>
+        <line x1="100" y1="480" x2="1340" y2="480" stroke="#394251"/>
+
+        <!-- Only the MAO stamp kept — drop the other three corner labels -->
+        <text x="1322" y="82" text-anchor="end" class="quad-label open-zone">⬤ UNCONTESTED · MAO TERRITORY</text>
+
+        <!-- X-axis labels -->
+        <text x="100" y="508" class="axis-end">← Sells tools only</text>
+        <text x="1340" y="508" text-anchor="end" class="axis-end">Operates customer's work →</text>
+        <text x="720" y="552" text-anchor="middle" class="axis-title">Depth of work performed</text>
+
+        <!-- Y-axis labels -->
+        <text x="78" y="60" text-anchor="end" transform="rotate(-90 78 60)" class="axis-end">↑ Compute-native</text>
+        <text x="78" y="480" text-anchor="start" transform="rotate(-90 78 480)" class="axis-end">Labor-arbitrage</text>
+        <text x="42" y="270" text-anchor="middle" transform="rotate(-90 42 270)" class="axis-title">Cost structure</text>
+
+        <!-- ================= VENDORS =================
+             Label convention (strict):
+             - name label 14px below dot (y = cy + r + 18)
+             - sub label 14px below name
+             - center-anchored
+             - for crowded clusters, alternate above/below
+             ========================================= -->
+
+        <!-- ========== POINT AI (spread horizontally, y 120-215) ========== -->
+        <g class="v v-ai">
+          <circle cx="230" cy="215" r="10"/>
+          <text x="230" y="243" text-anchor="middle" class="vlabel">SuperDial</text>
+          <text x="230" y="257" text-anchor="middle" class="vsub">$20M · voice</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="355" cy="175" r="12"/>
+          <text x="355" y="205" text-anchor="middle" class="vlabel">Valerie Health</text>
+          <text x="355" y="219" text-anchor="middle" class="vsub">$39M · Redpoint</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="470" cy="135" r="18"/>
+          <text x="470" y="172" text-anchor="middle" class="vlabel">Tennr</text>
+          <text x="470" y="186" text-anchor="middle" class="vsub">$159M · $605M val</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="595" cy="115" r="14"/>
+          <text x="595" y="147" text-anchor="middle" class="vlabel">Mandolin</text>
+          <text x="595" y="161" text-anchor="middle" class="vsub">$57M · Greylock</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="695" cy="150" r="15"/>
+          <text x="695" y="183" text-anchor="middle" class="vlabel">Anterior</text>
+          <text x="695" y="197" text-anchor="middle" class="vsub">$64M · payer-side</text>
+        </g>
+
+        <!-- ABSORBED — Thoughtful, tucked below Anterior -->
+        <g class="v v-absorbed">
+          <circle cx="640" cy="240" r="11"/>
+          <text x="640" y="266" text-anchor="middle" class="vlabel">Thoughtful AI</text>
+          <text x="640" y="280" text-anchor="middle" class="vsub">absorbed · Smarter '25</text>
+        </g>
+
+        <!-- ========== LEGACY SOFTWARE (middle, y 295-340) ========== -->
+        <g class="v v-legacy">
+          <circle cx="465" cy="345" r="16"/>
+          <text x="465" y="375" text-anchor="middle" class="vlabel">Notable Health</text>
+          <text x="465" y="389" text-anchor="middle" class="vsub">$119M · flat val '21</text>
+        </g>
+        <g class="v v-legacy">
+          <circle cx="600" cy="305" r="19"/>
+          <text x="600" y="338" text-anchor="middle" class="vlabel">Cohere Health</text>
+          <text x="600" y="352" text-anchor="middle" class="vsub">$200M · Temasek</text>
+        </g>
+        <g class="v v-legacy">
+          <circle cx="735" cy="340" r="22"/>
+          <text x="735" y="376" text-anchor="middle" class="vlabel">Availity</text>
+          <text x="735" y="390" text-anchor="middle" class="vsub">$400M rev · PE</text>
+        </g>
+
+        <!-- ========== BPO / MSO (bottom-right, y 360-425) ==========
+             Labels placed with mixed above/below to avoid collisions:
+             - Cognizant: ABOVE its dot (cluster top)
+             - ACU-Serve, Prochant, Access HC: BELOW, cascading -->
+        <g class="v v-bpo">
+          <circle cx="1095" cy="360" r="20"/>
+          <text x="1095" y="322" text-anchor="middle" class="vlabel">Cognizant HC BPO</text>
+          <text x="1095" y="336" text-anchor="middle" class="vsub">public · multi-B rev</text>
+        </g>
+        <g class="v v-bpo">
+          <circle cx="945" cy="385" r="13"/>
+          <text x="945" y="412" text-anchor="middle" class="vlabel">ACU-Serve</text>
+          <text x="945" y="426" text-anchor="middle" class="vsub">~$58M rev · PE</text>
+        </g>
+        <g class="v v-bpo">
+          <circle cx="1035" cy="405" r="16"/>
+          <text x="1035" y="447" text-anchor="middle" class="vlabel">Prochant</text>
+          <text x="1035" y="461" text-anchor="middle" class="vsub">$147M rev · 3K FTE</text>
+        </g>
+        <g class="v v-bpo">
+          <circle cx="1190" cy="420" r="22"/>
+          <text x="1190" y="457" text-anchor="middle" class="vlabel">Access HC · Smarter Tech</text>
+          <text x="1190" y="471" text-anchor="middle" class="vsub">$800M combined rev</text>
+        </g>
+
+        <!-- ========== GENHEALTH ========== -->
+
+        <!-- Ambient green halo (drawn first, sits behind dots) -->
+        <circle cx="870" cy="130" r="115" fill="url(#ghGlow)"/>
+
+        <!-- TARGET · MAO ghost bubble (top-right corner) -->
+        <circle cx="1265" cy="155" r="44" class="gh-target"/>
+        <text x="1265" y="159" text-anchor="middle" class="gh-target-label">MAO</text>
+        <text x="1265" y="219" text-anchor="middle" class="gh-target-sub">target · stage 3</text>
+
+        <!-- Trajectory path + label -->
+        <path d="M 891 132 C 1030 105, 1135 110, 1220 151" class="trajectory" marker-end="url(#ghArrow)"/>
+        <text x="1060" y="102" text-anchor="middle" style="fill: var(--accent); font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.25em; opacity: 0.9;">→ SAAS · MAP · MAO</text>
+
+        <!-- NOW · pulsing rings + main dot -->
+        <circle cx="870" cy="130" r="22" class="gh-pulse"/>
+        <circle cx="870" cy="130" r="26" class="gh-now-ring"/>
+        <circle cx="870" cy="130" r="16" class="gh-now-dot"/>
+
+        <!-- NOW · label (BELOW dot, consistent with other vendors) -->
+        <text x="870" y="168" text-anchor="middle" class="gh-now-label">GENHEALTH · NOW</text>
+        <text x="870" y="184" text-anchor="middle" class="vsub" style="fill: var(--accent); fill-opacity: 0.85;">stage 1 · SaaS · 232% NRR</text>
+      </svg>
+    </div>
+
+    <!-- Legend -->
+    <div class="map-key reveal">
+      <div class="k-item"><span class="swatch sw-gh"></span><span>GenHealth · today &amp; MAO target</span></div>
+      <div class="k-item"><span class="swatch sw-ai"></span><span>Point AI</span></div>
+      <div class="k-item"><span class="swatch sw-legacy"></span><span>Legacy software</span></div>
+      <div class="k-item"><span class="swatch sw-bpo"></span><span>MSO / BPO</span></div>
+      <div class="k-item sw-size" style="margin-left: auto;">◯ bubble size = funding raised (or revenue, for services firms)</div>
+    </div>
+
+    <p class="body-sm reveal" style="margin-top: 1rem; max-width: 95ch;">
+      BPOs are boxed in at the bottom-right — they operate the work but on 15–30% labor-arbitrage margins. Point-AI vendors cluster in the top-left — high margins, shallow workflow footprint. <span class="accent">GenHealth is the only vendor moving diagonally across the chart — agent-native economics <em>and</em> operator depth.</span> The MAO corner is uncontested by construction: every other company is structurally committed to their quadrant.
+    </p>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 09 — 3×3 EVOLUTION MATRIX
+     Reads: rows = structural type, cols = stages.
+     Shows which cells each competitor type CAN occupy —
+     and which cells are structurally blocked. GenHealth
+     is the only category that legitimately spans the
+     whole top row, with a trajectory into MAO.
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Evolution Matrix</span>
+  <span class="folio">09 / 14</span>
+  <div class="slide-inner" style="max-width: 1500px;">
+    <p class="label reveal">Who can actually evolve</p>
+    <h2 class="h2 reveal" style="margin-top: 0.75rem;">Nine cells. <span class="accent">Only one company can legally live in all three of the right column.</span></h2>
+    <p class="lead reveal" style="margin-top: 0.75rem; max-width: 85ch;">Each row is a <em>structural type</em> of competitor. Each column is one of the three stages. Most cells are blocked by architecture, P&amp;L, or payer trust — structural facts, not strategic choices. GenHealth's entire thesis is that we are the only company that can fill the right column.</p>
+
+    <div class="matrix-wrap reveal">
+      <svg viewBox="0 0 1400 720" class="matrix-chart" preserveAspectRatio="xMidYMid meet">
+        <defs>
+          <radialGradient id="ghGlowM" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#00c37a" stop-opacity="0.55"/>
+            <stop offset="60%" stop-color="#00c37a" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="#00c37a" stop-opacity="0"/>
+          </radialGradient>
+          <marker id="ghArrowM" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#00c37a"/>
+          </marker>
+          <pattern id="blockHatch" patternUnits="userSpaceOnUse" width="12" height="12" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="12" stroke="#ff4f1f" stroke-opacity="0.18" stroke-width="1.5"/>
+          </pattern>
+          <pattern id="ghBandHatch" patternUnits="userSpaceOnUse" width="14" height="14" patternTransform="rotate(35)">
+            <line x1="0" y1="0" x2="0" y2="14" stroke="#00c37a" stroke-opacity="0.11" stroke-width="1"/>
+          </pattern>
+        </defs>
+
+        <!-- =====================================
+             Plot geometry:
+             Row label column: x=20-200
+             Grid: x=200-1340 (w=1140), y=80-680 (h=600)
+             Cols (SaaS/MAP/MAO): widths 380 each
+             Rows (Point AI/Legacy/BPO/GenHealth): 150 each
+             Col centers: 390, 770, 1150
+             Row centers: 155, 305, 455, 605
+             ===================================== -->
+
+        <!-- Column headers -->
+        <text x="390" y="42" text-anchor="middle" class="col-hdr">Stage 1 · SaaS</text>
+        <text x="390" y="62" text-anchor="middle" class="col-sub">license tools</text>
+
+        <text x="770" y="42" text-anchor="middle" class="col-hdr">Stage 2 · MAP</text>
+        <text x="770" y="62" text-anchor="middle" class="col-sub">operate the work</text>
+
+        <text x="1150" y="42" text-anchor="middle" class="col-hdr c3">Stage 3 · MAO</text>
+        <text x="1150" y="62" text-anchor="middle" class="col-sub">contract with payer</text>
+
+        <!-- Row labels -->
+        <text x="185" y="150" text-anchor="end" class="row-hdr">Point AI</text>
+        <text x="185" y="168" text-anchor="end" class="row-sub">agent-native · software margins</text>
+
+        <text x="185" y="300" text-anchor="end" class="row-hdr">Legacy Software</text>
+        <text x="185" y="318" text-anchor="end" class="row-sub">pre-LLM · mixed margins</text>
+
+        <text x="185" y="450" text-anchor="end" class="row-hdr">BPO / MSO</text>
+        <text x="185" y="468" text-anchor="end" class="row-sub">labor-arbitrage · services margins</text>
+
+        <text x="185" y="600" text-anchor="end" class="row-hdr gh">GenHealth</text>
+        <text x="185" y="618" text-anchor="end" class="row-sub gh">agent-native + operator</text>
+
+        <!-- Grid lines -->
+        <line x1="200" y1="80" x2="200" y2="680" class="frame-line"/>
+        <line x1="580" y1="80" x2="580" y2="680" class="grid-line"/>
+        <line x1="960" y1="80" x2="960" y2="680" class="grid-line"/>
+        <line x1="1340" y1="80" x2="1340" y2="680" class="frame-line"/>
+
+        <line x1="200" y1="80" x2="1340" y2="80" class="frame-line"/>
+        <line x1="200" y1="230" x2="1340" y2="230" class="grid-line"/>
+        <line x1="200" y1="380" x2="1340" y2="380" class="grid-line"/>
+        <line x1="200" y1="530" x2="1340" y2="530" class="frame-line"/>
+        <line x1="200" y1="680" x2="1340" y2="680" class="frame-line"/>
+
+        <!-- =====================================
+             BLOCKED CELLS (hatch pattern + X + text)
+             ===================================== -->
+
+        <!-- Point AI × MAP -->
+        <rect x="580" y="80" width="380" height="150" fill="url(#blockHatch)"/>
+        <text x="770" y="138" text-anchor="middle" class="block-tag">✕ STRUCTURALLY BLOCKED</text>
+        <text x="770" y="162" text-anchor="middle" class="block-text">No ops DNA or headcount. Thoughtful AI</text>
+        <text x="770" y="180" text-anchor="middle" class="block-text">tried — absorbed into Smarter Tech '25.</text>
+
+        <!-- Point AI × MAO -->
+        <rect x="960" y="80" width="380" height="150" fill="url(#blockHatch)"/>
+        <text x="1150" y="138" text-anchor="middle" class="block-tag">✕ STRUCTURALLY BLOCKED</text>
+        <text x="1150" y="162" text-anchor="middle" class="block-text">No payer trust. No balance sheet</text>
+        <text x="1150" y="180" text-anchor="middle" class="block-text">for at-risk. No actuarial depth.</text>
+
+        <!-- Legacy × MAP -->
+        <rect x="580" y="230" width="380" height="150" fill="url(#blockHatch)"/>
+        <text x="770" y="290" text-anchor="middle" class="block-tag">✕ STRUCTURALLY BLOCKED</text>
+        <text x="770" y="314" text-anchor="middle" class="block-text">Batch EDI architecture can't support</text>
+        <text x="770" y="332" text-anchor="middle" class="block-text">outcomes-based pricing.</text>
+
+        <!-- Legacy × MAO -->
+        <rect x="960" y="230" width="380" height="150" fill="url(#blockHatch)"/>
+        <text x="1150" y="290" text-anchor="middle" class="block-tag">✕ STRUCTURALLY BLOCKED</text>
+        <text x="1150" y="314" text-anchor="middle" class="block-text">No agent substrate — can't hit the</text>
+        <text x="1150" y="332" text-anchor="middle" class="block-text">margin profile payers pay for.</text>
+
+        <!-- BPO × SaaS -->
+        <rect x="200" y="380" width="380" height="150" fill="url(#blockHatch)"/>
+        <text x="390" y="440" text-anchor="middle" class="block-tag">✕ STRUCTURALLY BLOCKED</text>
+        <text x="390" y="464" text-anchor="middle" class="block-text">Not their DNA. No software</text>
+        <text x="390" y="482" text-anchor="middle" class="block-text">product to license.</text>
+
+        <!-- BPO × MAO -->
+        <rect x="960" y="380" width="380" height="150" fill="url(#blockHatch)"/>
+        <text x="1150" y="440" text-anchor="middle" class="block-tag">✕ STRUCTURALLY BLOCKED</text>
+        <text x="1150" y="464" text-anchor="middle" class="block-text">Labor-arbitrage margins can't</text>
+        <text x="1150" y="482" text-anchor="middle" class="block-text">underwrite at-risk deals.</text>
+
+        <!-- =====================================
+             LIVE CELLS (vendor dots)
+             ===================================== -->
+
+        <!-- Point AI × SaaS: 5 vendor dots clustered -->
+        <g class="v v-ai">
+          <circle cx="278" cy="125" r="14"/>
+          <text x="278" y="152" text-anchor="middle" class="vlabel">Tennr</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="358" cy="112" r="11"/>
+          <text x="358" y="136" text-anchor="middle" class="vlabel">Mandolin</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="440" cy="128" r="12"/>
+          <text x="440" y="154" text-anchor="middle" class="vlabel">Anterior</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="353" cy="188" r="10"/>
+          <text x="353" y="211" text-anchor="middle" class="vlabel">Valerie</text>
+        </g>
+        <g class="v v-ai">
+          <circle cx="495" cy="185" r="9"/>
+          <text x="495" y="207" text-anchor="middle" class="vlabel">SuperDial</text>
+        </g>
+
+        <!-- Legacy × SaaS: Availity, Notable, Cohere -->
+        <g class="v v-legacy">
+          <circle cx="300" cy="285" r="15"/>
+          <text x="300" y="312" text-anchor="middle" class="vlabel">Availity</text>
+        </g>
+        <g class="v v-legacy">
+          <circle cx="403" cy="305" r="12"/>
+          <text x="403" y="330" text-anchor="middle" class="vlabel">Notable</text>
+        </g>
+        <g class="v v-legacy">
+          <circle cx="498" cy="290" r="13"/>
+          <text x="498" y="317" text-anchor="middle" class="vlabel">Cohere</text>
+        </g>
+
+        <!-- BPO × MAP: Prochant, ACU-Serve, Access HC, Cognizant -->
+        <g class="v v-bpo">
+          <circle cx="680" cy="430" r="14"/>
+          <text x="680" y="457" text-anchor="middle" class="vlabel">Prochant</text>
+        </g>
+        <g class="v v-bpo">
+          <circle cx="770" cy="455" r="11"/>
+          <text x="770" y="480" text-anchor="middle" class="vlabel">ACU-Serve</text>
+        </g>
+        <g class="v v-bpo">
+          <circle cx="865" cy="430" r="17"/>
+          <text x="865" y="460" text-anchor="middle" class="vlabel">Access HC</text>
+        </g>
+        <g class="v v-bpo">
+          <circle cx="770" cy="405" r="15"/>
+          <text x="770" y="390" text-anchor="middle" class="vlabel">Cognizant HC</text>
+        </g>
+
+        <!-- =====================================
+             GENHEALTH ROW (highlighted band + dots + trajectory)
+             ===================================== -->
+
+        <!-- Green hatch background for the GH row -->
+        <rect x="200" y="530" width="1140" height="150" fill="url(#ghBandHatch)"/>
+        <rect x="200" y="530" width="1140" height="150" class="gh-band"/>
+
+        <!-- Trajectory arrow across all 3 stages -->
+        <path d="M 410 605 L 750 605 L 1130 605" class="gh-trajectory" marker-end="url(#ghArrowM)"/>
+
+        <!-- GH · SaaS (NOW) -->
+        <circle cx="390" cy="605" r="70" fill="url(#ghGlowM)"/>
+        <circle cx="390" cy="605" r="24" class="gh-dot-outer"/>
+        <circle cx="390" cy="605" r="18" class="gh-dot"/>
+        <text x="390" y="565" text-anchor="middle" class="gh-stage">NOW · 2026</text>
+        <text x="390" y="650" text-anchor="middle" class="gh-desc">$10M CARR · 232% NRR · SaaS foundation</text>
+
+        <!-- GH · MAP (IN FLIGHT) -->
+        <circle cx="770" cy="605" r="70" fill="url(#ghGlowM)"/>
+        <circle cx="770" cy="605" r="24" class="gh-dot-outer"/>
+        <circle cx="770" cy="605" r="18" class="gh-dot"/>
+        <text x="770" y="565" text-anchor="middle" class="gh-stage">2026 – 27</text>
+        <text x="770" y="650" text-anchor="middle" class="gh-desc">First MAP pilot · Q3 '26</text>
+
+        <!-- GH · MAO (TARGET) -->
+        <circle cx="1150" cy="605" r="80" fill="url(#ghGlowM)"/>
+        <circle cx="1150" cy="605" r="28" class="gh-dot-outer"/>
+        <circle cx="1150" cy="605" r="22" class="gh-dot"/>
+        <text x="1150" y="565" text-anchor="middle" class="gh-stage">TARGET · 2027+</text>
+        <text x="1150" y="650" text-anchor="middle" class="gh-desc">First payer contract · Q2 '27</text>
+      </svg>
+    </div>
+
+    <div class="matrix-caption reveal">
+      <span class="chip">Read across the bottom row</span>
+      <p>Point AI can't move right. Legacy can't evolve. BPOs can't move left. <strong>GenHealth is the only category that legitimately occupies all three stages</strong> — agent-native economics, an operator motion, and FHIR / DaVinci-native rails to reach the MAO.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 10 — WHY US
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Why Us</span>
+  <span class="folio">10 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">Why us</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">We've built and run this<br/><span class="accent">layer before.</span></h2>
+
+    <div class="two-col reveal">
+      <div>
+        <ul class="bullets">
+          <li><strong>Team scaled 1upHealth.</strong> Built infrastructure for 50M patients across 70 health plans. Scaled to $20M ARR and 30M requests/hour in 5 years. FHIR and payer-interop DNA.</li>
+          <li><strong>Installed customer base.</strong> Customers already self-selecting into full-service, migrating from seat pricing to outcomes pricing. The Stage-2 motion is underway organically.</li>
+          <li><strong>Agent library.</strong> Pre-built agents for intake, eligibility, PA, appeals, denial management, billing. Deployable in weeks, not quarters.</li>
+          <li><strong>Interop backbone.</strong> UMPA API · HL7 DaVinci-native (CRD / DTR / PAS). CMS-0057-F compliant by default as the mandate takes effect.</li>
+          <li><strong>Ops DNA.</strong> Founding team and advisors have operated RCM, MSOs, and payer ops — not just built software for them.</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Signals the evolution is already happening</p>
+        <div class="stats" style="grid-template-columns: 1fr; margin-top: 1rem;">
+          <div class="stat"><div class="k">Self-serve → full-serve</div><div class="v accent">5 of 5</div><div class="sub">Early customers that started on SaaS have expanded into managed-operations scope.</div></div>
+          <div class="stat"><div class="k">Expansion revenue</div><div class="v accent">232% NRR</div><div class="sub">Customers compound spend across workflows within 6 months.</div></div>
+          <div class="stat"><div class="k">Founder selling</div><div class="v accent">&lt; 5%</div><div class="sub">Deals now close with minimal founder involvement. Distribution moat forming.</div></div>
+          <div class="stat"><div class="k">Implementation time</div><div class="v accent">4 wks</div><div class="sub">Down from 6 months. Competitors still quote 12 months+.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 09 — TAM EXPANSION
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> TAM Expansion</span>
+  <span class="folio">11 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">TAM expansion</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">Software $ → Services $ → <span class="accent">Risk-bearing $.</span></h2>
+    <p class="lead reveal" style="margin-top: 1.25rem;">Each stage moves GenHealth into a larger wallet without requiring a new product. Same agents; different buyer; different dollars.</p>
+
+    <div class="stats reveal" style="grid-template-columns: 1fr 1fr 1fr; margin-top: 2rem;">
+      <div class="stat" style="padding: 1.75rem;">
+        <div class="k">Stage 1 · SaaS</div>
+        <div class="v">~$5B</div>
+        <div class="sub" style="margin-top: 0.75rem;">US healthcare AI / workflow software TAM. Point solutions and agent platforms.</div>
+        <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--rule); font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); letter-spacing: 0.15em; text-transform: uppercase;">Wallet: IT budget</div>
+      </div>
+      <div class="stat" style="padding: 1.75rem; border-color: var(--rule-strong);">
+        <div class="k">Stage 2 · MAP</div>
+        <div class="v">$300B+</div>
+        <div class="sub" style="margin-top: 0.75rem;">US healthcare BPO + internal admin labor. $296B → $626B by 2032 (Fortune BI).</div>
+        <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--rule); font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); letter-spacing: 0.15em; text-transform: uppercase;">Wallet: Ops budget</div>
+      </div>
+      <div class="stat" style="padding: 1.75rem; border-color: var(--accent-line); background: var(--accent-soft);">
+        <div class="k" style="color: var(--accent);">Stage 3 · MAO</div>
+        <div class="v accent">$1.5T</div>
+        <div class="sub" style="margin-top: 0.75rem;">Premium + admin capitation + risk-bearing contracts. US private health insurance base.</div>
+        <div style="margin-top: 1.25rem; padding-top: 0.75rem; border-top: 1px solid var(--accent-line); font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase;">Wallet: Premium + MLR</div>
+      </div>
+    </div>
+
+    <p class="body-sm reveal" style="margin-top: 1.75rem; max-width: 85ch;">Multiplier at each step: <span style="color: var(--ink);">SaaS → MAP = ~60×.</span> <span style="color: var(--ink);">MAP → MAO = ~5×.</span> Total expansion from Stage 1 to Stage 3: <span class="accent">~300× the wallet</span> — on the same underlying technology.</p>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 10 — MARGIN PROFILE
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Margin Profile</span>
+  <span class="folio">12 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">Margin profile</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">Software margins on<br/><span class="accent">services-size revenue.</span></h2>
+    <p class="lead reveal" style="margin-top: 1.25rem;">MSOs and BPOs fight for 15–30% gross margins because their cost of goods sold is labor. Ours is compute and a small ops team. Margin compresses modestly as we move down-stack; the revenue line does not.</p>
+
+    <table class="cmp-table reveal" style="margin-top: 2rem;">
+      <thead>
+        <tr>
+          <th>Stage</th>
+          <th>Revenue model</th>
+          <th>Cost of goods</th>
+          <th class="mao">Gross margin</th>
+          <th>Revenue / contract</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Stage 1 · SaaS</td>
+          <td class="mao">Per-seat / per-workflow</td>
+          <td class="mso">Compute + customer success</td>
+          <td class="mao">70–80%</td>
+          <td class="mao">$60K ADV</td>
+        </tr>
+        <tr>
+          <td>Stage 2 · MAP</td>
+          <td class="mao">Per-transaction / % throughput</td>
+          <td class="mso">Compute + ops supervisors (1 : 50+ agents)</td>
+          <td class="mao">60–70%</td>
+          <td class="mao">$500K–$5M</td>
+        </tr>
+        <tr>
+          <td>Stage 3 · MAO</td>
+          <td class="mao">% of collections / at-risk</td>
+          <td class="mso">Compute + compliance + actuarial</td>
+          <td class="mao">50–70%</td>
+          <td class="mao">$10M–$100M+</td>
+        </tr>
+        <tr>
+          <td>Reference · MSO</td>
+          <td class="mso">Mgmt fee on revenue</td>
+          <td class="mso">Billers, coders, coordinators</td>
+          <td class="mso">15–30%</td>
+          <td class="mso">$5M–$50M</td>
+        </tr>
+        <tr>
+          <td>Reference · BPO</td>
+          <td class="mso">FTE billable / % collections</td>
+          <td class="mso">Offshore labor stack</td>
+          <td class="mso">20–35%</td>
+          <td class="mso">$1M–$10M</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="body-sm reveal" style="margin-top: 1.5rem; max-width: 85ch;">Why the margin holds: agents' cost-per-transaction scales sublinearly with volume. A 10× increase in throughput drives ~2× increase in compute cost. The operating team grows from 30 at Stage 2 to ~150 at Stage 3 — still 1–2 orders of magnitude smaller than the equivalent MSO.</p>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 11 — ROADMAP
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> Roadmap</span>
+  <span class="folio">13 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">Roadmap</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">From $10M CARR to the<br/><span class="accent">first payer contract in 18 months.</span></h2>
+
+    <div class="timeline reveal">
+      <div class="milestone" data-now="true">
+        <div class="year">NOW · Apr 2026</div>
+        <div class="what">$10M CARR trajectory</div>
+        <div class="detail">SaaS foundation. Inbound-led. Customer count: <span class="tbd">TBD</span>. Team: 15 people (11 eng, 2 sales, 2 G&amp;A).</div>
+      </div>
+      <div class="milestone">
+        <div class="year">Q3 '26</div>
+        <div class="what">First MAP pilot live</div>
+        <div class="detail">Existing customer converts from seat pricing to outcomes pricing. Stand up ops layer + SLA tooling.</div>
+      </div>
+      <div class="milestone">
+        <div class="year">Q2 '27</div>
+        <div class="what">First health-plan contract</div>
+        <div class="detail">Stage 3 MAO-wedge: direct contract with one regional payer for PA or medical-necessity review. <span class="tbd">$TBD</span> ACV.</div>
+      </div>
+      <div class="milestone">
+        <div class="year">Q4 '27</div>
+        <div class="what">First at-risk deal</div>
+        <div class="detail">Outcome-linked contract — shared savings or admin capitation. Proof point for the full MAO thesis.</div>
+      </div>
+    </div>
+
+    <hr class="rule-h reveal" />
+
+    <div class="stats reveal">
+      <div class="stat"><div class="k">Target · EOY 2026</div><div class="v accent">$10M CARR</div><div class="sub">Stage 1 scaling continues; first Stage 2 pilot.</div></div>
+      <div class="stat"><div class="k">Target · EOY 2027</div><div class="v accent">$75M CARR</div><div class="sub">Stage 2 at scale; 5+ MAP customers; first payer.</div></div>
+      <div class="stat"><div class="k">Target · EOY 2028</div><div class="v accent">$225M CARR</div><div class="sub">3+ payers; first at-risk deal live.</div></div>
+      <div class="stat"><div class="k">Series B trigger</div><div class="v accent">$50M CARR</div><div class="sub">Expected mid-2027 — funds Stage 3 scaling.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===========================================
+     SLIDE 12 — THE ASK
+     =========================================== -->
+<section class="slide">
+  <span class="stage-tag"><span class="dot"></span> The Ask</span>
+  <span class="folio">14 / 14</span>
+  <div class="slide-inner">
+    <p class="label reveal">The ask</p>
+    <h2 class="h2 reveal" style="margin-top: 1rem;">Series A · <span class="tbd">$TBD</span> at <span class="tbd">$TBD</span> <span class="accent">pre.</span></h2>
+    <p class="lead reveal" style="margin-top: 1.25rem;">Mapped to the three stages — fund Stage 1 through to scale, stand up the MAP layer, and prepare the MAO path with payer BD and actuarial depth.</p>
+
+    <div class="uof reveal">
+      <div class="row">
+        <div class="label-cell">Stage 1 · Scale SaaS<span class="sub">Outbound marketing, sales team, FD engineers, conference presence.</span></div>
+        <div class="bar"><div class="fill" style="width: 40%;"></div></div>
+        <div class="pct">40%</div>
+      </div>
+      <div class="row">
+        <div class="label-cell">Stage 2 · Stand up MAP<span class="sub">Ops layer, SLA tooling, agent observability + governance, 24/7 coverage.</span></div>
+        <div class="bar"><div class="fill" style="width: 40%;"></div></div>
+        <div class="pct">40%</div>
+      </div>
+      <div class="row">
+        <div class="label-cell">Stage 3 · Prepare MAO<span class="sub">Payer BD, compliance, actuarial, risk-bearing legal + regulatory groundwork.</span></div>
+        <div class="bar"><div class="fill" style="width: 20%;"></div></div>
+        <div class="pct">20%</div>
+      </div>
+    </div>
+
+    <hr class="rule-h reveal" />
+
+    <div class="two-col reveal">
+      <div>
+        <p class="label">By Series B · expect to prove</p>
+        <ul class="bullets">
+          <li><span class="tbd">TBD</span> customer logos live on SaaS</li>
+          <li>First MAP pilot at outcomes pricing</li>
+          <li>First health-plan contract signed (MAO wedge)</li>
+          <li>Margin profile held across all three stages</li>
+        </ul>
+      </div>
+      <div>
+        <p class="label">Existing investors</p>
+        <ul class="bullets">
+          <li>Craft Ventures (co-led seed)</li>
+          <li>Obvious Ventures (co-led seed)</li>
+          <li>Plug and Play</li>
+          <li>Honest Ventures</li>
+          <li>Advisors from operator ranks across MSO, payer, RCM</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="body-sm reveal" style="margin-top: 2rem; text-align: center; color: var(--ink-dim); font-style: italic;">
+      Same revenue lines as an MSO on the P&amp;L. Radically different economics underneath.
+    </p>
+  </div>
+</section>
+
+<script>
+/* ===========================================
+   PRESENTATION CONTROLLER
+   - IntersectionObserver drives reveal animations and active-dot tracking
+   - Keyboard / wheel / touch navigation
+   - Progress bar tracks scroll position
+   =========================================== */
+class Deck {
+  constructor() {
+    this.slides = [...document.querySelectorAll('.slide')];
+    this.progress = document.getElementById('progress');
+    this.nav = document.getElementById('navDots');
+    this.current = 0;
+    this.wheelLock = false;
+    this.buildNav();
+    this.observe();
+    this.bindKeys();
+    this.bindWheel();
+    this.bindTouch();
+    this.track();
+  }
+  buildNav() {
+    this.slides.forEach((_, i) => {
+      const b = document.createElement('button');
+      b.setAttribute('aria-label', `Slide ${i + 1}`);
+      b.addEventListener('click', () => this.go(i));
+      this.nav.appendChild(b);
+    });
+  }
+  observe() {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          const i = this.slides.indexOf(e.target);
+          if (i >= 0) { this.current = i; this.updateDots(); }
+        }
+      });
+    }, { threshold: 0.5 });
+    this.slides.forEach(s => io.observe(s));
+  }
+  updateDots() {
+    [...this.nav.children].forEach((d, i) => d.classList.toggle('active', i === this.current));
+  }
+  go(i) {
+    if (i < 0 || i >= this.slides.length) return;
+    this.slides[i].scrollIntoView({ behavior: 'smooth' });
+  }
+  bindKeys() {
+    document.addEventListener('keydown', e => {
+      if (['ArrowRight', 'ArrowDown', ' '].includes(e.key)) { e.preventDefault(); this.go(this.current + 1); }
+      else if (['ArrowLeft', 'ArrowUp'].includes(e.key)) { e.preventDefault(); this.go(this.current - 1); }
+      else if (e.key === 'Home') this.go(0);
+      else if (e.key === 'End') this.go(this.slides.length - 1);
+    });
+  }
+  bindWheel() {
+    window.addEventListener('wheel', e => {
+      if (this.wheelLock) return;
+      if (Math.abs(e.deltaY) < 15) return;
+      this.wheelLock = true;
+      this.go(this.current + (e.deltaY > 0 ? 1 : -1));
+      setTimeout(() => { this.wheelLock = false; }, 700);
+    }, { passive: true });
+  }
+  bindTouch() {
+    let y = 0;
+    window.addEventListener('touchstart', e => { y = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener('touchend', e => {
+      const d = y - e.changedTouches[0].clientY;
+      if (Math.abs(d) < 40) return;
+      this.go(this.current + (d > 0 ? 1 : -1));
+    }, { passive: true });
+  }
+  track() {
+    window.addEventListener('scroll', () => {
+      const h = document.documentElement;
+      this.progress.style.width = `${(h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100}%`;
+    }, { passive: true });
+  }
+}
+new Deck();
+</script>
+</body>
+</html>
